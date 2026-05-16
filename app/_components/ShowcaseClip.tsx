@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface ShowcaseClipProps {
   /** Slug du fichier dans /public/showcase/ — ex: 'cafe-de-flore' → /showcase/cafe-de-flore.mp4 */
@@ -14,19 +14,50 @@ interface ShowcaseClipProps {
 }
 
 /**
- * Vidéo showcase avec fallback gracieux.
+ * Vidéo showcase avec lazy loading + fallback gracieux.
  *
- * Si le fichier /showcase/{slug}.mp4 n'existe pas encore (Pascal n'a pas
- * encore lancé `npm run generate:showcase`), on retombe automatiquement
- * sur le placeholder gradient + emoji — aucun broken-video icon.
+ * Optimisations performance :
+ * - **IntersectionObserver** : la vidéo n'est ajoutée au DOM qu'au moment où
+ *   le composant entre dans le viewport (avec une marge de 200px pour
+ *   précharger juste à temps). Les vidéos invisibles ne consomment 0 bande passante.
+ * - **preload="none"** côté navigateur — on contrôle nous-mêmes le chargement.
+ * - **poster JPG** affiché instantanément avant que la vidéo ne soit dans le viewport.
+ * - Fallback gradient si le fichier .mp4 n'existe pas ou échoue.
  *
- * Quand le fichier existe :
+ * Quand le composant entre dans le viewport :
  * - autoplay + muted + loop = lecture continue sans interaction
  * - playsInline = pas de fullscreen forcé sur iOS
- * - preload="metadata" = on charge juste la première frame avant lecture
  */
 export function ShowcaseClip({ slug, fallbackBg, fallbackEmoji, ariaLabel }: ShowcaseClipProps) {
   const [videoFailed, setVideoFailed] = useState(false)
+  const [shouldLoad, setShouldLoad]   = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el || shouldLoad) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setShouldLoad(true)
+            observer.disconnect()
+            break
+          }
+        }
+      },
+      {
+        // Précharge 200px avant que le clip n'arrive dans le viewport
+        // pour que la vidéo soit prête au moment où l'user la voit
+        rootMargin: '200px 0px',
+        threshold: 0.01,
+      },
+    )
+
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [shouldLoad])
 
   if (videoFailed) {
     return (
@@ -38,18 +69,34 @@ export function ShowcaseClip({ slug, fallbackBg, fallbackEmoji, ariaLabel }: Sho
   }
 
   return (
-    <video
-      className="vc-video"
-      autoPlay
-      muted
-      loop
-      playsInline
-      preload="metadata"
-      poster={`/showcase/${slug}.jpg`}
-      onError={() => setVideoFailed(true)}
-      aria-label={ariaLabel}
-    >
-      <source src={`/showcase/${slug}.mp4`} type="video/mp4" />
-    </video>
+    <div ref={containerRef} style={{ width: '100%', height: '100%', position: 'relative' }}>
+      {shouldLoad ? (
+        <video
+          className="vc-video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          poster={`/showcase/${slug}.jpg`}
+          onError={() => setVideoFailed(true)}
+          aria-label={ariaLabel}
+        >
+          <source src={`/showcase/${slug}.mp4`} type="video/mp4" />
+        </video>
+      ) : (
+        // Placeholder visuel pendant que le composant attend d'être visible
+        // — affiche le poster JPG si dispo, sinon le gradient de fallback
+        <div
+          className="vc-video"
+          style={{
+            background: `${fallbackBg} url(/showcase/${slug}.jpg) center/cover no-repeat`,
+            width: '100%',
+            height: '100%',
+          }}
+          aria-label={ariaLabel}
+        />
+      )}
+    </div>
   )
 }
