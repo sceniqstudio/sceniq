@@ -48,6 +48,12 @@ export async function POST(
 
   // Brand Memory → reference-to-video (si la marque a des assets logo/image)
   // Sinon → text-to-video fallback (referenceImageUrls reste vide)
+  //
+  // ⚠️  Filtre formats : Seedance 2.0 (BytePlus + fal.ai) supporte jpeg, png, webp,
+  //     bmp, tiff, gif, heic, heif. PAS svg ni avif. On filtre côté serveur pour
+  //     éviter un 400 InvalidParameter.UnsupportedImageFormat qui ferait tomber
+  //     toute la génération (les autres refs valides ne seraient jamais essayées).
+  const SUPPORTED_IMAGE_EXT = /\.(jpe?g|png|webp|bmp|tiff?|gif|heic|heif)(\?|$)/i
   let referenceImageUrls: string[] = []
   if (brandId) {
     const { data: assets } = await sb()
@@ -61,6 +67,7 @@ export async function POST(
     referenceImageUrls = (assets ?? [])
       .map((a: { url: string | null }) => a.url)
       .filter((u): u is string => Boolean(u))
+      .filter((u) => SUPPORTED_IMAGE_EXT.test(u))
   }
 
   // Consommer un crédit (idempotent)
