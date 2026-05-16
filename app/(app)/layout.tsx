@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { ToastProvider } from '@/app/(app)/_components/Toast'
 import { StudioModeWatcher } from '@/app/(app)/_components/StudioModeWatcher'
-import { LogoMark } from '@/app/_components/Logo'
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   // Mocks — en attente du wiring Clerk + Supabase
@@ -20,10 +19,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       {/* ── SIDEBAR ── */}
       <aside className="app-sidebar" aria-label="Navigation principale">
         <Link href="/" className="logo" aria-label="ScenIQ — Retour au site">
-          <LogoMark size={34} className="logo-svg" />
-          <span className="logo-name">
-            Scen<span>IQ</span>
-          </span>
+          <img src="/sceniq-logo-white.svg" alt="ScenIQ" height={48} style={{ height: 48, width: 'auto', display: 'block' }} />
         </Link>
 
         <ul className="app-nav">

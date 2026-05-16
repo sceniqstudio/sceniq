@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { SignInButton, SignUpButton, SignedIn, SignedOut } from '@clerk/nextjs'
 import Link from 'next/link'
-import { LogoMark } from '@/app/_components/Logo'
 import { ShowcaseClip } from '@/app/_components/ShowcaseClip'
 
 const SHOWCASE_SLUGS = [
@@ -260,10 +259,7 @@ export default function HomePage() {
       {/* NAV */}
       <nav>
         <a href="#" className="logo" aria-label="ScenIQ — Accueil">
-          <LogoMark size={34} className="logo-svg" />
-          <span className="logo-name">
-            Scen<span>IQ</span>
-          </span>
+          <img src="/sceniq-logo-dark.svg" alt="ScenIQ" height={48} style={{ height: 48, width: 'auto', display: 'block' }} />
         </a>
         <ul className="nav-links">
           <li><a href="#how">Comment ça marche</a></li>
@@ -1054,10 +1050,7 @@ export default function HomePage() {
       {/* FOOTER */}
       <footer>
         <div className="fl">
-          <LogoMark size={28} className="fl-svg" />
-          <span className="fl-name">
-            Scen<span>IQ</span>
-          </span>
+          <img src="/sceniq-logo-dark.svg" alt="ScenIQ" height={36} style={{ height: 36, width: 'auto', display: 'block' }} />
         </div>
         <ul className="f-links">
           <li><a href="mailto:hello@sceniq.app">Contact</a></li>
