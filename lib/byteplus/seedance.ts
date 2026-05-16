@@ -72,30 +72,34 @@ export async function generateClipByteplus(input: {
     }
   }
 
-  const refs       = (input.referenceImageUrls ?? []).filter(Boolean)
+  const refs       = (input.referenceImageUrls ?? []).filter(Boolean).slice(0, 9)
   const durationSec = Math.min(Math.max(parseInt(input.duration) || 5, 4), 15)
 
-  // ── Corps de la requête ──
-  const body: Record<string, unknown> = {
-    model:        DEFAULT_MODEL,
-    prompt:       input.prompt,
-    resolution:   input.resolution  ?? '720p',   // 720p — max des plans Light/Production/Premium BytePlus
-    duration:     durationSec,
-    aspect_ratio: input.aspectRatio ?? '16:9',
-    audio:        true,                           // génération audio native (différenciateur clé vs Runway/Kling)
+  // ── Corps de la requête — format API officiel ModelArk v3 ──
+  // Cf. https://docs.byteplus.com/en/docs/ModelArk/1520757
+  // content[] regroupe prompt texte + références (images / video / audio).
+  // Tous les params hors-content sont au top-level : ratio, duration, resolution, generate_audio, watermark.
+  const content: Array<Record<string, unknown>> = [
+    { type: 'text', text: input.prompt },
+  ]
+
+  // Brand Memory → reference_image scenario (1-9 refs, toutes en role=reference_image)
+  for (const url of refs) {
+    content.push({
+      type:      'image_url',
+      image_url: { url },
+      role:      'reference_image',
+    })
   }
 
-  // Routing Brand Memory → image-to-video / reference-to-video
-  if (refs.length > 0) {
-    body.image_url = refs[0]                      // premier asset = frame de référence principal
-    if (refs.length > 1) {
-      // Assets supplémentaires → references[] (max 9 total selon API BytePlus)
-      body.references = refs.slice(1, 9).map((url, i) => ({
-        type: 'image',
-        role: i === 0 ? 'environment' : 'subject', // alternance subject/environment
-        url,
-      }))
-    }
+  const body: Record<string, unknown> = {
+    model:          DEFAULT_MODEL,
+    content,
+    generate_audio: true,                          // audio natif (différenciateur clé vs Runway/Kling)
+    resolution:     input.resolution  ?? '720p',
+    ratio:          input.aspectRatio ?? '16:9',   // attention : API attend `ratio`, pas `aspect_ratio`
+    duration:       durationSec,
+    watermark:      false,
   }
 
   // ── 1. Soumettre la tâche ──
@@ -124,8 +128,10 @@ export async function generateClipByteplus(input: {
     }
 
     const submitData = await submitRes.json()
-    // L'API BytePlus peut retourner task_id ou job_id selon la version
-    jobId = submitData.task_id ?? submitData.job_id ?? ''
+    // L'API officielle ModelArk renvoie `id` (cf. doc 1520757)
+    // On garde `task_id` / `job_id` en fallback défensif au cas où certaines régions
+    // ou versions de l'API utiliseraient encore l'ancien format.
+    jobId = submitData.id ?? submitData.task_id ?? submitData.job_id ?? ''
     if (!jobId) {
       return {
         videoUrl: null,
@@ -177,19 +183,23 @@ export async function generateClipByteplus(input: {
       const status = (data.status ?? '') as string
 
       if (status === 'succeeded' || status === 'completed') {
+        // L'API peut renvoyer le video_url à plusieurs emplacements selon la version
         const videoUrl: string | null =
+          data.content?.video_url ??
+          data.video_url ??
           data.output?.video_url ??
           data.result?.video_url ??
           null
         return {
           videoUrl,
           jobId,
-          error:    videoUrl ? null : 'BytePlus: URL vidéo absente de la réponse succeeded',
+          error:    videoUrl ? null : `BytePlus: URL vidéo absente de la réponse succeeded (payload: ${JSON.stringify(data).slice(0, 500)})`,
           provider: 'byteplus',
         }
       }
 
-      if (status === 'failed' || status === 'cancelled') {
+      // 'expired' = timeout côté ModelArk, 'cancelled' = legacy
+      if (status === 'failed' || status === 'cancelled' || status === 'expired') {
         return {
           videoUrl: null,
           jobId,
