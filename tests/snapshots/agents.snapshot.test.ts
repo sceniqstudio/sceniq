@@ -19,7 +19,7 @@ Description FR: [description visuelle]`
 
 async function callStoryboarder(brief: string) {
   const res = await client.messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-5',
     max_tokens: 1000,
     system: STORYBOARDER_SYSTEM,
     messages: [{ role: 'user', content: `Brief : ${brief}` }],
@@ -77,7 +77,7 @@ Format : sections courtes avec titres en MAJUSCULES.`
 
 async function callDirector(brief: string) {
   const res = await client.messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-5',
     max_tokens: 1000,
     system: DIRECTOR_SYSTEM,
     messages: [{ role: 'user', content: `Brief : ${brief}` }],

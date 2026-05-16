@@ -51,7 +51,7 @@ export async function runMusicSupervisor(
 ): Promise<{ content: string; error: string | null }> {
   try {
     const res = await client.messages.create({
-      model:      'claude-sonnet-4-20250514',
+      model:      'claude-sonnet-4-5',
       max_tokens: 1000,
       system:     MUSIC_SUPERVISOR_SYSTEM,
       messages:   [{ role: 'user', content: `Brief : ${brief}` }],

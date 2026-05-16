@@ -136,7 +136,7 @@ export async function runStoryboarder(
   const system     = buildStoryboarderPrompt(sceneCount, avgSec, assets)
 
   const res = await client.messages.create({
-    model:      'claude-sonnet-4-20250514',
+    model:      'claude-sonnet-4-5',
     max_tokens: 1500,
     system,
     messages:   [{ role: 'user', content: `Brief : ${brief}` }],
