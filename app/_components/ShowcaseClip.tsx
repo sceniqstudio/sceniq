@@ -86,11 +86,15 @@ export function ShowcaseClip({ slug, fallbackBg, fallbackEmoji, ariaLabel }: Sho
         </video>
       ) : (
         // Placeholder visuel pendant que le composant attend d'être visible
-        // — affiche le poster JPG si dispo, sinon le gradient de fallback
+        // — affiche le poster JPG (effet "wow" instantané) avec le gradient en dessous
         <div
           className="vc-video"
           style={{
-            background: `${fallbackBg} url(/showcase/${slug}.jpg) center/cover no-repeat`,
+            backgroundImage: `url(/showcase/${slug}.jpg), ${fallbackBg}`,
+            backgroundSize: 'cover, auto',
+            backgroundPosition: 'center, center',
+            backgroundRepeat: 'no-repeat, no-repeat',
+            backgroundColor: '#1a1a2e',
             width: '100%',
             height: '100%',
           }}
