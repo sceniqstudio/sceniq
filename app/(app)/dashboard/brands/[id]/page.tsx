@@ -227,7 +227,7 @@ export default function BrandEditPage() {
             <input
               ref={logoInputRef}
               type="file"
-              accept="image/png,image/jpeg,image/webp,image/svg+xml"
+              accept="image/png,image/jpeg,image/webp"
               style={{ display: 'none' }}
               onChange={(e) => {
                 const f = e.target.files?.[0]
