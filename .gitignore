@@ -1,0 +1,58 @@
+# ── Secrets ────────────────────────────────────────────────────────
+# CRITIQUE : ne JAMAIS committer .env.local — contient toutes les clés API
+.env*.local
+.env
+
+# ── Node ───────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ── Next.js ────────────────────────────────────────────────────────
+.next/
+out/
+build/
+next-env.d.ts
+
+# ── Vercel ─────────────────────────────────────────────────────────
+.vercel
+
+# ── Tests / coverage ───────────────────────────────────────────────
+coverage/
+.nyc_output/
+
+# ── TypeScript ─────────────────────────────────────────────────────
+*.tsbuildinfo
+
+# ── Logs ────────────────────────────────────────────────────────────
+logs/
+*.log
+
+# ── IDE ────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── OS ─────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Supabase ────────────────────────────────────────────────────────
+supabase/.branches
+supabase/.temp
+
+# ── Backup files ────────────────────────────────────────────────────
+*.bak
+*.draft.bak
+*.ref
+
+# ── Archive standalone ───────────────────────────────────────────────
+# fichiers prototypes hors du build Next.js
+creatiq-landing.html
+framly-landing.html.ref
+scenica-*.html.ref
+scenica-*.jsx.ref
+video-agency-studio*.jsx.ref

@@ -1,0 +1,59 @@
+{
+  "name": "sceniq",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+
+    "test:unit": "vitest run tests/unit",
+    "test:contracts": "vitest run tests/integration/contracts",
+    "test:api": "vitest run tests/integration/api",
+    "test:snapshots": "vitest run tests/snapshots",
+    "test:cross-module": "vitest run tests/integration/cross-module",
+    "test:perf": "vitest run tests/integration/perf",
+    "test:security": "vitest run tests/integration/security",
+    "test:e2e": "playwright test",
+    "test:all": "npm run test:unit && npm run test:contracts && npm run test:api && npm run test:snapshots && npm run test:cross-module && npm run test:perf && npm run test:security && npm run seed:test && npm run test:e2e",
+
+    "test:watch": "vitest tests/unit",
+    "test:coverage": "vitest run --coverage",
+
+    "seed:test": "tsx tests/fixtures/seed.ts",
+    "seed:dev": "supabase db reset",
+
+    "generate:showcase": "tsx scripts/generate-showcase.ts",
+
+    "db:push": "supabase db push",
+    "db:types": "supabase gen types typescript --project-id lawmjbyhqmuxalxqraxz > lib/supabase/types.ts",
+    "db:reset": "supabase db reset"
+  },
+  "dependencies": {
+    "next": "14.2.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "@supabase/supabase-js": "^2.43.0",
+    "@supabase/ssr": "^0.3.0",
+    "@clerk/nextjs": "^5.1.0",
+    "stripe": "^15.7.0",
+    "@anthropic-ai/sdk": "^0.24.0",
+    "@fal-ai/client": "^1.2.0",
+    "zod": "^3.23.0",
+    "tsx": "^4.11.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "vitest": "^1.6.0",
+    "@vitest/coverage-v8": "^1.6.0",
+    "playwright": "^1.44.0",
+    "@playwright/test": "^1.44.0",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.2.0"
+  }
+}

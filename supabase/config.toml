@@ -1,0 +1,41 @@
+# supabase/config.toml
+[api]
+port = 54321
+schemas = ["public", "storage"]
+extra_search_path = ["public", "extensions"]
+
+[db]
+port = 54322
+major_version = 15
+
+[studio]
+port = 54323
+
+[inbucket]
+port = 54324
+
+[storage]
+enabled = true
+
+[[storage.buckets]]
+name = "brand-assets"
+public = false
+file_size_limit = "10MB"
+allowed_mime_types = ["image/png", "image/jpeg", "image/svg+xml", "image/webp", "video/mp4", "video/quicktime", "application/pdf"]
+
+[[storage.buckets]]
+name = "clips"
+public = true
+file_size_limit = "500MB"
+allowed_mime_types = ["video/mp4"]
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000"]
+jwt_expiry = 3600
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = false
+enable_confirmations = false
