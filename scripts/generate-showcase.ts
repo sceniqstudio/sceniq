@@ -105,6 +105,7 @@ async function generateOne(brief: typeof BRIEFS[number]): Promise<void> {
   const result = await fal.subscribe('fal-ai/bytedance/seedance/v1/pro/text-to-video', {
     input: {
       prompt:         brief.prompt,
+      // @ts-expect-error — fal.ai type literal stricte ("2"|"3"|…) trop restrictif pour notre script
       duration:       String(brief.duration),
       resolution:     '720p',
       aspect_ratio:   brief.aspect,
