@@ -199,7 +199,7 @@ export default function BrandEditPage() {
       <div className="form-card">
         <div className="form-section-t">Logo</div>
         <h2 className="form-section-h">Logo de la marque</h2>
-        <p className="form-section-s">PNG, JPEG, WebP ou SVG. Max 10 MB. Un seul logo par marque — il remplace l&apos;ancien.</p>
+        <p className="form-section-s">JPEG, PNG, WebP, BMP, TIFF, GIF, HEIC ou HEIF. Max 10 MB. Un seul logo par marque — il remplace l&apos;ancien.</p>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
           {logo ? (
@@ -227,7 +227,7 @@ export default function BrandEditPage() {
             <input
               ref={logoInputRef}
               type="file"
-              accept="image/png,image/jpeg,image/webp"
+              accept="image/jpeg,image/png,image/webp,image/bmp,image/tiff,image/gif,image/heic,image/heif"
               style={{ display: 'none' }}
               onChange={(e) => {
                 const f = e.target.files?.[0]
@@ -271,7 +271,7 @@ export default function BrandEditPage() {
         <input
           ref={imageInputRef}
           type="file"
-          accept="image/png,image/jpeg,image/webp"
+          accept="image/jpeg,image/png,image/webp,image/bmp,image/tiff,image/gif,image/heic,image/heif"
           style={{ display: 'none' }}
           onChange={(e) => {
             const f = e.target.files?.[0]

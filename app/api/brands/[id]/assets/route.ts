@@ -10,10 +10,20 @@ import { ensureUser } from '@/lib/supabase/ensure-user'
 
 const BUCKET = 'brand-assets'
 const MAX_BYTES = 10 * 1024 * 1024  // 10 MB par image
-// SVG et AVIF sont volontairement exclus : ces formats ne sont pas supportés
-// par Seedance 2.0 (BytePlus ni fal.ai) et causaient un échec silencieux de
-// la génération vidéo. On les bloque dès l'upload pour donner un retour clair.
-const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp']
+// Liste alignée sur ce que Seedance 2.0 / BytePlus ModelArk accepte en input.
+// Cf. https://docs.byteplus.com/en/docs/ModelArk/1520757 (rubrique "image" : formats supportés)
+// SVG et AVIF sont volontairement exclus : Seedance ne les accepte pas et un asset
+// stocké sous ce format causerait un échec silencieux de la génération vidéo.
+const ALLOWED_TYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/bmp',
+  'image/tiff',
+  'image/gif',
+  'image/heic',
+  'image/heif',
+]
 
 export async function POST(
   req: Request,
