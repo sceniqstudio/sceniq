@@ -382,11 +382,126 @@ export default function HomePage() {
         </video>
         <div className="mission-rw-overlay" aria-hidden="true"></div>
         <div className="mission-rw-inner">
-          <div className="mission-rw-eye">Pas un prompt box.</div>
+          <div className="mission-rw-eye">Pas un outil. Une équipe créa.</div>
           <h2 className="mission-rw-h">
-            Cinq agents IA forment une équipe créa <em>complète</em>.<br />
-            Vous écrivez le brief, ils livrent la pré-prod sans réunion intermédiaire.
+            Vous écrivez deux lignes. Je livre le film.<br />
+            <em>Concept, storyboard, son, montage</em> — sans que vous n&apos;ouvriez aucune interface.
           </h2>
+        </div>
+      </section>
+
+      {/* ═════ SECTION "LE VRAI COÛT" — basée sur étude marché mai 2026 ═════ */}
+      <section className="s" style={{ background: '#0f0f1a', color: '#f5f2ec' }}>
+        <div className="si" style={{ maxWidth: 1080 }}>
+          <div
+            style={{
+              display: 'inline-block',
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: 2.5,
+              textTransform: 'uppercase',
+              color: '#fb923c',
+              background: 'rgba(251, 146, 60, .14)',
+              padding: '5px 12px',
+              borderRadius: 3,
+              marginBottom: 18,
+            }}
+          >
+            Étude de marché · Mai 2026
+          </div>
+          <h2 style={{ color: '#fff', fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 800, lineHeight: 1.12, letterSpacing: -1, marginBottom: 20 }}>
+            Le prix affiché ne couvre que <em style={{ color: '#fb923c', fontStyle: 'normal' }}>la couche du milieu</em>.
+          </h2>
+          <p style={{ fontSize: 17, color: '#aaa', maxWidth: 680, marginBottom: 36, lineHeight: 1.6 }}>
+            Kling, Runway, Veo affichent quelques euros par clip. La réalité du terrain : un utilisateur non formé multiplie le prix par 3 à 8, et passe 5 à 8 heures à faire tout ce que la plateforme ne fait pas.
+          </p>
+
+          {/* 3 stats cover */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gap: 28,
+              marginBottom: 56,
+            }}
+          >
+            {[
+              { num: '×3 à ×8', label: 'Le multiplicateur réel par rapport au prix affiché — selon le taux d\'itération.' },
+              { num: '5–8 h', label: 'De travail invisible pour 30 secondes livrées — script, storyboard, prompt, montage.' },
+              { num: '0 €', label: 'De préprod incluse dans les abonnements Kling, Runway, Veo, Firefly.' },
+            ].map((s) => (
+              <div key={s.num} style={{ borderLeft: '2px solid #fb923c', paddingLeft: 18 }}>
+                <div style={{ fontSize: 32, fontWeight: 800, color: '#fff', letterSpacing: -1, marginBottom: 6 }}>{s.num}</div>
+                <div style={{ fontSize: 13, color: '#999', lineHeight: 1.5 }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Tableau comparatif */}
+          <div
+            style={{
+              background: '#1a1a26',
+              borderRadius: 8,
+              padding: '6px 4px',
+              overflowX: 'auto',
+            }}
+          >
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14, color: '#e8e4dc' }}>
+              <thead>
+                <tr style={{ background: '#000' }}>
+                  <th style={{ padding: '14px 16px', textAlign: 'left', fontSize: 11, letterSpacing: 1.2, textTransform: 'uppercase', color: '#999', fontWeight: 700 }}>Étape de production</th>
+                  <th style={{ padding: '14px 16px', textAlign: 'left', fontSize: 11, letterSpacing: 1.2, textTransform: 'uppercase', color: '#999', fontWeight: 700 }}>DIY seul</th>
+                  <th style={{ padding: '14px 16px', textAlign: 'left', fontSize: 11, letterSpacing: 1.2, textTransform: 'uppercase', color: '#999', fontWeight: 700 }}>Délégué à un freelance</th>
+                  <th style={{ padding: '14px 16px', textAlign: 'left', fontSize: 11, letterSpacing: 1.2, textTransform: 'uppercase', color: '#A5B4FC', fontWeight: 700 }}>ScenIQ</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ['Script + dialogues',        '1–3h de travail',   '150–400 €',  '✓ Inclus'],
+                  ['Storyboard + prompts',      '2–4h de travail',   '300–800 €',  '✓ Inclus'],
+                  ['Génération vidéo',          '60–90 € (retakes)', '60–90 €',    '✓ Inclus'],
+                  ['Voix off + son',            '5–22 € (TTS)',      '150–500 €',  '✓ Inclus'],
+                  ['Montage final',             '1–2h de travail',   '200–600 €',  '✓ Inclus'],
+                  ['Musique licensée',          '0–15 €',            '50–200 €',   '✓ Inclus'],
+                ].map((row) => (
+                  <tr key={row[0]} style={{ borderBottom: '1px solid #2a2a36' }}>
+                    <td style={{ padding: '14px 16px', color: '#fff', fontWeight: 500 }}>{row[0]}</td>
+                    <td style={{ padding: '14px 16px', color: '#aaa' }}>{row[1]}</td>
+                    <td style={{ padding: '14px 16px', color: '#aaa' }}>{row[2]}</td>
+                    <td style={{ padding: '14px 16px', color: '#86efac', fontWeight: 600 }}>{row[3]}</td>
+                  </tr>
+                ))}
+                <tr style={{ background: '#0a0a14' }}>
+                  <td style={{ padding: '16px 16px', color: '#fff', fontWeight: 700 }}>Total pour une vidéo 30s</td>
+                  <td style={{ padding: '16px 16px', color: '#fb923c', fontWeight: 700 }}>~80–130 €<br /><span style={{ fontSize: 12, color: '#aaa' }}>+ 5–8h de votre temps</span></td>
+                  <td style={{ padding: '16px 16px', color: '#fb923c', fontWeight: 700 }}>~850–2 500 €</td>
+                  <td style={{ padding: '16px 16px', color: '#86efac', fontWeight: 800, fontSize: 18 }}>49–139 €<br /><span style={{ fontSize: 12, color: '#aaa', fontWeight: 500 }}>Forfait fixe · tout inclus</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p style={{ fontSize: 12, color: '#777', marginTop: 14, marginBottom: 36 }}>
+            Sources : Atlas Cloud, Data Science Collective, Adobe, vidpros.com, buildmvpfast.com — Mai 2026. Production traditionnelle corporate : 1 200–1 500 €/min.
+          </p>
+
+          {/* Quote */}
+          <div
+            style={{
+              borderLeft: '3px solid #fb923c',
+              padding: '20px 26px',
+              background: 'rgba(251,146,60,.06)',
+              borderRadius: '0 6px 6px 0',
+              marginTop: 32,
+            }}
+          >
+            <p style={{ fontSize: 17, fontStyle: 'italic', color: '#e8e4dc', lineHeight: 1.55, margin: 0 }}>
+              « La génération n&apos;est que la couche du milieu. Le clip à 5&nbsp;€ et le clip à 1,50&nbsp;€ partent du même prompt et du même modèle. La différence, c&apos;est tout ce qui se passe autour. »
+            </p>
+            <div style={{ fontSize: 12, color: '#999', marginTop: 12, letterSpacing: 0.4 }}>
+              Data Science Collective · The 2026 AI Video Production Playbook
+            </div>
+          </div>
         </div>
       </section>
 
