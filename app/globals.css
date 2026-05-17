@@ -1547,13 +1547,22 @@ body.landing-dark{
 
 .hero-rw-title{
   font-family:var(--f);
-  font-size:clamp(37px, 6.7vw, 93px);
+  /* clamp adapté pour que "Brief en 2 lignes." et "Vidéo en 48 h." tiennent
+     chacune sur UNE ligne visuelle de 320px (mobile étroit) à 1920px (4K). */
+  font-size:clamp(28px, 5.5vw, 80px);
   font-weight:600;
   letter-spacing:-0.04em;
-  line-height:.98;
+  line-height:1;
   color:#fff;
   margin:0;
-  max-width:14ch;
+  /* Pas de contrainte de largeur : on laisse le texte respirer
+     et on évite le wrap forcé des phrases courtes. */
+  max-width:none;
+  /* Sur très petit écran (< 360px), on peut tomber à 26px pour préserver
+     la lisibilité sur une ligne complète des deux phrases du titre. */
+}
+@media(max-width:380px){
+  .hero-rw-title{font-size:24px;}
 }
 .hero-rw-title em{
   font-style:normal;
