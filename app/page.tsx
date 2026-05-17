@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { SignInButton, SignUpButton, SignedIn, SignedOut } from '@clerk/nextjs'
 import Link from 'next/link'
 import { ShowcaseClip } from '@/app/_components/ShowcaseClip'
 
@@ -262,20 +261,13 @@ export default function HomePage() {
           <img src="/sceniq-logo-dark.svg" alt="ScenIQ" height={48} style={{ height: 48, width: 'auto', display: 'block' }} />
         </a>
         <ul className="nav-links">
-          <li><a href="#how">Comment ça marche</a></li>
-          <li><a href="#exemples">Exemples</a></li>
-          <li><a href="#agents">Les agents</a></li>
+          <li><a href="#exemples">Réalisations</a></li>
+          <li><a href="#process">Le process</a></li>
           <li><a href="#pricing">Tarifs</a></li>
           <li><a href="#faq">FAQ</a></li>
         </ul>
         <div className="nav-r">
-          <SignedOut>
-            <Link href="/sign-in" className="btn btn-g">Se connecter</Link>
-            <Link href="/sign-up" className="btn btn-p">Essayer gratuitement</Link>
-          </SignedOut>
-          <SignedIn>
-            <Link href="/dashboard" className="btn btn-p">Mon dashboard →</Link>
-          </SignedIn>
+          <a href="#devis" className="btn btn-p">Demander un devis →</a>
         </div>
         {/* Burger — mobile uniquement */}
         <button
@@ -307,13 +299,7 @@ export default function HomePage() {
               <li><a href="#faq"    onClick={() => setMobileMenuOpen(false)}>FAQ</a></li>
             </ul>
             <div className="mob-menu-ctas">
-              <SignedOut>
-                <Link href="/sign-in" className="btn btn-g" style={{width:'100%',justifyContent:'center'}} onClick={() => setMobileMenuOpen(false)}>Se connecter</Link>
-                <Link href="/sign-up" className="btn btn-p" style={{width:'100%',justifyContent:'center'}} onClick={() => setMobileMenuOpen(false)}>Essayer gratuitement</Link>
-              </SignedOut>
-              <SignedIn>
-                <Link href="/dashboard" className="btn btn-p" style={{width:'100%',justifyContent:'center'}} onClick={() => setMobileMenuOpen(false)}>Mon dashboard →</Link>
-              </SignedIn>
+              <a href="#devis" className="btn btn-p" style={{width:'100%',justifyContent:'center'}} onClick={() => setMobileMenuOpen(false)}>Demander un devis →</a>
             </div>
           </div>
         </div>
@@ -323,24 +309,29 @@ export default function HomePage() {
       <section className="hero-rw" id="main-content" aria-label="Hero ScenIQ">
         <div className="hero-rw-content">
           <h1 className="hero-rw-title">
-            Du brief à l&apos;écran.<br />
-            <em>4 minutes</em>.
+            Vos vidéos.<br />
+            <em>Notre équipe créa.</em><br />
+            48 heures.
           </h1>
+
+          <p style={{ fontSize: 18, lineHeight: 1.55, color: 'var(--ink2)', margin: '18px 0 22px', maxWidth: 520 }}>
+            Vous nous envoyez deux lignes et vos références. Notre équipe créa vous livre une vidéo IA prête à diffuser — concept, scénario, storyboard, son et finalisation inclus. Sans tokens, sans interface à apprendre, sans surprise sur la facture.
+          </p>
 
           <div className="hero-rw-categories" aria-hidden="true">
             <span>REELS · STORIES · TIKTOK</span>
             <span>BRAND FILM · TEASER</span>
             <span>LANCEMENT PRODUIT · CAMPAGNE</span>
             <span>ADS DIGITAUX · PITCH</span>
-            <span style={{ color: '#A5B4FC' }}>SANS PROMPT À ÉCRIRE · SON INCLUS</span>
+            <span style={{ color: '#A5B4FC' }}>UN INTERLOCUTEUR · UN PRIX FERME</span>
           </div>
 
           <div className="hero-rw-bottom">
-            <a href="#pricing" className="hero-rw-cta">
-              Essayer ScenIQ
+            <a href="#devis" className="hero-rw-cta">
+              Demander un devis
               <span className="hero-rw-cta-ico">›</span>
             </a>
-            <span className="hero-rw-note">2 vidéos offertes · Sans CB</span>
+            <span className="hero-rw-note">Réponse sous 4h ouvrées · Devis gratuit</span>
           </div>
         </div>
 
@@ -477,17 +468,47 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* HOW */}
-      <section className="s" id="how">
+      {/* HOW — Process agence en 4 étapes */}
+      <section className="s" id="process">
         <div className="si">
-          <div className="s-eye rv">Comment ça marche</div>
-          <h2 className="rv">Un flux. Quatre étapes.</h2>
-          <p className="s-sub rv" style={{ maxWidth: 'none' }}>Du brief au clip MP4 — sans équipe, sans studio, sans attente.</p>
+          <div className="s-eye rv">Le process</div>
+          <h2 className="rv">Vous briefez. Je livre.</h2>
+          <p className="s-sub rv" style={{ maxWidth: 'none' }}>
+            Quatre étapes, un seul interlocuteur. Vous ne touchez à aucun outil — vous validez à chaque étape, je m&apos;occupe du reste.
+          </p>
           <div className="steps rv">
-            <div className="step"><div className="sn">01</div><div className="si2">📝</div><div className="st">Brief</div><div className="sd">Décrivez votre vidéo en français, comme à un freelance. Les agents écrivent les prompts techniques à votre place — vous n&apos;avez jamais à savoir prompter.</div></div>
-            <div className="step"><div className="sn">02</div><div className="si2">⚡</div><div className="st">Production IA</div><div className="sd">5 agents spécialisés génèrent en parallèle concept, script, storyboard, musique et direction visuelle.</div></div>
-            <div className="step"><div className="sn">03</div><div className="si2">▶</div><div className="st">Génération clips</div><div className="sd">Seedance 2.0 génère chaque scène avec audio natif synchronisé. Vos références de marque sont intégrées automatiquement — le modèle les respecte visuellement, scène à scène.</div></div>
-            <div className="step"><div className="sn">04</div><div className="si2">↓</div><div className="st">Export</div><div className="sd">Clips MP4 numérotés + dossier de production complet prêt à livrer.</div></div>
+            <div className="step">
+              <div className="sn">01</div>
+              <div className="si2">✉️</div>
+              <div className="st">Vous m&apos;envoyez votre brief</div>
+              <div className="sd">
+                Deux lignes, vos références (logo, charte, visuels, audio si voix-off) et le format souhaité. Je reviens vers vous sous 4&nbsp;h ouvrées avec un devis ferme.
+              </div>
+            </div>
+            <div className="step">
+              <div className="sn">02</div>
+              <div className="si2">🎬</div>
+              <div className="st">Je vous livre la pré-prod</div>
+              <div className="sd">
+                Concept créatif, storyboard 4 scènes, ambiance sonore, prompt final. Vous découvrez ce que la vidéo va raconter avant qu&apos;une seule image ne soit générée.
+              </div>
+            </div>
+            <div className="step">
+              <div className="sn">03</div>
+              <div className="si2">🔁</div>
+              <div className="st">On itère jusqu&apos;à validation</div>
+              <div className="sd">
+                10 allers-retours inclus. Vous pouvez ajuster le ton, le rythme, une scène, la musique. Je modifie. Vous validez. Pas de chrono, pas de stress.
+              </div>
+            </div>
+            <div className="step">
+              <div className="sn">04</div>
+              <div className="si2">▶</div>
+              <div className="st">Je livre la vidéo sous 48&nbsp;h</div>
+              <div className="sd">
+                MP4 prêt à diffuser, dans le format demandé, avec son. Vous recevez aussi le dossier de production (concept, script, storyboard) — utile si vous voulez décliner.
+              </div>
+            </div>
           </div>
 
           {/* SEEDANCE DEMO — Reference → Output (style BytePlus) */}
@@ -782,223 +803,151 @@ export default function HomePage() {
       <section className="s" id="pricing">
         <div className="si">
           <div className="s-eye rv">Tarifs</div>
-          <h2 className="rv">Simple. Prévisible.</h2>
-          <p className="s-sub rv">~7 € par vidéo 30s inclus dans vos crédits mensuels.</p>
-          <div className="pr-grid rv">
-            {/* STUDIO */}
-            <div className="plan">
-              <div className="pl-name">Studio</div>
-              <div className="pl-line">Freelance &amp; solo</div>
-              <div className="pl-price"><span className="pl-cur">€</span><span className="pl-amt">49</span><span className="pl-per">/mois</span></div>
-              <div className="pl-cost-line">soit ~4,90 € par vidéo 30s · facturé mensuel</div>
-              <div className="pl-div"></div>
+          <h2 className="rv">Un prix par vidéo. Rien à comprendre.</h2>
+          <p className="s-sub rv">
+            Pas de tokens, pas de crédits, pas de surprise. Vous choisissez une durée, vous savez ce que vous payez.
+            Tous les formats inclus (vertical, horizontal, carré, cinéma). 10 itérations incluses sur chaque vidéo. Livraison sous 48&nbsp;h après validation finale.
+          </p>
 
-              <div className="pl-credits">
-                <span className="pl-credits-i">⚡</span>
-                <div>
-                  <div className="pl-credits-t">10 crédits / mois</div>
-                  <div className="pl-credits-s">1 crédit = 1 clip Seedance 2.0 (720p + audio)</div>
+          <div
+            className="rv"
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+              gap: 16,
+              marginTop: 32,
+              maxWidth: 1100,
+              marginLeft: 'auto',
+              marginRight: 'auto',
+            }}
+          >
+            {[
+              { dur: '5 sec',  price: 49,  use: 'Story · Bumper · Logo reveal' },
+              { dur: '8 sec',  price: 69,  use: 'Reel court · Teaser produit' },
+              { dur: '10 sec', price: 89,  use: 'Spot social · Ad digital',         featured: true },
+              { dur: '12 sec', price: 109, use: 'Brand film court · Campagne' },
+              { dur: '15 sec', price: 139, use: 'Pub TV · Format long social' },
+            ].map((p) => (
+              <div
+                key={p.dur}
+                style={{
+                  background: 'var(--white)',
+                  border: p.featured ? '2px solid var(--blue)' : '1.5px solid var(--border)',
+                  borderRadius: 14,
+                  padding: '22px 18px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  position: 'relative',
+                  boxShadow: p.featured ? '0 6px 24px rgba(99,102,241,.12)' : 'none',
+                }}
+              >
+                {p.featured && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: -11,
+                      left: 18,
+                      background: 'var(--blue)',
+                      color: '#fff',
+                      fontSize: 11,
+                      fontWeight: 700,
+                      padding: '3px 10px',
+                      borderRadius: 6,
+                      letterSpacing: 0.3,
+                    }}
+                  >
+                    Le plus demandé
+                  </div>
+                )}
+                <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink2)', letterSpacing: 0.3 }}>
+                  {p.dur}
+                </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'baseline',
+                    gap: 4,
+                    marginTop: 6,
+                    marginBottom: 14,
+                  }}
+                >
+                  <span style={{ fontSize: 36, fontWeight: 800, letterSpacing: -1.2, color: 'var(--ink)' }}>{p.price}</span>
+                  <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--ink)' }}>€</span>
+                  <span style={{ fontSize: 12, color: 'var(--muted)', marginLeft: 4 }}>HT / vidéo</span>
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--ink2)', lineHeight: 1.4, minHeight: 30 }}>
+                  {p.use}
                 </div>
               </div>
+            ))}
+          </div>
 
-              <ul className="pl-feats">
-                <li>
-                  <span className="ck">✓</span>
-                  <div className="pl-feat-l">
-                    <div className="pl-feat-t">Jusqu&apos;à 10 vidéos / mois</div>
-                    <div className="pl-feat-s">15s à 60s · formats 16:9, 9:16, 1:1, 4:3</div>
-                  </div>
-                </li>
-                <li>
-                  <span className="ck">✓</span>
-                  <div className="pl-feat-l">
-                    <div className="pl-feat-t">1 marque enregistrée</div>
-                    <div className="pl-feat-s">1 profil client avec logo et références visuelles</div>
-                  </div>
-                </li>
-                <li>
-                  <span className="ck">✓</span>
-                  <div className="pl-feat-l">
-                    <div className="pl-feat-t">5 agents IA spécialisés</div>
-                    <div className="pl-feat-s">Director, Scriptwriter, Storyboarder, Music, Visual</div>
-                  </div>
-                </li>
-                <li>
-                  <span className="ck">✓</span>
-                  <div className="pl-feat-l">
-                    <div className="pl-feat-t">Export clips MP4 + dossier PDF</div>
-                    <div className="pl-feat-s">Tous les clips numérotés + brief structuré à livrer</div>
-                  </div>
-                </li>
-                <li>
-                  <span className="ck">✓</span>
-                  <div className="pl-feat-l">
-                    <div className="pl-feat-t">Support email</div>
-                    <div className="pl-feat-s">Réponse sous 24h ouvrées</div>
-                  </div>
-                </li>
-              </ul>
-              <a href="mailto:hello@sceniq.app?subject=Plan Studio" className="btn btn-g" style={{ width: '100%', justifyContent: 'center' }}>Commencer</a>
+          <div
+            className="rv"
+            style={{
+              maxWidth: 1100,
+              margin: '32px auto 0',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gap: 18,
+              padding: '20px 22px',
+              background: 'var(--off)',
+              borderRadius: 14,
+              border: '1px solid var(--border)',
+            }}
+          >
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink)' }}>📐 Tous formats inclus</div>
+              <div style={{ fontSize: 12, color: 'var(--ink2)', marginTop: 4, lineHeight: 1.45 }}>
+                21:9 · 16:9 · 4:3 · 1:1 · 3:4 · 9:16 — TV, reels, stories, TikTok, posts, présentations
+              </div>
             </div>
-
-            {/* AGENCY — populaire */}
-            <div className="plan feat">
-              <div className="pl-badge">Populaire</div>
-              <div className="pl-name">Agency</div>
-              <div className="pl-line">Agences créa &amp; studios</div>
-              <div className="pl-price"><span className="pl-cur">€</span><span className="pl-amt">199</span><span className="pl-per">/mois</span></div>
-              <div className="pl-cost-line">soit ~3,98 € par vidéo 30s · facturé mensuel</div>
-              <div className="pl-div"></div>
-
-              <div className="pl-credits">
-                <span className="pl-credits-i">⚡</span>
-                <div>
-                  <div className="pl-credits-t">50 crédits / mois</div>
-                  <div className="pl-credits-s">crédits non utilisés reportés sur 30 jours</div>
-                </div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink)' }}>🔁 10 itérations incluses</div>
+              <div style={{ fontSize: 12, color: 'var(--ink2)', marginTop: 4, lineHeight: 1.45 }}>
+                Ajustements concept, script, storyboard, ambiance — jusqu&apos;à ce que vous validiez. +9 €/itération au-delà.
               </div>
-
-              <ul className="pl-feats">
-                <li>
-                  <span className="ck">✓</span>
-                  <div className="pl-feat-l">
-                    <div className="pl-feat-t">Jusqu&apos;à 50 vidéos / mois</div>
-                    <div className="pl-feat-s">Idéal pour 5 à 10 clients actifs en parallèle</div>
-                  </div>
-                </li>
-                <li>
-                  <span className="ck">✓</span>
-                  <div className="pl-feat-l">
-                    <div className="pl-feat-t">5 marques enregistrées</div>
-                    <div className="pl-feat-s">1 profil par client — bascule en 1 clic</div>
-                  </div>
-                </li>
-                <li>
-                  <span className="ck">✓</span>
-                  <div className="pl-feat-l">
-                    <div className="pl-feat-t">Brand Memory par marque</div>
-                    <div className="pl-feat-s">Upload logo, palette, refs visuelles, ton — les agents s&apos;en imprègnent automatiquement</div>
-                  </div>
-                </li>
-                <li>
-                  <span className="ck">✓</span>
-                  <div className="pl-feat-l">
-                    <div className="pl-feat-t">5 agents IA + ajustement par agent</div>
-                    <div className="pl-feat-s">Valide ou ajuste chaque proposition indépendamment</div>
-                  </div>
-                </li>
-                <li>
-                  <span className="ck">✓</span>
-                  <div className="pl-feat-l">
-                    <div className="pl-feat-t">Export MP4 + dossier PDF complet</div>
-                    <div className="pl-feat-s">Téléchargement individuel ou .zip global</div>
-                  </div>
-                </li>
-                <li>
-                  <span className="ck">✓</span>
-                  <div className="pl-feat-l">
-                    <div className="pl-feat-t">Support prioritaire</div>
-                    <div className="pl-feat-s">Réponse sous 4h ouvrées · canal direct</div>
-                  </div>
-                </li>
-              </ul>
-              <a href="mailto:hello@sceniq.app?subject=Plan Agency" className="btn btn-p" style={{ width: '100%', justifyContent: 'center' }}>Commencer →</a>
             </div>
-
-            {/* WHITE-LABEL */}
-            <div className="plan">
-              <div className="pl-name">White-label</div>
-              <div className="pl-line">Agences premium &amp; studios production</div>
-              <div className="pl-price"><span className="pl-cur">€</span><span className="pl-amt">599</span><span className="pl-per">/mois</span></div>
-              <div className="pl-cost-line">tarif dégressif au-delà de 200 vidéos / mois</div>
-              <div className="pl-div"></div>
-
-              <div className="pl-credits">
-                <span className="pl-credits-i">∞</span>
-                <div>
-                  <div className="pl-credits-t">Crédits illimités</div>
-                  <div className="pl-credits-s">Aucune limite mensuelle · usage fair-use</div>
-                </div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink)' }}>⏱ Livraison 48 h</div>
+              <div style={{ fontSize: 12, color: 'var(--ink2)', marginTop: 4, lineHeight: 1.45 }}>
+                Délai garanti après validation finale du brief. Préprod livrée en 4 h ouvrées.
               </div>
-
-              <ul className="pl-feats">
-                <li>
-                  <span className="ck">✓</span>
-                  <div className="pl-feat-l">
-                    <div className="pl-feat-t">Vidéos illimitées</div>
-                    <div className="pl-feat-s">Toutes durées, tous formats, sans plafond</div>
-                  </div>
-                </li>
-                <li>
-                  <span className="ck">✓</span>
-                  <div className="pl-feat-l">
-                    <div className="pl-feat-t">Marques illimitées</div>
-                    <div className="pl-feat-s">Idéal pour agence avec 20+ clients actifs</div>
-                  </div>
-                </li>
-                <li>
-                  <span className="ck">✓</span>
-                  <div className="pl-feat-l">
-                    <div className="pl-feat-t">Marque blanche (white-label)</div>
-                    <div className="pl-feat-s">Dossier PDF aux couleurs de ton agence — pas de mention « ScenIQ »</div>
-                  </div>
-                </li>
-                <li>
-                  <span className="ck">✓</span>
-                  <div className="pl-feat-l">
-                    <div className="pl-feat-t">Accès API complet</div>
-                    <div className="pl-feat-s">Automatise depuis Make, Zapier, ou ton propre outil</div>
-                  </div>
-                </li>
-                <li>
-                  <span className="ck">✓</span>
-                  <div className="pl-feat-l">
-                    <div className="pl-feat-t">Onboarding dédié (2h visio)</div>
-                    <div className="pl-feat-s">Setup des marques, formation des équipes, intégration workflow</div>
-                  </div>
-                </li>
-                <li>
-                  <span className="ck">✓</span>
-                  <div className="pl-feat-l">
-                    <div className="pl-feat-t">Canal Slack partagé</div>
-                    <div className="pl-feat-s">Accès direct à l&apos;équipe ScenIQ · réponse &lt; 1h ouvrée</div>
-                  </div>
-                </li>
-              </ul>
-              <a href="mailto:hello@sceniq.app?subject=White-label" className="btn btn-g" style={{ width: '100%', justifyContent: 'center' }}>Nous contacter</a>
+            </div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink)' }}>🔒 Vous êtes propriétaire</div>
+              <div style={{ fontSize: 12, color: 'var(--ink2)', marginTop: 4, lineHeight: 1.45 }}>
+                Usage commercial inclus. Aucune mention ScenIQ sur les livrables. Vos vidéos, votre marque.
+              </div>
             </div>
           </div>
 
-          {/* RÉASSURANCE — commun aux 3 plans */}
-          <div className="pricing-common">
-            <div className="pc-item">
-              <div className="pc-ico">🎁</div>
-              <div>
-                <div className="pc-t">2 vidéos offertes</div>
-                <div className="pc-s">À l&apos;essai, sans carte bancaire</div>
-              </div>
-            </div>
-            <div className="pc-item">
-              <div className="pc-ico">↩</div>
-              <div>
-                <div className="pc-t">Sans engagement</div>
-                <div className="pc-s">Mensuel, annulable à tout moment</div>
-              </div>
-            </div>
-            <div className="pc-item">
-              <div className="pc-ico">🔒</div>
-              <div>
-                <div className="pc-t">Tu es propriétaire</div>
-                <div className="pc-s">Usage commercial inclus, livraison client OK</div>
-              </div>
-            </div>
-            <div className="pc-item">
-              <div className="pc-ico">↻</div>
-              <div>
-                <div className="pc-t">Remboursement auto</div>
-                <div className="pc-s">Génération qui échoue = crédit recrédité</div>
-              </div>
-            </div>
+          <div className="rv" style={{ textAlign: 'center', marginTop: 40 }}>
+            <a href="#devis" className="btn btn-p btn-lg">Demander un devis →</a>
+            <p style={{ marginTop: 12, fontSize: 13, color: 'var(--muted)' }}>
+              Réponse sous 4 h ouvrées · Devis gratuit · Aucun engagement
+            </p>
+          </div>
+
+          <div
+            className="rv"
+            style={{
+              marginTop: 36,
+              padding: '14px 18px',
+              background: 'rgba(99,102,241,.06)',
+              border: '1px solid rgba(99,102,241,.18)',
+              borderRadius: 10,
+              maxWidth: 720,
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              fontSize: 13,
+              color: 'var(--ink2)',
+              lineHeight: 1.55,
+            }}
+          >
+            <strong style={{ color: 'var(--blue)' }}>Volume ?</strong>{' '}
+            Au-delà de 10 vidéos/mois pour le même client, je propose un forfait dégressif personnalisé.
+            Mentionnez-le dans votre brief.
           </div>
         </div>
       </section>
@@ -1036,14 +985,76 @@ export default function HomePage() {
           <source src="/showcase/5agents.mp4" type="video/mp4" />
         </video>
         <div className="cta-final-overlay" aria-hidden="true"></div>
-        <h2>Prêt à produire<br />sans studio ?</h2>
-        <p className="cta-final-p">Brief → agents IA → clips Seedance 2.0 → dossier de production. La première vidéo en moins de 4 minutes.</p>
-        <a href="mailto:hello@sceniq.app?subject=Accès beta ScenIQ" className="btn btn-p btn-xl">Demander l&apos;accès beta →</a>
+        <h2 id="devis">Vous avez un projet ?<br />Parlons-en.</h2>
+        <p className="cta-final-p">
+          Envoyez-moi votre brief en deux lignes — je reviens vers vous sous 4&nbsp;h ouvrées avec un devis ferme et une première proposition créative.
+        </p>
+        <a
+          href={`mailto:hello@sceniq.app?subject=${encodeURIComponent('Demande de devis — ScenIQ')}&body=${encodeURIComponent(
+            'Bonjour Pascal,\n\n' +
+            '— Mon brief (2 lignes max) :\n\n\n' +
+            '— Format souhaité (16:9, 9:16, 1:1, 21:9, 3:4, 4:3) :\n\n' +
+            '— Durée souhaitée (5, 8, 10, 12, 15 sec) :\n\n' +
+            '— Marque / contexte :\n\n' +
+            '— Références (liens vers logo, visuels, audio voix-off si applicable) :\n\n' +
+            '— Échéance souhaitée :\n\n' +
+            '— Volume estimé (nb de vidéos) :\n\n\n' +
+            'Merci !'
+          )}`}
+          className="btn btn-p btn-xl"
+        >
+          Envoyer mon brief →
+        </a>
         <div className="cta-badges">
-          <span className="cb">10 agences fondatrices</span>
-          <span className="cb">Tarif préférentiel</span>
-          <span className="cb">2 vidéos offertes</span>
-          <span className="cb">Sans engagement</span>
+          <span className="cb">Réponse sous 4&nbsp;h ouvrées</span>
+          <span className="cb">Devis gratuit · Sans engagement</span>
+          <span className="cb">Livraison sous 48&nbsp;h</span>
+          <span className="cb">10 itérations incluses</span>
+        </div>
+
+        <div
+          style={{
+            marginTop: 56,
+            padding: '24px 28px',
+            background: 'rgba(255,255,255,.04)',
+            border: '1px solid rgba(255,255,255,.10)',
+            borderRadius: 14,
+            maxWidth: 620,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+          }}
+        >
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.2, color: '#A5B4FC', textTransform: 'uppercase' }}>
+            Bientôt
+          </div>
+          <h3 style={{ fontSize: 22, fontWeight: 800, color: '#fff', margin: '8px 0 8px', letterSpacing: -0.4 }}>
+            Version self-service · 2027
+          </h3>
+          <p style={{ fontSize: 14, lineHeight: 1.6, color: 'rgba(255,255,255,.78)', margin: '0 0 16px' }}>
+            Une plateforme où vous générez vos vidéos vous-mêmes, dans votre interface, sans passer par moi.
+            Pour l&apos;instant je préfère vous accompagner à la main — c&apos;est comme ça que je garantis la qualité.
+          </p>
+          <a
+            href={`mailto:hello@sceniq.app?subject=${encodeURIComponent('Waitlist V2 self-service ScenIQ')}&body=${encodeURIComponent(
+              'Bonjour,\n\nJe souhaite être prévenu(e) du lancement de la version self-service de ScenIQ en 2027.\n\nMon email : \nMa structure : \nUsage prévu : \n\nMerci !'
+            )}`}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '11px 22px',
+              borderRadius: 8,
+              background: 'transparent',
+              border: '1.5px solid rgba(255,255,255,.30)',
+              color: '#fff',
+              fontSize: 14,
+              fontWeight: 600,
+              textDecoration: 'none',
+              transition: 'background .15s, border-color .15s',
+            }}
+          >
+            M&apos;inscrire à la waitlist →
+          </a>
         </div>
       </div>
 
