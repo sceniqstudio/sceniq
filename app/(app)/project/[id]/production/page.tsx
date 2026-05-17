@@ -63,6 +63,20 @@ export default function ProductionPage() {
   const [globalError, setGlobalError] = useState<string | null>(null)
   const triggered = useRef(false)
 
+  // États par agent : édition inline + rerun en cours
+  const [editing, setEditing] = useState<Record<AgentId, boolean>>({
+    director: false, scriptwriter: false, storyboarder: false, music: false, visual: false,
+  })
+  const [draft, setDraft] = useState<Record<AgentId, string>>({
+    director: '', scriptwriter: '', storyboarder: '', music: '', visual: '',
+  })
+  const [rerunning, setRerunning] = useState<Record<AgentId, boolean>>({
+    director: false, scriptwriter: false, storyboarder: false, music: false, visual: false,
+  })
+  const [savingEdit, setSavingEdit] = useState<Record<AgentId, boolean>>({
+    director: false, scriptwriter: false, storyboarder: false, music: false, visual: false,
+  })
+
   // Chargement initial
   useEffect(() => {
     async function load() {
@@ -172,6 +186,86 @@ export default function ProductionPage() {
 
   function reopen(id: AgentId) {
     setAgentStates((prev) => ({ ...prev, [id]: 'ready' }))
+  }
+
+  // Régénère un seul agent (POST /api/production/[id]/agent/[agentId])
+  async function rerunAgent(id: AgentId) {
+    setRerunning((p) => ({ ...p, [id]: true }))
+    setAgentStates((p) => ({ ...p, [id]: 'running' }))
+    try {
+      const res = await fetch(`/api/production/${params.id}/agent/${id}`, { method: 'POST' })
+      const body = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(body.error || `HTTP ${res.status}`)
+      // Recharge tout depuis la BDD pour rester aligné (notamment scenes si storyboarder)
+      const reload = await fetch(`/api/production/${params.id}`, { cache: 'no-store' })
+      if (reload.ok) {
+        const fresh = await reload.json()
+        setScenes(fresh.scenes ?? [])
+        const map: Record<AgentId, AgentOutput | null> = {
+          director: null, scriptwriter: null, storyboarder: null, music: null, visual: null,
+        }
+        for (const o of fresh.agentOutputs ?? []) {
+          if (o.agent in map) map[o.agent as AgentId] = o
+        }
+        setOutputs(map)
+      }
+      setAgentStates((p) => ({ ...p, [id]: 'ready' }))
+      notify(`Agent ${id} régénéré — à revalider.`, 'success')
+    } catch (e) {
+      notify((e as Error).message, 'warn')
+      setAgentStates((p) => ({ ...p, [id]: outputs[id] ? 'ready' : 'failed' }))
+    } finally {
+      setRerunning((p) => ({ ...p, [id]: false }))
+    }
+  }
+
+  function startEdit(id: AgentId) {
+    setDraft((p) => ({ ...p, [id]: outputs[id]?.content ?? '' }))
+    setEditing((p) => ({ ...p, [id]: true }))
+  }
+
+  function cancelEdit(id: AgentId) {
+    setEditing((p) => ({ ...p, [id]: false }))
+    setDraft((p) => ({ ...p, [id]: '' }))
+  }
+
+  async function saveEdit(id: AgentId) {
+    const content = (draft[id] || '').trim()
+    if (!content) {
+      notify('Le contenu ne peut pas être vide.', 'warn')
+      return
+    }
+    setSavingEdit((p) => ({ ...p, [id]: true }))
+    try {
+      const res = await fetch(`/api/production/${params.id}/agent/${id}`, {
+        method:  'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ content }),
+      })
+      const body = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(body.error || `HTTP ${res.status}`)
+
+      // Recharge tout (storyboarder peut avoir mis à jour les scenes)
+      const reload = await fetch(`/api/production/${params.id}`, { cache: 'no-store' })
+      if (reload.ok) {
+        const fresh = await reload.json()
+        setScenes(fresh.scenes ?? [])
+        const map: Record<AgentId, AgentOutput | null> = {
+          director: null, scriptwriter: null, storyboarder: null, music: null, visual: null,
+        }
+        for (const o of fresh.agentOutputs ?? []) {
+          if (o.agent in map) map[o.agent as AgentId] = o
+        }
+        setOutputs(map)
+      }
+      setEditing((p) => ({ ...p, [id]: false }))
+      setAgentStates((p) => ({ ...p, [id]: 'ready' }))
+      notify('Modifications enregistrées — à revalider.', 'success')
+    } catch (e) {
+      notify((e as Error).message, 'warn')
+    } finally {
+      setSavingEdit((p) => ({ ...p, [id]: false }))
+    }
   }
 
   const acceptedCount = Object.values(agentStates).filter((s) => s === 'accepted').length
@@ -308,7 +402,21 @@ export default function ProductionPage() {
                 </div>
               ) : status === 'failed' ? (
                 <div className="agent-body" style={{ color: '#7F1D1D' }}>
-                  ⚠ Cet agent a échoué — réessaye la production.
+                  ⚠ Cet agent a échoué — clique sur Régénérer pour réessayer.
+                </div>
+              ) : editing[agent.id] ? (
+                <div className="agent-body" style={{ padding: 0 }}>
+                  <textarea
+                    value={draft[agent.id]}
+                    onChange={(e) => setDraft((p) => ({ ...p, [agent.id]: e.target.value }))}
+                    rows={12}
+                    style={{
+                      width: '100%', minHeight: 220, padding: 12, borderRadius: 8,
+                      border: '1px solid var(--border)', fontFamily: 'var(--f-mono, ui-monospace, monospace)',
+                      fontSize: 13, lineHeight: 1.55, resize: 'vertical', background: 'var(--white)',
+                      color: 'var(--ink)',
+                    }}
+                  />
                 </div>
               ) : (
                 <div className="agent-body" style={{ whiteSpace: 'pre-wrap' }}>
@@ -316,18 +424,59 @@ export default function ProductionPage() {
                 </div>
               )}
 
-              {status === 'accepted' ? (
+              {/* ─── Actions ─── */}
+              {editing[agent.id] ? (
+                <div className="agent-actions" style={{ display: 'flex', gap: 8 }}>
+                  <button
+                    type="button" className="btn btn-p"
+                    onClick={() => saveEdit(agent.id)}
+                    disabled={savingEdit[agent.id]}
+                  >
+                    {savingEdit[agent.id] ? 'Enregistrement…' : '✓ Enregistrer'}
+                  </button>
+                  <button
+                    type="button" className="btn btn-g"
+                    onClick={() => cancelEdit(agent.id)}
+                    disabled={savingEdit[agent.id]}
+                  >
+                    Annuler
+                  </button>
+                </div>
+              ) : status === 'accepted' ? (
                 <div className="agent-actions-done">
                   <span>✓ Proposition validée</span>
                   <button type="button" onClick={() => reopen(agent.id)}>Revenir dessus</button>
                 </div>
-              ) : status === 'running' || status === 'failed' ? null : (
+              ) : status === 'running' ? null : status === 'failed' ? (
                 <div className="agent-actions">
+                  <button
+                    type="button" className="btn btn-p"
+                    onClick={() => rerunAgent(agent.id)}
+                    disabled={rerunning[agent.id]}
+                  >
+                    {rerunning[agent.id] ? 'Régénération…' : '↻ Régénérer cet agent'}
+                  </button>
+                </div>
+              ) : (
+                <div className="agent-actions" style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                   <button
                     type="button" className="btn btn-p"
                     onClick={() => accept(agent.id)}
                   >
                     ✓ Valider
+                  </button>
+                  <button
+                    type="button" className="btn btn-g"
+                    onClick={() => startEdit(agent.id)}
+                  >
+                    ✏ Modifier
+                  </button>
+                  <button
+                    type="button" className="btn btn-g"
+                    onClick={() => rerunAgent(agent.id)}
+                    disabled={rerunning[agent.id]}
+                  >
+                    {rerunning[agent.id] ? 'Régénération…' : '↻ Régénérer'}
                   </button>
                 </div>
               )}
