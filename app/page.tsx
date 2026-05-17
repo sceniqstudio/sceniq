@@ -309,13 +309,13 @@ export default function HomePage() {
       <section className="hero-rw" id="main-content" aria-label="Hero ScenIQ">
         <div className="hero-rw-content">
           <h1 className="hero-rw-title">
-            Vos vidéos.<br />
-            <em>Je m&apos;occupe de tout.</em><br />
-            48 heures.
+            5 à 8 heures économisées.<br />
+            <em>2 lignes pour me briefer.</em><br />
+            Livrée en 48 heures.
           </h1>
 
           <p style={{ fontSize: 18, lineHeight: 1.55, color: 'var(--ink2)', margin: '18px 0 22px', maxWidth: 520 }}>
-            Vous m&apos;envoyez deux lignes et vos références. Je vous livre une vidéo IA prête à diffuser — concept, scénario, storyboard, son et finalisation inclus. Sans tokens, sans interface à apprendre, sans surprise sur la facture.
+            Vous m&apos;envoyez deux lignes et vos références. Je m&apos;occupe du reste&nbsp;: concept, script, storyboard, son, génération, montage. MP4 prêt à poster. <strong>49 € à 139 € selon la durée.</strong> Sans tokens, sans abonnement, sans surprise.
           </p>
 
           <div className="hero-rw-categories" aria-hidden="true">
@@ -800,37 +800,11 @@ export default function HomePage() {
               <div className="ag-r">Style + tempo + références licensables</div>
               <div className="ag-s">72 BPM, minimalisme contemplatif. Réf : Ólafur Arnalds — Near Light. Entrée piano à 8s, montée subtile à 22s. — Modifiable avant validation.</div>
             </div>
-            <div
-              className="ag"
-              style={{
-                background: '#15151B',
-                borderColor: '#A5B4FC',
-                borderWidth: 2,
-                boxShadow: '0 0 0 4px rgba(165, 180, 252, .12), 0 8px 28px rgba(99, 102, 241, .18)',
-                position: 'relative',
-              }}
-            >
-              <div
-                style={{
-                  position: 'absolute',
-                  top: -10,
-                  right: 14,
-                  background: '#A5B4FC',
-                  color: '#1E1B4B',
-                  fontSize: 10,
-                  fontWeight: 800,
-                  letterSpacing: 0.6,
-                  padding: '3px 9px',
-                  borderRadius: 4,
-                  textTransform: 'uppercase',
-                }}
-              >
-                Le livrable
-              </div>
-              <div className="ag-ico" style={{ background: 'rgba(165,180,252,.22)', color: '#A5B4FC' }}>✅</div>
-              <div className="ag-n" style={{ color: '#F5F5F8' }}>Prompt final unifié</div>
-              <div className="ag-r" style={{ color: 'rgba(255,255,255,.85)' }}>Prêt à générer la vidéo en 1 clic</div>
-              <div className="ag-s" style={{ background: 'rgba(165,180,252,.10)', color: 'rgba(255,255,255,.85)' }}>Le bloc final assemble concept + storyboard + ambiance en un prompt multi-shot. Seedance 2.0 génère une vidéo complète déjà montée — pas 4 clips à assembler.</div>
+            <div className="ag">
+              <div className="ag-ico">✅</div>
+              <div className="ag-n">Prompt final unifié</div>
+              <div className="ag-r">Prêt à générer la vidéo en 1 clic</div>
+              <div className="ag-s">Le bloc final assemble concept + storyboard + ambiance en un prompt multi-shot. Seedance 2.0 génère une vidéo complète déjà montée — pas 4 clips à assembler.</div>
             </div>
           </div>
         </div>
