@@ -310,12 +310,12 @@ export default function HomePage() {
         <div className="hero-rw-content">
           <h1 className="hero-rw-title">
             Vos vidéos.<br />
-            <em>Notre équipe créa.</em><br />
+            <em>Je m&apos;occupe de tout.</em><br />
             48 heures.
           </h1>
 
           <p style={{ fontSize: 18, lineHeight: 1.55, color: 'var(--ink2)', margin: '18px 0 22px', maxWidth: 520 }}>
-            Vous nous envoyez deux lignes et vos références. Notre équipe créa vous livre une vidéo IA prête à diffuser — concept, scénario, storyboard, son et finalisation inclus. Sans tokens, sans interface à apprendre, sans surprise sur la facture.
+            Vous m&apos;envoyez deux lignes et vos références. Je vous livre une vidéo IA prête à diffuser — concept, scénario, storyboard, son et finalisation inclus. Sans tokens, sans interface à apprendre, sans surprise sur la facture.
           </p>
 
           <div className="hero-rw-categories" aria-hidden="true">
@@ -611,7 +611,7 @@ export default function HomePage() {
             <div className="step">
               <div className="sn">03</div>
               <div className="si2">🔁</div>
-              <div className="st">On itère jusqu&apos;à validation</div>
+              <div className="st">J&apos;itère jusqu&apos;à votre validation</div>
               <div className="sd">
                 10 allers-retours inclus. Vous pouvez ajuster le ton, le rythme, une scène, la musique. Je modifie. Vous validez. Pas de chrono, pas de stress.
               </div>
@@ -800,7 +800,32 @@ export default function HomePage() {
               <div className="ag-r">Style + tempo + références licensables</div>
               <div className="ag-s">72 BPM, minimalisme contemplatif. Réf : Ólafur Arnalds — Near Light. Entrée piano à 8s, montée subtile à 22s. — Modifiable avant validation.</div>
             </div>
-            <div className="ag" style={{ background: 'var(--blueL)', borderColor: 'var(--blue)' }}>
+            <div
+              className="ag"
+              style={{
+                borderColor: '#A5B4FC',
+                borderWidth: 2,
+                boxShadow: '0 0 0 4px rgba(165, 180, 252, .12), 0 8px 28px rgba(99, 102, 241, .18)',
+                position: 'relative',
+              }}
+            >
+              <div
+                style={{
+                  position: 'absolute',
+                  top: -10,
+                  right: 14,
+                  background: '#A5B4FC',
+                  color: '#1E1B4B',
+                  fontSize: 10,
+                  fontWeight: 800,
+                  letterSpacing: 0.6,
+                  padding: '3px 9px',
+                  borderRadius: 4,
+                  textTransform: 'uppercase',
+                }}
+              >
+                Le livrable
+              </div>
               <div className="ag-ico">✅</div>
               <div className="ag-n">Prompt final unifié</div>
               <div className="ag-r">Prêt à générer la vidéo en 1 clic</div>
@@ -972,7 +997,7 @@ export default function HomePage() {
             <div className="fi">
               <button className="fq">Comment ça se passe concrètement ?<span className="fi-ico">+</span></button>
               <div className="fa">
-                Vous m&apos;envoyez votre brief par email — deux lignes max — avec vos références (logo, charte, visuels, audio si voix-off). Je reviens sous 4 h ouvrées avec un devis ferme et une première proposition créative (concept + storyboard + ambiance). On itère jusqu&apos;à validation (10 allers-retours inclus). Je génère la vidéo et la livre sous 48 h. Vous n&apos;ouvrez jamais aucun outil.
+                Vous m&apos;envoyez votre brief par email — deux lignes max — avec vos références (logo, charte, visuels, audio si voix-off). Je reviens sous 4 h ouvrées avec un devis ferme et une première proposition créative (concept + storyboard + ambiance). J&apos;itère avec vous jusqu&apos;à validation (10 allers-retours inclus). Je génère la vidéo et la livre sous 48 h. Vous n&apos;ouvrez jamais aucun outil.
               </div>
             </div>
             <div className="fi">
@@ -990,7 +1015,7 @@ export default function HomePage() {
             <div className="fi">
               <button className="fq">Combien je paie au final ?<span className="fi-ico">+</span></button>
               <div className="fa">
-                Le prix de la grille tarifaire selon la durée — 49 € (5s), 69 € (8s), 89 € (10s), 109 € (12s), 139 € (15s). Tous formats inclus (vertical, horizontal, carré, cinéma). 10 itérations incluses (suri­tération&nbsp;: 9 €). Aucun frais caché, aucun token à comptabiliser, aucun abonnement mensuel. Volume au-delà de 10 vidéos/mois : on discute d&apos;un dégressif sur mesure.
+                Le prix de la grille tarifaire selon la durée — 49 € (5s), 69 € (8s), 89 € (10s), 109 € (12s), 139 € (15s). Tous formats inclus (vertical, horizontal, carré, cinéma). 10 itérations incluses (suri­tération&nbsp;: 9 €). Aucun frais caché, aucun token à comptabiliser, aucun abonnement mensuel. Volume au-delà de 10 vidéos/mois&nbsp;: j&apos;établis un dégressif sur mesure.
               </div>
             </div>
             <div className="fi">
@@ -1008,7 +1033,7 @@ export default function HomePage() {
             <div className="fi">
               <button className="fq">Si le résultat ne me plaît pas après la 10ᵉ itération ?<span className="fi-ico">+</span></button>
               <div className="fa">
-                Si après 10 allers-retours sur la pré-prod (concept, storyboard, ambiance) on n&apos;arrive pas à un accord, je vous rembourse intégralement — vous ne payez rien. La validation finale du brief créatif est votre décision avant toute génération vidéo. Je ne génère la vidéo qu&apos;après votre go.
+                Si après 10 allers-retours sur la pré-prod (concept, storyboard, ambiance) je n&apos;arrive pas à m&apos;aligner sur ce que vous voulez, je vous rembourse intégralement — vous ne payez rien. La validation finale du brief créatif est votre décision avant toute génération vidéo. Je ne génère la vidéo qu&apos;après votre go.
               </div>
             </div>
             <div className="fi">
@@ -1018,7 +1043,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="fi">
-              <button className="fq">Vous travaillez sur quels types de projets ?<span className="fi-ico">+</span></button>
+              <button className="fq">Sur quels types de projets je travaille ?<span className="fi-ico">+</span></button>
               <div className="fa">
                 Pubs digitales, reels Instagram/TikTok, brand films courts, lancements produit, teasers, vidéos LinkedIn, contenus B2B, motion branding. Cibles fréquentes&nbsp;: agences créa qui ont besoin de capacity sur des micro-projets, marques premium pour leur contenu social, startups qui veulent du visuel pro sans budget studio. Je ne fais pas (encore) les vidéos longues (&gt; 15 sec), les animations 2D motion design, ni les contenus sensibles (médical, financier régulé).
               </div>
