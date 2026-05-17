@@ -50,6 +50,28 @@ export default function DashboardPage() {
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading]   = useState(true)
   const [error, setError]       = useState<string | null>(null)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+
+  async function deleteProject(p: Project) {
+    if (deletingId) return
+    const confirmed = window.confirm(
+      `Supprimer "${p.name || '(sans titre)'}" ?\n\nCette action est définitive. Les scènes, clips et outputs des agents associés seront aussi supprimés.`
+    )
+    if (!confirmed) return
+    setDeletingId(p.id)
+    try {
+      const res = await fetch(`/api/projects/${p.id}`, { method: 'DELETE' })
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body.error || `HTTP ${res.status}`)
+      }
+      setProjects((prev) => prev.filter((x) => x.id !== p.id))
+    } catch (e) {
+      alert(`Erreur suppression : ${(e as Error).message}`)
+    } finally {
+      setDeletingId(null)
+    }
+  }
 
   useEffect(() => {
     async function load() {
@@ -168,29 +190,71 @@ export default function DashboardPage() {
               : p.status === 'generation' ? `/project/${p.id}/generate`
               :                              `/project/${p.id}/export`
             return (
-              <Link key={p.id} href={resumeHref} className="proj-card">
-                <div className="proj-head">
-                  <div className="proj-title">{p.name || '(sans titre)'}</div>
-                  <div className={`proj-status ${p.status}`}>
-                    {STATUS_LABELS[p.status]}
+              <div key={p.id} style={{ position: 'relative' }}>
+                <Link href={resumeHref} className="proj-card">
+                  <div className="proj-head">
+                    <div className="proj-title">{p.name || '(sans titre)'}</div>
+                    <div className={`proj-status ${p.status}`}>
+                      {STATUS_LABELS[p.status]}
+                    </div>
                   </div>
-                </div>
-                <p className="proj-brief">{p.brief || <em style={{ color: 'var(--muted)' }}>Pas encore de brief</em>}</p>
-                <div className="proj-meta">
-                  <span className="proj-meta-i">
-                    <span className="proj-meta-l">{p.format}</span>
-                  </span>
-                  <span className="proj-meta-i">
-                    <span className="proj-meta-l tabular">{p.duration_sec}s</span>
-                  </span>
-                  <span className="proj-meta-i">
-                    <span className="proj-meta-l">{p.tone}</span>
-                  </span>
-                  <span className="proj-meta-i" style={{ marginLeft: 'auto' }}>
-                    {timeAgo(p.updated_at)}
-                  </span>
-                </div>
-              </Link>
+                  <p className="proj-brief">{p.brief || <em style={{ color: 'var(--muted)' }}>Pas encore de brief</em>}</p>
+                  <div className="proj-meta">
+                    <span className="proj-meta-i">
+                      <span className="proj-meta-l">{p.format}</span>
+                    </span>
+                    <span className="proj-meta-i">
+                      <span className="proj-meta-l tabular">{p.duration_sec}s</span>
+                    </span>
+                    <span className="proj-meta-i">
+                      <span className="proj-meta-l">{p.tone}</span>
+                    </span>
+                    <span className="proj-meta-i" style={{ marginLeft: 'auto' }}>
+                      {timeAgo(p.updated_at)}
+                    </span>
+                  </div>
+                </Link>
+                <button
+                  type="button"
+                  aria-label={`Supprimer le projet ${p.name || '(sans titre)'}`}
+                  title="Supprimer ce projet"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    void deleteProject(p)
+                  }}
+                  disabled={deletingId === p.id}
+                  style={{
+                    position: 'absolute',
+                    top: 10,
+                    right: 10,
+                    width: 28,
+                    height: 28,
+                    borderRadius: 6,
+                    border: '1px solid var(--border)',
+                    background: 'var(--white)',
+                    color: '#9CA3AF',
+                    fontSize: 14,
+                    cursor: deletingId === p.id ? 'wait' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'color .15s, background .15s, border-color .15s',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = '#DC2626'
+                    e.currentTarget.style.borderColor = '#DC2626'
+                    e.currentTarget.style.background = '#FEE2E2'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = '#9CA3AF'
+                    e.currentTarget.style.borderColor = 'var(--border)'
+                    e.currentTarget.style.background = 'var(--white)'
+                  }}
+                >
+                  {deletingId === p.id ? '…' : '🗑'}
+                </button>
+              </div>
             )
           })}
 

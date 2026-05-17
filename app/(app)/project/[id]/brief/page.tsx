@@ -37,15 +37,13 @@ export default function BriefPage() {
   const { notify } = useToast()
   const isNew = params.id === 'new'
 
-  const [name, setName]                 = useState(isNew ? '' : 'Maison Lumière — Spot Printemps')
+  const [name, setName]                 = useState('')
   const [brandId, setBrandId]           = useState<string>('')
   const [brands, setBrands]             = useState<BrandRow[]>([])
   const [creatingBrand, setCreatingBrand] = useState(false)
   const [newBrandName, setNewBrandName] = useState('')
   const [savingBrand, setSavingBrand]   = useState(false)
-  const [brief, setBrief]               = useState(
-    isNew ? '' : 'Cosmétiques luxe, Paris lever du jour, ton épuré. 4 scènes, ambiance contemplative avec lumière dorée matinale.'
-  )
+  const [brief, setBrief]               = useState('')
   const [format, setFormat]             = useState<'16:9' | '9:16' | '1:1' | '4:3'>('16:9')
   const [duration, setDuration]         = useState<15 | 30 | 45 | 60>(30)
   const [toneMode, setToneMode]         = useState<'auto' | 'manual'>('auto')
@@ -53,6 +51,7 @@ export default function BriefPage() {
   const [customToneOpen, setCustomToneOpen] = useState(false)
   const [submitting, setSubmitting]     = useState(false)
   const [submitError, setSubmitError]   = useState<string | null>(null)
+  const [loadingProject, setLoadingProject] = useState(!isNew)
 
   // Charger les marques de l'user au mount
   useEffect(() => {
@@ -61,6 +60,40 @@ export default function BriefPage() {
       .then(d => setBrands(Array.isArray(d.brands) ? d.brands : []))
       .catch(() => setBrands([]))
   }, [])
+
+  // Sur projet existant : charger les vraies valeurs depuis la BDD pour pré-remplir
+  useEffect(() => {
+    if (isNew) return
+    let alive = true
+    void (async () => {
+      try {
+        const res = await fetch(`/api/projects/${params.id}`, { cache: 'no-store' })
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}))
+          throw new Error(body.error || `HTTP ${res.status}`)
+        }
+        const { project } = await res.json()
+        if (!alive || !project) return
+        setName(project.name ?? '')
+        setBrief(project.brief ?? '')
+        if (['16:9', '9:16', '1:1', '4:3'].includes(project.format)) setFormat(project.format)
+        if ([15, 30, 45, 60].includes(project.duration_sec)) setDuration(project.duration_sec)
+        setBrandId(project.brand_id ?? '')
+        if (project.tone === 'auto' || !project.tone) {
+          setToneMode('auto')
+          setTone('')
+        } else {
+          setToneMode('manual')
+          setTone(project.tone)
+        }
+      } catch (e) {
+        setSubmitError(`Impossible de charger le projet : ${(e as Error).message}`)
+      } finally {
+        if (alive) setLoadingProject(false)
+      }
+    })()
+    return () => { alive = false }
+  }, [isNew, params.id])
 
   async function createBrand() {
     const trimmed = newBrandName.trim()
@@ -108,22 +141,61 @@ export default function BriefPage() {
         format,
         duration_sec: duration,
         tone:         toneMode === 'auto' ? 'auto' : tone.trim(),
-        brand_id:     brandId || undefined,
+        brand_id:     brandId || (isNew ? undefined : null),
       }
-      const res = await fetch('/api/projects', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(payload),
-      })
+      // Création vs mise à jour : POST sur /new, PATCH sur projet existant
+      const res = isNew
+        ? await fetch('/api/projects', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify(payload),
+          })
+        : await fetch(`/api/projects/${params.id}`, {
+            method:  'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify(payload),
+          })
       const data = await res.json()
       if (!res.ok) {
         const msg = data.error || (data.errors && data.errors.join(', ')) || `HTTP ${res.status}`
         throw new Error(msg)
       }
-      router.push(`/project/${data.projectId}/production`)
+      const targetId = isNew ? data.projectId : params.id
+      router.push(`/project/${targetId}/production`)
     } catch (err) {
       setSubmitError((err as Error).message)
       setSubmitting(false)
+    }
+  }
+
+  async function saveDraft() {
+    if (isNew) {
+      notify('Renseigne au moins un nom et un brief pour enregistrer.', 'warn')
+      return
+    }
+    try {
+      const payload = {
+        name:         name.trim() || undefined,
+        brief:        brief.trim().length >= 10 ? brief.trim() : undefined,
+        format,
+        duration_sec: duration,
+        tone:         toneMode === 'auto' ? 'auto' : tone.trim(),
+        brand_id:     brandId || null,
+      }
+      const res = await fetch(`/api/projects/${params.id}`, {
+        method:  'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        notify(data.error || `HTTP ${res.status}`, 'warn')
+        return
+      }
+      notify('Brouillon enregistré.', 'success')
+      router.push('/dashboard')
+    } catch (err) {
+      notify((err as Error).message, 'warn')
     }
   }
 
@@ -139,10 +211,18 @@ export default function BriefPage() {
         {isNew ? 'Nouveau projet' : 'Modifier le brief'}
       </h1>
       <p className="app-h1-sub">
-        Décris ta vidéo en quelques phrases. Les 5 agents IA prennent le relais et te livrent un dossier de production complet en ~45 secondes.
+        {isNew
+          ? 'Décris ta vidéo en quelques phrases. Les 5 agents IA prennent le relais et te livrent un dossier de production complet en ~45 secondes.'
+          : 'Ajuste le brief de ton projet. Les modifications seront prises en compte au prochain lancement de la production.'}
       </p>
 
       <Stepper projectId={params.id} current="brief" />
+
+      {loadingProject ? (
+        <div className="form-card" style={{ textAlign: 'center', color: 'var(--muted)' }}>
+          Chargement du projet…
+        </div>
+      ) : null}
 
       <form onSubmit={handleSubmit}>
         {/* IDENTITÉ */}
@@ -576,11 +656,10 @@ export default function BriefPage() {
             <button
               type="button"
               className="btn btn-g"
-              onClick={() => {
-                // Mock — en vrai POST /api/projects avec status='brief'
-                notify('Brouillon enregistré dans tes projets.', 'success')
-                router.push('/dashboard')
-              }}
+              onClick={() => void saveDraft()}
+              disabled={isNew}
+              title={isNew ? 'Disponible après le premier enregistrement' : undefined}
+              style={isNew ? { opacity: 0.5, cursor: 'not-allowed' } : undefined}
             >
               Enregistrer en brouillon
             </button>
