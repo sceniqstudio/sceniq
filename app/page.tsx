@@ -262,6 +262,8 @@ export default function HomePage() {
         </a>
         <ul className="nav-links">
           <li><a href="#exemples">Réalisations</a></li>
+          <li><a href="#agents">Équipe créa</a></li>
+          <li><a href="#why-seedance">Seedance 2.0</a></li>
           <li><a href="#process">Le process</a></li>
           <li><a href="#pricing">Tarifs</a></li>
           <li><a href="#faq">FAQ</a></li>
@@ -292,11 +294,12 @@ export default function HomePage() {
           <div className="mob-menu-bd" onClick={() => setMobileMenuOpen(false)} />
           <div className="mob-menu-panel">
             <ul className="mob-menu-links">
-              <li><a href="#how"    onClick={() => setMobileMenuOpen(false)}>Comment ça marche</a></li>
-              <li><a href="#exemples" onClick={() => setMobileMenuOpen(false)}>Exemples</a></li>
-              <li><a href="#agents" onClick={() => setMobileMenuOpen(false)}>Les agents</a></li>
-              <li><a href="#pricing" onClick={() => setMobileMenuOpen(false)}>Tarifs</a></li>
-              <li><a href="#faq"    onClick={() => setMobileMenuOpen(false)}>FAQ</a></li>
+              <li><a href="#exemples"     onClick={() => setMobileMenuOpen(false)}>Réalisations</a></li>
+              <li><a href="#agents"       onClick={() => setMobileMenuOpen(false)}>Équipe créa</a></li>
+              <li><a href="#why-seedance" onClick={() => setMobileMenuOpen(false)}>Seedance 2.0</a></li>
+              <li><a href="#process"      onClick={() => setMobileMenuOpen(false)}>Le process</a></li>
+              <li><a href="#pricing"      onClick={() => setMobileMenuOpen(false)}>Tarifs</a></li>
+              <li><a href="#faq"          onClick={() => setMobileMenuOpen(false)}>FAQ</a></li>
             </ul>
             <div className="mob-menu-ctas">
               <a href="#devis" className="btn btn-p" style={{width:'100%',justifyContent:'center'}} onClick={() => setMobileMenuOpen(false)}>Demander un devis →</a>
@@ -315,7 +318,7 @@ export default function HomePage() {
           </h1>
 
           <p style={{ fontSize: 18, lineHeight: 1.55, color: 'var(--ink2)', margin: '18px 0 22px', maxWidth: 520 }}>
-            Vous m&apos;envoyez deux lignes et vos références. Je m&apos;occupe du reste&nbsp;: concept, script, storyboard, son, génération, montage. MP4 prêt à poster. <strong>49 € à 139 € selon la durée.</strong> Sans tokens, sans abonnement, sans surprise.
+            Vous m&apos;envoyez deux lignes et vos références. Je m&apos;occupe du reste&nbsp;: concept, script, storyboard, son, génération, montage. MP4 prêt à poster. <strong>69 € à 159 € selon la durée.</strong> Sans tokens, sans abonnement, sans surprise.
           </p>
 
           <div className="hero-rw-categories" aria-hidden="true">
@@ -452,7 +455,7 @@ export default function HomePage() {
                   <th style={{ padding: '14px 16px', textAlign: 'left', fontSize: 11, letterSpacing: 1.2, textTransform: 'uppercase', color: '#999', fontWeight: 700 }}>Étape de production</th>
                   <th style={{ padding: '14px 16px', textAlign: 'left', fontSize: 11, letterSpacing: 1.2, textTransform: 'uppercase', color: '#999', fontWeight: 700 }}>DIY seul</th>
                   <th style={{ padding: '14px 16px', textAlign: 'left', fontSize: 11, letterSpacing: 1.2, textTransform: 'uppercase', color: '#999', fontWeight: 700 }}>Délégué à un freelance</th>
-                  <th style={{ padding: '14px 16px', textAlign: 'left', fontSize: 11, letterSpacing: 1.2, textTransform: 'uppercase', color: '#A5B4FC', fontWeight: 700 }}>ScenIQ</th>
+                  <th style={{ padding: '14px 16px', textAlign: 'left', fontSize: 11, letterSpacing: 1.2, textTransform: 'uppercase', color: '#A5B4FC', fontWeight: 700 }}>ScenIQ + Seedance 2.0</th>
                 </tr>
               </thead>
               <tbody>
@@ -475,7 +478,7 @@ export default function HomePage() {
                   <td style={{ padding: '16px 16px', color: '#fff', fontWeight: 700 }}>Total pour une vidéo 30s</td>
                   <td style={{ padding: '16px 16px', color: '#fb923c', fontWeight: 700 }}>~80–130 €<br /><span style={{ fontSize: 12, color: '#aaa' }}>+ 5–8h de votre temps</span></td>
                   <td style={{ padding: '16px 16px', color: '#fb923c', fontWeight: 700 }}>~850–2 500 €</td>
-                  <td style={{ padding: '16px 16px', color: '#86efac', fontWeight: 800, fontSize: 18 }}>49–139 €<br /><span style={{ fontSize: 12, color: '#aaa', fontWeight: 500 }}>Forfait fixe · tout inclus</span></td>
+                  <td style={{ padding: '16px 16px', color: '#86efac', fontWeight: 800, fontSize: 18 }}>69–159 €<br /><span style={{ fontSize: 12, color: '#aaa', fontWeight: 500 }}>Forfait fixe · tout inclus</span></td>
                 </tr>
               </tbody>
             </table>
@@ -833,11 +836,11 @@ export default function HomePage() {
             }}
           >
             {[
-              { dur: '5 sec',  price: 49,  use: 'Story · Bumper · Logo reveal' },
-              { dur: '8 sec',  price: 69,  use: 'Reel court · Teaser produit' },
-              { dur: '10 sec', price: 89,  use: 'Spot social · Ad digital',         featured: true },
-              { dur: '12 sec', price: 109, use: 'Brand film court · Campagne' },
-              { dur: '15 sec', price: 139, use: 'Pub TV · Format long social' },
+              { dur: '5 sec',  price: 69,  use: 'Story · Bumper · Logo reveal' },
+              { dur: '8 sec',  price: 89,  use: 'Reel court · Teaser produit' },
+              { dur: '10 sec', price: 109, use: 'Spot social · Ad digital',         featured: true },
+              { dur: '12 sec', price: 129, use: 'Brand film court · Campagne' },
+              { dur: '15 sec', price: 159, use: 'Pub TV · Format long social' },
             ].map((p) => (
               <div
                 key={p.dur}
@@ -990,7 +993,7 @@ export default function HomePage() {
             <div className="fi">
               <button className="fq">Combien je paie au final ?<span className="fi-ico">+</span></button>
               <div className="fa">
-                Le prix de la grille tarifaire selon la durée — 49 € (5s), 69 € (8s), 89 € (10s), 109 € (12s), 139 € (15s). Tous formats inclus (vertical, horizontal, carré, cinéma). 10 itérations incluses (suri­tération&nbsp;: 9 €). Aucun frais caché, aucun token à comptabiliser, aucun abonnement mensuel. Volume au-delà de 10 vidéos/mois&nbsp;: j&apos;établis un dégressif sur mesure.
+                Le prix de la grille tarifaire selon la durée — 69 € (5s), 89 € (8s), 109 € (10s), 129 € (12s), 159 € (15s). Tous formats inclus (vertical, horizontal, carré, cinéma). 10 itérations incluses (suri­tération&nbsp;: 9 €). Aucun frais caché, aucun token à comptabiliser, aucun abonnement mensuel. Volume au-delà de 10 vidéos/mois&nbsp;: j&apos;établis un dégressif sur mesure.
               </div>
             </div>
             <div className="fi">
