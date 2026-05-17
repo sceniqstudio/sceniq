@@ -269,7 +269,7 @@ export default function HomePage() {
           <li><a href="#faq">FAQ</a></li>
         </ul>
         <div className="nav-r">
-          <a href="#devis" className="btn btn-p">Demander un devis →</a>
+          <a href="/commande" className="btn btn-p">Lancer ma vidéo →</a>
         </div>
         {/* Burger — mobile uniquement */}
         <button
@@ -302,7 +302,7 @@ export default function HomePage() {
               <li><a href="#faq"          onClick={() => setMobileMenuOpen(false)}>FAQ</a></li>
             </ul>
             <div className="mob-menu-ctas">
-              <a href="#devis" className="btn btn-p" style={{width:'100%',justifyContent:'center'}} onClick={() => setMobileMenuOpen(false)}>Demander un devis →</a>
+              <a href="/commande" className="btn btn-p" style={{width:'100%',justifyContent:'center'}} onClick={() => setMobileMenuOpen(false)}>Lancer ma vidéo →</a>
             </div>
           </div>
         </div>
@@ -329,8 +329,8 @@ export default function HomePage() {
           </div>
 
           <div className="hero-rw-bottom">
-            <a href="#devis" className="hero-rw-cta">
-              Demander un devis
+            <a href="/commande" className="hero-rw-cta">
+              Lancer ma vidéo
               <span className="hero-rw-cta-ico">›</span>
             </a>
             <span className="hero-rw-note">Réponse sous 4h ouvrées · Devis gratuit</span>
@@ -974,7 +974,7 @@ export default function HomePage() {
           </div>
 
           <div className="rv" style={{ textAlign: 'center', marginTop: 40 }}>
-            <a href="#devis" className="btn btn-p btn-lg">Demander un devis →</a>
+            <a href="/commande" className="btn btn-p btn-lg">Lancer ma vidéo →</a>
             <p style={{ marginTop: 12, fontSize: 13, color: 'var(--muted)' }}>
               Réponse sous 4 h ouvrées · Devis gratuit · Aucun engagement
             </p>
@@ -1088,29 +1088,16 @@ export default function HomePage() {
           <source src="/showcase/5agents.mp4" type="video/mp4" />
         </video>
         <div className="cta-final-overlay" aria-hidden="true"></div>
-        <h2 id="devis">Vous avez un projet ?<br />Parlons-en.</h2>
+        <h2>Prêt à lancer<br />votre vidéo&nbsp;?</h2>
         <p className="cta-final-p">
-          Envoyez-moi votre brief en deux lignes — je reviens vers vous sous 4&nbsp;h ouvrées avec un devis ferme et une première proposition créative.
+          Format, durée, brief, références, paiement — tout se fait en moins de 5 minutes. Je vous rappelle sous 4 h ouvrées pour caler la pré-prod ensemble.
         </p>
-        <a
-          href={`mailto:hello@sceniq.app?subject=${encodeURIComponent('Demande de devis — ScenIQ')}&body=${encodeURIComponent(
-            'Bonjour Pascal,\n\n' +
-            '— Mon brief (2 lignes max) :\n\n\n' +
-            '— Format souhaité (16:9, 9:16, 1:1, 21:9, 3:4, 4:3) :\n\n' +
-            '— Durée souhaitée (5, 8, 10, 12, 15 sec) :\n\n' +
-            '— Marque / contexte :\n\n' +
-            '— Références (liens vers logo, visuels, audio voix-off si applicable) :\n\n' +
-            '— Échéance souhaitée :\n\n' +
-            '— Volume estimé (nb de vidéos) :\n\n\n' +
-            'Merci !'
-          )}`}
-          className="btn btn-p btn-xl"
-        >
-          Envoyer mon brief →
+        <a href="/commande" className="btn btn-p btn-xl">
+          Lancer ma vidéo →
         </a>
         <div className="cta-badges">
-          <span className="cb">Réponse sous 4&nbsp;h ouvrées</span>
-          <span className="cb">Devis gratuit · Sans engagement</span>
+          <span className="cb">Je vous rappelle sous 4&nbsp;h ouvrées</span>
+          <span className="cb">Paiement sécurisé Stripe</span>
           <span className="cb">Livraison sous 48&nbsp;h</span>
           <span className="cb">10 itérations incluses</span>
         </div>
