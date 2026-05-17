@@ -803,6 +803,7 @@ export default function HomePage() {
             <div
               className="ag"
               style={{
+                background: '#15151B',
                 borderColor: '#A5B4FC',
                 borderWidth: 2,
                 boxShadow: '0 0 0 4px rgba(165, 180, 252, .12), 0 8px 28px rgba(99, 102, 241, .18)',
@@ -826,10 +827,10 @@ export default function HomePage() {
               >
                 Le livrable
               </div>
-              <div className="ag-ico">✅</div>
-              <div className="ag-n">Prompt final unifié</div>
-              <div className="ag-r">Prêt à générer la vidéo en 1 clic</div>
-              <div className="ag-s">Le bloc final assemble concept + storyboard + ambiance en un prompt multi-shot. Seedance 2.0 génère une vidéo complète déjà montée — pas 4 clips à assembler.</div>
+              <div className="ag-ico" style={{ background: 'rgba(165,180,252,.22)', color: '#A5B4FC' }}>✅</div>
+              <div className="ag-n" style={{ color: '#F5F5F8' }}>Prompt final unifié</div>
+              <div className="ag-r" style={{ color: 'rgba(255,255,255,.85)' }}>Prêt à générer la vidéo en 1 clic</div>
+              <div className="ag-s" style={{ background: 'rgba(165,180,252,.10)', color: 'rgba(255,255,255,.85)' }}>Le bloc final assemble concept + storyboard + ambiance en un prompt multi-shot. Seedance 2.0 génère une vidéo complète déjà montée — pas 4 clips à assembler.</div>
             </div>
           </div>
         </div>
