@@ -621,7 +621,7 @@ export default function HomePage() {
               <div className="si2">▶</div>
               <div className="st">Je livre la vidéo sous 48&nbsp;h</div>
               <div className="sd">
-                MP4 prêt à diffuser, dans le format demandé, avec son. Vous recevez aussi le dossier de production (concept, script, storyboard) — utile si vous voulez décliner.
+                MP4 prêt à diffuser, dans le format demandé, avec son intégré. Vous postez, vous diffusez, vous facturez votre client. C&apos;est tout.
               </div>
             </div>
           </div>
@@ -773,143 +773,39 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* FEATURES */}
-      <section className="s alt">
-        <div className="si">
-          <div className="split rv">
-            <div>
-              <div className="sp-eye">01 — Agents IA</div>
-              <h3 className="sp-h">Pas un prompt box.<br />Une équipe créa complète.</h3>
-              <p className="sp-p"><strong>Vous n&apos;avez plus à savoir prompter — les 5 agents le font pour vous.</strong> Vous décrivez votre projet en français comme à un freelance ; Director, Scriptwriter, Storyboarder, Music Supervisor et Visual Director traduisent en directions exécutables et prompts Seedance optimisés. Vous validez ou ajustez chaque agent indépendamment.</p>
-              <div className="sp-checks">
-                <div className="sp-ck"><div className="sp-ck-ico">✓</div>Brief en français naturel, zéro prompt à maîtriser</div>
-                <div className="sp-ck"><div className="sp-ck-ico">✓</div>5 agents spécialisés qui travaillent en parallèle</div>
-                <div className="sp-ck"><div className="sp-ck-ico">✓</div>Validez ou ajustez chaque agent sans tout relancer</div>
-              </div>
-              <a href="#agents" className="btn btn-g">Voir les 5 agents →</a>
-            </div>
-            <div className="sp-vis">
-              <div style={{ padding: 20, width: '100%', display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <div style={{ display: 'flex', gap: 7 }}>
-                  <div style={{ flex: 1, background: 'var(--white)', border: '1px solid var(--border)', borderRadius: 9, padding: 13 }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: '#DC2626', letterSpacing: 1, marginBottom: 7 }}>🎬 DIRECTOR</div>
-                    <div style={{ height: 5, background: 'var(--off2)', borderRadius: 3, marginBottom: 4, width: '90%' }}></div>
-                    <div style={{ height: 5, background: 'var(--off2)', borderRadius: 3, width: '65%' }}></div>
-                    <div style={{ marginTop: 9, display: 'inline-flex', padding: '3px 9px', background: '#FEF2F2', color: '#DC2626', borderRadius: 100, fontSize: 10, fontWeight: 600 }}>✓ Validé</div>
-                  </div>
-                  <div style={{ flex: 1, background: 'var(--white)', border: '1px solid var(--border)', borderRadius: 9, padding: 13 }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: '#D97706', letterSpacing: 1, marginBottom: 7 }}>✍️ SCRIPT</div>
-                    <div style={{ height: 5, background: 'var(--off2)', borderRadius: 3, marginBottom: 4 }}></div>
-                    <div style={{ height: 5, background: 'var(--off2)', borderRadius: 3, width: '75%' }}></div>
-                    <div style={{ marginTop: 9, display: 'inline-flex', padding: '3px 9px', background: '#FFFBEB', color: '#D97706', borderRadius: 100, fontSize: 10, fontWeight: 600 }}>✓ Validé</div>
-                  </div>
-                </div>
-                <div style={{ display: 'flex', gap: 7 }}>
-                  <div style={{ flex: 1, background: 'var(--white)', border: '1px solid var(--border)', borderRadius: 9, padding: 13 }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--blue)', letterSpacing: 1, marginBottom: 7 }}>🎨 STORYBOARD</div>
-                    <div style={{ background: 'var(--blueL)', borderRadius: 6, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, marginBottom: 7 }}>🎬</div>
-                    <div style={{ display: 'inline-flex', padding: '3px 9px', background: 'var(--blueL)', color: 'var(--blue)', borderRadius: 100, fontSize: 10, fontWeight: 600 }}>▶ Générer</div>
-                  </div>
-                  <div style={{ flex: 1, background: 'var(--white)', border: '1px solid var(--border)', borderRadius: 9, padding: 13 }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: '#7C3AED', letterSpacing: 1, marginBottom: 7 }}>🎵 MUSIC</div>
-                    <div style={{ height: 5, background: 'var(--off2)', borderRadius: 3, marginBottom: 4, width: '80%' }}></div>
-                    <div style={{ height: 5, background: 'var(--off2)', borderRadius: 3, width: '55%' }}></div>
-                    <div style={{ marginTop: 9, display: 'inline-flex', padding: '3px 9px', background: '#F5F3FF', color: '#7C3AED', borderRadius: 100, fontSize: 10, fontWeight: 600 }}>Ajuster</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="split rev rv">
-            <div>
-              <div className="sp-eye">02 — Génération</div>
-              <h3 className="sp-h">API officielle ByteDance.<br />Source directe, sans intermédiaire.</h3>
-              <p className="sp-p">ScenIQ accède à Seedance 2.0 <strong>via l&apos;API officielle ByteDance</strong> — réservée aux développeurs qui ont souscrit directement auprès de la source. Pas de surcouche, pas de revendeur. Résultat : vous obtenez les mises à jour du modèle en premier, les fonctionnalités avancées (références multimodales, génération audio synchronisée) et une stabilité que les outils grand public ne garantissent pas.</p>
-              <div className="sp-checks">
-                <div className="sp-ck"><div className="sp-ck-ico">✓</div>Audio-vidéo généré en une seule fois — synchronisation native</div>
-                <div className="sp-ck"><div className="sp-ck-ico">✓</div>Références image, vidéo et audio respectées scène à scène</div>
-                <div className="sp-ck"><div className="sp-ck-ico">✓</div>Lip-sync précis en français — micro-expressions naturelles</div>
-                <div className="sp-ck"><div className="sp-ck-ico">✓</div>Direction caméra, physique des objets, textures haute fidélité</div>
-              </div>
-            </div>
-            <div className="sp-vis" style={{ background: 'var(--blueL)' }}>
-              <div style={{ padding: 24, width: '100%', display: 'flex', flexDirection: 'column', gap: 9 }}>
-                <div style={{ background: 'var(--white)', border: '1px solid var(--border)', borderRadius: 11, overflow: 'hidden' }}>
-                  <div style={{ height: 90, background: 'linear-gradient(135deg,#EEF2FF,#E0E7FF)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 30 }}>☀️</div>
-                  <div style={{ padding: '11px 13px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--ink)', marginBottom: 2 }}>Scène 1 — Ouverture</div>
-                      <div style={{ fontSize: 10, color: 'var(--muted)' }}>8s · 720p · Audio natif</div>
-                    </div>
-                    <div style={{ display: 'inline-flex', padding: '3px 10px', background: 'var(--blueL)', color: 'var(--blue)', borderRadius: 100, fontSize: 10, fontWeight: 700, border: '1px solid var(--blueM)' }}>✓ Prêt</div>
-                  </div>
-                </div>
-                <div style={{ display: 'flex', gap: 7 }}>
-                  <div style={{ flex: 1, background: 'var(--white)', border: '1px solid var(--border)', borderRadius: 9, height: 56, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>🌆</div>
-                  <div style={{ flex: 1, background: 'var(--white)', border: '1px solid var(--blueM)', borderRadius: 9, height: 56, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3 }}>
-                    <div style={{ fontSize: 11 }}>⚙️</div>
-                    <div style={{ fontSize: 10, color: 'var(--blue)', fontWeight: 600 }}>Génération…</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="split rv">
-            <div>
-              <div className="sp-eye">03 — Export</div>
-              <h3 className="sp-h">Un dossier de prod<br />prêt à livrer.</h3>
-              <p className="sp-p">Clips MP4 numérotés et dossier de production structuré — script, storyboard, direction artistique, références musicales. Tout ce dont votre client ou monteur a besoin.</p>
-              <a href="#pricing" className="btn btn-p">Commencer →</a>
-            </div>
-            <div className="sp-vis">
-              <div style={{ padding: 22, width: '100%', display: 'flex', flexDirection: 'column', gap: 7 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 11, background: 'var(--white)', border: '1px solid var(--border)', borderRadius: 9, padding: '11px 14px' }}>
-                  <span style={{ fontSize: 18 }}>🎬</span>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--green)' }}>scene-01-ouverture.mp4</div>
-                    <div style={{ fontSize: 10, color: 'var(--muted)' }}>18.4 MB · 720p</div>
-                  </div>
-                  <span style={{ color: 'var(--muted)' }}>↓</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 11, background: 'var(--white)', border: '1px solid var(--border)', borderRadius: 9, padding: '11px 14px' }}>
-                  <span style={{ fontSize: 18 }}>🎬</span>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--green)' }}>scene-02-personnage.mp4</div>
-                    <div style={{ fontSize: 10, color: 'var(--muted)' }}>23.1 MB · 720p</div>
-                  </div>
-                  <span style={{ color: 'var(--muted)' }}>↓</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 11, background: 'var(--white)', border: '1px solid var(--border)', borderRadius: 9, padding: '11px 14px' }}>
-                  <span style={{ fontSize: 18 }}>📄</span>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--blue)' }}>dossier-production.pdf</div>
-                    <div style={{ fontSize: 10, color: 'var(--muted)' }}>Script + Storyboard + DA</div>
-                  </div>
-                  <span style={{ color: 'var(--muted)' }}>↓</span>
-                </div>
-                <div style={{ textAlign: 'center', marginTop: 4 }}>
-                  <div style={{ display: 'inline-flex', padding: '9px 20px', background: 'var(--blue)', color: '#fff', borderRadius: 100, fontSize: 13, fontWeight: 600 }}>↓ Tout télécharger</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* AGENTS */}
+      {/* AGENTS — section fusionnée : équipe créa complète, 45 sec */}
       <section className="s alt" id="agents">
         <div className="si">
-          <div className="s-eye rv">Les 5 agents IA</div>
-          <h2 className="rv">Une équipe créa complète,<br />en 45 secondes.</h2>
-          <p className="s-sub rv">Chaque agent a un rôle précis et des instructions métier calibrées. Ils tournent en parallèle.</p>
+          <div className="s-eye rv">L&apos;équipe créa</div>
+          <h2 className="rv">Pas un prompt box.<br />Une équipe créa complète, <em>en 45 secondes</em>.</h2>
+          <p className="s-sub rv">
+            Vous décrivez votre projet en deux lignes. Trois agents IA spécialisés travaillent en parallèle : concept créatif, storyboard détaillé scène par scène, ambiance sonore. Le tout assemblé en un prompt final prêt à générer la vidéo.
+          </p>
           <div className="ag-grid rv">
-            <div className="ag"><div className="ag-ico">🎬</div><div className="ag-n">Director</div><div className="ag-r">Concept créatif &amp; angle narratif</div><div className="ag-s">« Le luxe, c&apos;est le temps retrouvé. » Micro-moments de pause dans une journée urbaine. Ton : silence puissant, calme revendiqué.</div></div>
-            <div className="ag"><div className="ag-ico">✍️</div><div className="ag-n">Scriptwriter</div><div className="ag-r">Script voix-off + textes écran</div><div className="ag-s">[00-08s] NOIR. Silence. [08-22s] &quot;Il y a des matins où vous choisissez de commencer autrement.&quot; [22-28s] Logo. CTA.</div></div>
-            <div className="ag"><div className="ag-ico">🎨</div><div className="ag-n">Storyboarder</div><div className="ag-r">Scènes → prompts Seedance 2.0</div><div className="ag-s">SCÈNE 1 [8s] — Extreme close-up, woman&apos;s hand placing perfume bottle on marble, golden morning light, shallow DoF.</div></div>
-            <div className="ag"><div className="ag-ico">🎵</div><div className="ag-n">Music Supervisor</div><div className="ag-r">Ambiance sonore &amp; références</div><div className="ag-s">72 BPM, minimalisme contemplatif. Réf : Ólafur Arnalds — Near Light. Entrée piano à 8s, montée subtile à 22s.</div></div>
-            <div className="ag"><div className="ag-ico">🖼️</div><div className="ag-n">Visual Director</div><div className="ag-r">Palette, typo &amp; motion design</div><div className="ag-s">Palette : #F5ECD7 crème, #1A1412 noir brun. Typo : Cormorant Garamond Light Italic. Transitions : fondu 12 frames.</div></div>
+            <div className="ag">
+              <div className="ag-ico">🎯</div>
+              <div className="ag-n">Concept créatif &amp; angle narratif</div>
+              <div className="ag-r">Le pourquoi avant le comment</div>
+              <div className="ag-s">« Le luxe, c&apos;est le temps retrouvé. » Micro-moments de pause dans une journée urbaine. Ton : silence puissant, calme revendiqué. — Modifiable avant validation.</div>
+            </div>
+            <div className="ag">
+              <div className="ag-ico">🎬</div>
+              <div className="ag-n">Storyboard 4 scènes</div>
+              <div className="ag-r">Prompts Seedance 2.0 détaillés</div>
+              <div className="ag-s">SCÈNE 1 [3s] — Wide establishing shot, slow push-in toward subject, soft golden hour lighting. + voix off, dialogues si demandé. — Modifiable avant validation.</div>
+            </div>
+            <div className="ag">
+              <div className="ag-ico">🎵</div>
+              <div className="ag-n">Ambiance sonore (No Lyrics)</div>
+              <div className="ag-r">Style + tempo + références licensables</div>
+              <div className="ag-s">72 BPM, minimalisme contemplatif. Réf : Ólafur Arnalds — Near Light. Entrée piano à 8s, montée subtile à 22s. — Modifiable avant validation.</div>
+            </div>
+            <div className="ag" style={{ background: 'var(--blueL)', borderColor: 'var(--blue)' }}>
+              <div className="ag-ico">✅</div>
+              <div className="ag-n">Prompt final unifié</div>
+              <div className="ag-r">Prêt à générer la vidéo en 1 clic</div>
+              <div className="ag-s">Le bloc final assemble concept + storyboard + ambiance en un prompt multi-shot. Seedance 2.0 génère une vidéo complète déjà montée — pas 4 clips à assembler.</div>
+            </div>
           </div>
         </div>
       </section>
@@ -1073,14 +969,66 @@ export default function HomePage() {
           <div className="s-eye rv">FAQ</div>
           <h2 className="rv" style={{ marginBottom: 36 }}>Questions fréquentes</h2>
           <div className="faq rv">
-            <div className="fi"><button className="fq">Dois-je apprendre à écrire des prompts comme avec ChatGPT ou Midjourney ?<span className="fi-ico">+</span></button><div className="fa">Non. ScenIQ n&apos;est pas un prompt box. Vous décrivez votre projet en français naturel — exactement comme à un freelance ou un directeur créatif. Les 5 agents IA traduisent votre brief en directions artistiques, script, storyboard, choix musicaux et prompts Seedance optimisés. Vous ne touchez jamais à la syntaxe technique.</div></div>
-            <div className="fi"><button className="fq">Quelle différence avec utiliser ChatGPT + Runway/Midjourney directement ?<span className="fi-ico">+</span></button><div className="fa">Avec ChatGPT + Runway, vous êtes le chef d&apos;orchestre : vous coordonnez 3-4 outils, vous re-promptez à chaque scène, vous gérez la cohérence visuelle manuellement, vous compilez les livrables. ScenIQ fait ce travail pour vous — 5 agents IA spécialisés, mémoire de marque, génération Seedance 2.0 Pro, et dossier de production prêt à livrer. Vous restez décisionnaire ; vous n&apos;êtes plus orchestrateur technique.</div></div>
-            <div className="fi"><button className="fq">Pourquoi Seedance 2.0 et pas Runway, Veo ou Kling ?<span className="fi-ico">+</span></button><div className="fa">ScenIQ utilise l&apos;API officielle ByteDance — <strong>accès direct à la source</strong>, pas via un intermédiaire. Concrètement : (1) <strong>Audio et vidéo générés ensemble</strong> — Runway et Kling livrent muet, vous repassez derrière avec un monteur. (2) <strong>Lip-sync précis en français</strong> — décisif pour voix off, témoignages et talking heads. (3) <strong>Direction caméra en langage naturel</strong> — vous écrivez « travelling sur la main qui prend le flacon », Seedance l&apos;exécute. (4) <strong>Cohérence scène à scène</strong> — Brand Memory transmet vos références visuelles automatiquement à chaque clip. Aucun autre outil grand public ne combine ces quatre forces.</div></div>
-            <div className="fi"><button className="fq">Ai-je besoin de compétences techniques ?<span className="fi-ico">+</span></button><div className="fa">Aucune. Vous entrez un brief en langage naturel, validez les propositions des agents, cliquez &quot;Générer&quot;. Aucune connaissance en IA, vidéo ou code n&apos;est requise. Si vous savez briefer un freelance, vous savez utiliser ScenIQ.</div></div>
-            <div className="fi"><button className="fq">Combien coûte vraiment une vidéo de 30 secondes ?<span className="fi-ico">+</span></button><div className="fa">La génération via l&apos;API native ByteDance revient à environ 3-4 € par clip de 10s (720p, audio inclus). Ce coût est couvert par vos crédits mensuels. Un plan Agency à 199 €/mois donne 50 vidéos — moins de 4 € par vidéo livrée.</div></div>
-            <div className="fi"><button className="fq">Quelle est la qualité des vidéos ?<span className="fi-ico">+</span></button><div className="fa">Seedance 2.0 via API officielle ByteDance — 720p avec audio natif synchronisé. Qualité suffisante pour spots LinkedIn, Instagram, TikTok, landing pages et présentations client. La cohérence visuelle est assurée par Brand Memory : chaque scène reprend automatiquement le logo, la palette et les références de votre marque. Mouvements fluides, textures réalistes, micro-expressions naturelles — directement depuis la source.</div></div>
-            <div className="fi"><button className="fq">Puis-je utiliser les vidéos pour mes clients ?<span className="fi-ico">+</span></button><div className="fa">Oui. Vous êtes propriétaire des vidéos générées. Utilisation commerciale incluse — livraison client, publication réseaux sociaux, campagnes publicitaires. Le plan White-label permet en plus de livrer le dossier de production sans mention ScenIQ.</div></div>
-            <div className="fi"><button className="fq">Combien de temps pour générer une vidéo de 30s ?<span className="fi-ico">+</span></button><div className="fa">Les 5 agents produisent leurs propositions en ~45 secondes. La génération Seedance prend 2 à 4 minutes par scène. Pour 4 scènes, comptez 10 à 15 minutes au total.</div></div>
+            <div className="fi">
+              <button className="fq">Comment ça se passe concrètement ?<span className="fi-ico">+</span></button>
+              <div className="fa">
+                Vous m&apos;envoyez votre brief par email — deux lignes max — avec vos références (logo, charte, visuels, audio si voix-off). Je reviens sous 4 h ouvrées avec un devis ferme et une première proposition créative (concept + storyboard + ambiance). On itère jusqu&apos;à validation (10 allers-retours inclus). Je génère la vidéo et la livre sous 48 h. Vous n&apos;ouvrez jamais aucun outil.
+              </div>
+            </div>
+            <div className="fi">
+              <button className="fq">Pourquoi pas faire ça moi-même avec Runway, Kling, Veo ou Firefly ?<span className="fi-ico">+</span></button>
+              <div className="fa">
+                Le prix affiché de ces outils ne couvre que la <strong>génération brute</strong>. Tout le reste reste à votre charge : écrire le script, faire le storyboard plan par plan, formuler les prompts, générer plusieurs versions (5 à 8 retakes en moyenne sans formation), trouver la voix off, monter, ajouter la musique, vérifier les droits commerciaux. C&apos;est <strong>5 à 8 h de travail invisible</strong> pour 30 secondes livrées — et le prix réel finit autour de 80–130 €, plus votre temps. Mon forfait à partir de 49 € inclut tout, sans aucune compétence requise de votre part.
+              </div>
+            </div>
+            <div className="fi">
+              <button className="fq">Pourquoi Seedance 2.0 et pas Runway, Veo ou Kling ?<span className="fi-ico">+</span></button>
+              <div className="fa">
+                J&apos;utilise <strong>l&apos;API officielle ByteDance</strong> (le créateur de Seedance) — accès direct à la source, pas via un intermédiaire. Concrètement&nbsp;: <strong>(1)</strong> Audio et vidéo générés ensemble — Runway et Kling livrent muet, ça oblige un montage son derrière. <strong>(2)</strong> Lip-sync précis en français — décisif pour voix off, témoignages et talking heads. <strong>(3)</strong> Direction caméra en langage naturel — j&apos;écris « travelling sur la main qui prend le flacon », Seedance l&apos;exécute. <strong>(4)</strong> Cohérence scène à scène — vos références visuelles sont transmises automatiquement à chaque plan. <strong>(5)</strong> Mises à jour du modèle en premier — features avancées (références multimodales, audio natif synchronisé) avant les outils grand public. Aucun autre modèle ne combine ces cinq forces.
+              </div>
+            </div>
+            <div className="fi">
+              <button className="fq">Combien je paie au final ?<span className="fi-ico">+</span></button>
+              <div className="fa">
+                Le prix de la grille tarifaire selon la durée — 49 € (5s), 69 € (8s), 89 € (10s), 109 € (12s), 139 € (15s). Tous formats inclus (vertical, horizontal, carré, cinéma). 10 itérations incluses (suri­tération&nbsp;: 9 €). Aucun frais caché, aucun token à comptabiliser, aucun abonnement mensuel. Volume au-delà de 10 vidéos/mois : on discute d&apos;un dégressif sur mesure.
+              </div>
+            </div>
+            <div className="fi">
+              <button className="fq">Qu&apos;est-ce que je reçois exactement ?<span className="fi-ico">+</span></button>
+              <div className="fa">
+                Un fichier MP4 prêt à diffuser, dans le format demandé, son intégré (musique, ambiance, voix off si pertinent). Vous postez, vous diffusez, vous facturez votre client. C&apos;est tout. Pas de zip avec 12 fichiers à comprendre, pas de dossier PDF à éplucher — juste la vidéo finale, telle qu&apos;elle sera diffusée.
+              </div>
+            </div>
+            <div className="fi">
+              <button className="fq">Mes droits d&apos;usage commercial ?<span className="fi-ico">+</span></button>
+              <div className="fa">
+                Vous êtes propriétaire à 100 % de la vidéo livrée. Usage commercial illimité — publicité payante, réseaux sociaux, TV, site, présentations client. Aucune mention ScenIQ sur le livrable. Vous pouvez la revendre, la décliner, la modifier. Je ne réutilise rien de votre brief, de vos références ou du résultat dans d&apos;autres projets.
+              </div>
+            </div>
+            <div className="fi">
+              <button className="fq">Si le résultat ne me plaît pas après la 10ᵉ itération ?<span className="fi-ico">+</span></button>
+              <div className="fa">
+                Si après 10 allers-retours sur la pré-prod (concept, storyboard, ambiance) on n&apos;arrive pas à un accord, je vous rembourse intégralement — vous ne payez rien. La validation finale du brief créatif est votre décision avant toute génération vidéo. Je ne génère la vidéo qu&apos;après votre go.
+              </div>
+            </div>
+            <div className="fi">
+              <button className="fq">Combien de temps avant que je récupère la vidéo ?<span className="fi-ico">+</span></button>
+              <div className="fa">
+                Pré-prod (concept + storyboard + ambiance) livrée sous 4 h ouvrées après votre brief. Itérations généralement sous 2 h ouvrées chacune. Génération vidéo finale et livraison&nbsp;: <strong>sous 48 h après votre validation finale</strong>. Pour les projets urgents (lancement produit, deadline réseaux), je peux accélérer à 24 h moyennant majoration — à mentionner dans le brief.
+              </div>
+            </div>
+            <div className="fi">
+              <button className="fq">Vous travaillez sur quels types de projets ?<span className="fi-ico">+</span></button>
+              <div className="fa">
+                Pubs digitales, reels Instagram/TikTok, brand films courts, lancements produit, teasers, vidéos LinkedIn, contenus B2B, motion branding. Cibles fréquentes&nbsp;: agences créa qui ont besoin de capacity sur des micro-projets, marques premium pour leur contenu social, startups qui veulent du visuel pro sans budget studio. Je ne fais pas (encore) les vidéos longues (&gt; 15 sec), les animations 2D motion design, ni les contenus sensibles (médical, financier régulé).
+              </div>
+            </div>
+            <div className="fi">
+              <button className="fq">Pourquoi pas une plateforme en libre-service ?<span className="fi-ico">+</span></button>
+              <div className="fa">
+                Pour 2026, c&apos;est volontaire. Une plateforme self-service vous redonne tous les problèmes qu&apos;on vient d&apos;éviter&nbsp;: vous devez savoir prompter, comprendre le storyboard, gérer les itérations, le montage, les droits. Mon offre couvre <strong>tout ce travail invisible</strong>. Une version self-service est prévue pour 2027 — pour les pros formés au prompt engineering qui veulent gérer eux-mêmes. <a href="#devis" style={{ color: 'var(--blue)', textDecoration: 'underline' }}>Inscrivez-vous à la waitlist</a> pour être prévenu(e).
+              </div>
+            </div>
           </div>
         </div>
       </section>
