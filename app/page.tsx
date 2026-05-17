@@ -442,30 +442,71 @@ export default function HomePage() {
       <section className="s alt" id="why-seedance">
         <div className="si">
           <div className="s-eye rv">Pourquoi Seedance 2.0</div>
-          <h2 className="rv">Le seul modèle IA pensé<br />pour les agences françaises.</h2>
-          <p className="s-sub rv">ScenIQ accède à Seedance 2.0 via <strong>l&apos;API officielle ByteDance</strong> — la source directe, pas un intermédiaire. Résultat : des vidéos que vos concurrents ne peuvent pas reproduire avec les outils grand public.</p>
+          <h2 className="rv">Le modèle vidéo IA <em>le plus avancé du marché</em>.</h2>
+          <p className="s-sub rv">
+            ScenIQ s&apos;appuie exclusivement sur Seedance 2.0 via l&apos;API officielle ByteDance. Trois axes techniques distinguent ce modèle de Runway, Kling, Veo et Firefly — et c&apos;est ce qui permet de livrer une vidéo prête à diffuser, pas un brouillon à retravailler.
+          </p>
 
           <div className="why-grid rv">
             <div className="why-card">
-              <div className="why-ico">🇫🇷</div>
-              <div className="why-h">Lip-sync français précis</div>
-              <p className="why-p">Seedance est le seul modèle vidéo entraîné en français. Les lèvres forment les vrais sons — <em>u</em>, <em>eu</em>, <em>in</em>, <em>an</em>. Avec Runway ou Veo, vos témoignages clients et plans serrés sonnent comme du doublage approximatif. <strong>Pas chez ScenIQ.</strong></p>
+              <div className="why-ico">🎯</div>
+              <div className="why-h">Précision narrative</div>
+              <p className="why-p">
+                Exécution fidèle des mouvements et micro-expressions faciales, déviation minimale par rapport au prompt. Compréhension réelle du langage caméra (travelling, panoramique, zoom, cadrage pro) — pas juste des mots-clés. Rendu de texte fiable dans la vidéo (titre, lower-third, end card).
+              </p>
             </div>
             <div className="why-card">
-              <div className="why-ico">🔊</div>
-              <div className="why-h">Audio-vidéo synchronisé</div>
-              <p className="why-p">Musique, bruitages, ambiance, synchro des lèvres — <strong>tout sort en même temps que l&apos;image</strong>, aligné à la milliseconde. Runway, Kling et Midjourney livrent du muet : monteur son + licensing musique = 2-3h et budget en plus. Pas ici.</p>
+              <div className="why-ico">🌊</div>
+              <div className="why-h">Physique réaliste</div>
+              <p className="why-p">
+                Trajectoires de mouvement naturelles et fluides pour les actions complexes — fini les artefacts mécaniques type «&nbsp;membres tordus&nbsp;» ou doigts déformés. Simulation crédible des interactions physiques&nbsp;: poids des objets, résistance, impact. Mouvements humains qui ne sentent plus le synthétique.
+              </p>
             </div>
             <div className="why-card">
               <div className="why-ico">🎬</div>
-              <div className="why-h">Direction caméra réelle</div>
-              <p className="why-p">Vous écrivez «&nbsp;<em>travelling sur la main qui saisit le flacon, ralenti au dernier moment</em>&nbsp;» — <strong>Seedance le tourne</strong>. Panoramique, zoom, cadrage pro : le modèle comprend le langage cinéma, pas seulement des mots-clés.</p>
+              <div className="why-h">Cohérence scène à scène</div>
+              <p className="why-p">
+                Structure des objets et des personnages stable sur toute la durée et entre les plans. Éclairage, réflexions et transparences haute fidélité. Vos références (logo, charte, mood) transmises directement au modèle — le rendu reste cohérent du shot 1 au shot 4, sans retouche.
+              </p>
             </div>
             <div className="why-card">
-              <div className="why-ico">🎯</div>
-              <div className="why-h">Chaque référence respectée</div>
-              <p className="why-p">Logo, palette, mood board — Brand Memory transmet vos assets à chaque génération. <strong>Cohérence visuelle scène à scène, sans retouche</strong>. Mouvements fluides, textures réalistes (reflets, transparences), micro-expressions précises. Vos vidéos ressemblent à votre marque.</p>
+              <div className="why-ico">🔊</div>
+              <div className="why-h">Audio natif synchronisé</div>
+              <p className="why-p">
+                Musique, bruitages, ambiance et voix humaine générés <strong>en même temps</strong> que l&apos;image, alignés à la milliseconde. Runway, Kling et Firefly livrent du muet — il faut un monteur son et une licence musique derrière. Avec Seedance, l&apos;export est diffusable tel quel.
+              </p>
             </div>
+            <div className="why-card">
+              <div className="why-ico">⚡</div>
+              <div className="why-h">Rapide et scalable</div>
+              <p className="why-p">
+                Génération d&apos;une vidéo 5–15 secondes en quelques minutes via API. Conçu pour la haute concurrence — pas un outil web qui rame aux heures de pointe. La pile technique permet de livrer 48 h après validation, garantie.
+              </p>
+            </div>
+            <div className="why-card">
+              <div className="why-ico">🎨</div>
+              <div className="why-h">Sortie 100 % personnalisable</div>
+              <p className="why-p">
+                Six ratios disponibles (21:9, 16:9, 4:3, 1:1, 3:4, 9:16), styles de mouvement variés, caméras fixes ou dynamiques, options de rendu stylisé. Chaque vidéo est calibrée pour son format final&nbsp;: TV, reels, stories, ads, présentations.
+              </p>
+            </div>
+          </div>
+
+          <div
+            className="rv"
+            style={{
+              marginTop: 32,
+              padding: '14px 18px',
+              background: 'rgba(99,102,241,.06)',
+              border: '1px solid rgba(99,102,241,.18)',
+              borderRadius: 10,
+              fontSize: 13,
+              color: 'var(--ink2)',
+              lineHeight: 1.55,
+            }}
+          >
+            <strong style={{ color: 'var(--blue)' }}>Note honnête&nbsp;:</strong>{' '}
+            Seedance 2.0 supporte officiellement les voix en anglais, japonais, espagnol, portugais et indonésien. Pour les voix-off françaises de qualité broadcast, j&apos;intègre une couche dédiée (voix off enregistrée ou TTS premium) ajoutée au montage final — sans surcoût pour vous.
           </div>
         </div>
       </section>
@@ -983,7 +1024,7 @@ export default function HomePage() {
             <div className="fi">
               <button className="fq">Pourquoi Seedance 2.0 et pas Runway, Veo ou Kling ?<span className="fi-ico">+</span></button>
               <div className="fa">
-                J&apos;utilise <strong>l&apos;API officielle ByteDance</strong> (le créateur de Seedance) — accès direct à la source, pas via un intermédiaire. Concrètement&nbsp;: <strong>(1)</strong> Audio et vidéo générés ensemble — Runway et Kling livrent muet, ça oblige un montage son derrière. <strong>(2)</strong> Lip-sync précis en français — décisif pour voix off, témoignages et talking heads. <strong>(3)</strong> Direction caméra en langage naturel — j&apos;écris « travelling sur la main qui prend le flacon », Seedance l&apos;exécute. <strong>(4)</strong> Cohérence scène à scène — vos références visuelles sont transmises automatiquement à chaque plan. <strong>(5)</strong> Mises à jour du modèle en premier — features avancées (références multimodales, audio natif synchronisé) avant les outils grand public. Aucun autre modèle ne combine ces cinq forces.
+                J&apos;utilise <strong>l&apos;API officielle ByteDance</strong> (le créateur de Seedance) — accès direct à la source, pas via un intermédiaire. Concrètement&nbsp;: <strong>(1)</strong> Audio et vidéo générés en même temps — Runway, Kling et Firefly livrent du muet, ce qui oblige un montage son derrière. <strong>(2)</strong> Précision narrative supérieure — micro-expressions faciales et langage caméra (travelling, panoramique, zoom) exécutés fidèlement au prompt. <strong>(3)</strong> Physique réaliste — fini les artefacts mécaniques type membres tordus, doigts déformés, mouvements robotiques. <strong>(4)</strong> Cohérence scène à scène — structure des objets et personnages stable du shot 1 au shot 4, sans retouche. <strong>(5)</strong> Audio natif synchronisé à la milliseconde — musique, bruitages et ambiance déjà mixés à l&apos;export. Pour les voix off françaises de qualité, j&apos;ajoute une couche dédiée au montage (sans surcoût).
               </div>
             </div>
             <div className="fi">
