@@ -29,6 +29,17 @@ public = true
 file_size_limit = "500MB"
 allowed_mime_types = ["video/mp4"]
 
+[[storage.buckets]]
+name = "client-uploads"
+public = false
+file_size_limit = "25MB"
+allowed_mime_types = [
+  "image/jpeg", "image/png", "image/webp", "image/bmp", "image/tiff", "image/gif",
+  "image/heic", "image/heif",
+  "audio/mpeg", "audio/wav", "audio/mp4", "audio/aac", "audio/x-m4a",
+  "video/mp4", "video/quicktime", "video/webm"
+]
+
 [auth]
 enabled = true
 site_url = "http://localhost:3000"

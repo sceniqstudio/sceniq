@@ -26,6 +26,11 @@ export type AssetType      = 'logo' | 'image' | 'video' | 'color' | 'font'
 export type SubPlan        = 'free' | 'studio' | 'agency' | 'white_label'
 export type SubStatus      = 'active' | 'past_due' | 'canceled' | 'trialing'
 
+// ─── Orders (Phase A — checkout V1 agence services) ─────────────────────────
+export type OrderStatus = 'pending_payment' | 'paid' | 'cancelled' | 'refunded'
+export type OrderFormat = '21:9' | '16:9' | '4:3' | '1:1' | '3:4' | '9:16'
+export type OrderDuration = 5 | 8 | 10 | 12 | 15
+
 export interface Database {
   public: {
     Tables: {
@@ -251,6 +256,46 @@ export interface Database {
         Relationships: [
           { foreignKeyName: 'subscriptions_user_id_fkey'; columns: ['user_id']; referencedRelation: 'users'; referencedColumns: ['id'] },
         ]
+      }
+      orders: {
+        Row: {
+          id:                   string
+          status:               OrderStatus
+          format:               OrderFormat
+          duration:             number
+          price_ht:             number
+          brief:                string
+          client_name:          string
+          client_email:         string
+          client_phone:         string | null
+          client_company:       string | null
+          preferred_call_slot:  string | null
+          ref_paths:            string[]
+          stripe_session_id:    string | null
+          stripe_payment_intent: string | null
+          created_at:           string
+          updated_at:           string
+        }
+        Insert: {
+          id?:                   string
+          status?:               OrderStatus
+          format:                OrderFormat
+          duration:              number
+          price_ht:              number
+          brief:                 string
+          client_name:           string
+          client_email:          string
+          client_phone?:         string | null
+          client_company?:       string | null
+          preferred_call_slot?:  string | null
+          ref_paths?:            string[]
+          stripe_session_id?:    string | null
+          stripe_payment_intent?: string | null
+          created_at?:           string
+          updated_at?:           string
+        }
+        Update: Partial<Database['public']['Tables']['orders']['Row']>
+        Relationships: []
       }
     }
     Views: {
