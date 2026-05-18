@@ -196,6 +196,11 @@ export default function CommandePage() {
 
   const uploadFiles = async (): Promise<string[]> => {
     if (files.length === 0) return []
+    // Vérification taille totale avant envoi (limite Vercel 4,5 MB)
+    const totalMb = files.reduce((acc, f) => acc + f.size, 0) / 1024 / 1024
+    if (totalMb > 4) {
+      throw new Error(`Fichiers trop volumineux (${totalMb.toFixed(1)} MB total). Envoyez-les directement par email à support@sceniq.studio après paiement.`)
+    }
     setUploading(true)
     try {
       const fd = new FormData()
@@ -203,9 +208,14 @@ export default function CommandePage() {
       const res = await fetch(`/api/orders/upload?sessionId=${sessionId}`, {
         method: 'POST', body: fd,
       })
-      const json = await res.json()
+      let json: { paths?: string[]; error?: string }
+      try {
+        json = await res.json()
+      } catch {
+        throw new Error('Fichiers trop volumineux pour l\'upload. Envoyez vos références à support@sceniq.studio après paiement.')
+      }
       if (!res.ok) throw new Error(json.error ?? 'Erreur upload')
-      return json.paths as string[]
+      return json.paths ?? []
     } finally {
       setUploading(false)
     }
@@ -422,7 +432,7 @@ export default function CommandePage() {
 
             {/* Upload refs */}
             <div style={{ marginBottom: 28 }}>
-              <Label>Références (facultatif) — 10 max, 25 MB par fichier</Label>
+              <Label>Références (facultatif) — 10 max, 4 MB total · ou par email après paiement</Label>
               <div
                 onClick={() => fileInputRef.current?.click()}
                 onDrop={handleDrop}
