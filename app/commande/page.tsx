@@ -282,7 +282,7 @@ export default function CommandePage() {
           <Link href="/" style={{ fontSize: 13, color: s.muted, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
             ← Retour
           </Link>
-          <span style={{ fontSize: 16, fontWeight: 700, letterSpacing: -0.3, color: '#fff' }}>ScenIQ</span>
+          <img src="/logo-sceniq.svg" alt="ScenIQ" style={{ height: 28, display: 'block' }} />
         </div>
 
         {/* Step indicator */}
