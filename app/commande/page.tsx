@@ -6,6 +6,7 @@
 
 import { useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
+import { Logo } from '@/app/_components/Logo'
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 
@@ -282,7 +283,7 @@ export default function CommandePage() {
           <Link href="/" style={{ fontSize: 13, color: s.muted, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
             ← Retour
           </Link>
-          <img src="/logo-sceniq.svg" alt="ScenIQ" style={{ height: 28, display: 'block' }} />
+          <Logo size={34} />
         </div>
 
         {/* Step indicator */}
