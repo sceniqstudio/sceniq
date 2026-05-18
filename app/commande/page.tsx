@@ -17,13 +17,13 @@ const PRICE: Record<Duration, number> = {
   5: 69, 8: 89, 10: 109, 12: 129, 15: 159,
 }
 
-const FORMATS: { value: Format; label: string; desc: string }[] = [
-  { value: '21:9', label: '21:9', desc: 'Cinéma / Ultra-wide' },
-  { value: '16:9', label: '16:9', desc: 'YouTube / TV / Web' },
-  { value: '4:3',  label: '4:3',  desc: 'Square+' },
-  { value: '1:1',  label: '1:1',  desc: 'Instagram feed' },
-  { value: '3:4',  label: '3:4',  desc: 'Pinterest / Portrait' },
-  { value: '9:16', label: '9:16', desc: 'TikTok / Reels' },
+const FORMATS: { value: Format; label: string; desc: string; ratio: [number, number] }[] = [
+  { value: '21:9', label: '21:9', desc: 'Cinéma / Ultra-wide',    ratio: [21, 9] },
+  { value: '16:9', label: '16:9', desc: 'YouTube / TV / Web',     ratio: [16, 9] },
+  { value: '4:3',  label: '4:3',  desc: 'Square+',                ratio: [4,  3] },
+  { value: '1:1',  label: '1:1',  desc: 'Instagram feed',         ratio: [1,  1] },
+  { value: '3:4',  label: '3:4',  desc: 'Pinterest / Portrait',   ratio: [3,  4] },
+  { value: '9:16', label: '9:16', desc: 'TikTok / Reels',         ratio: [9, 16] },
 ]
 
 const DURATIONS: Duration[] = [5, 8, 10, 12, 15]
@@ -43,6 +43,35 @@ const s = {
   green:    '#4ade80',
   red:      '#f87171',
 } as const
+
+// ─── Icônes ──────────────────────────────────────────────────────────────────
+
+function FormatIcon({ ratio, active }: { ratio: [number, number]; active: boolean }) {
+  const [rw, rh] = ratio
+  const maxW = 38, maxH = 26
+  const scale = Math.min(maxW / rw, maxH / rh)
+  const w = Math.round(rw * scale)
+  const h = Math.round(rh * scale)
+  const x = (maxW - w) / 2
+  const y = (maxH - h) / 2
+  const color = active ? '#A5B4FC' : 'rgba(255,255,255,0.45)'
+  return (
+    <svg width={maxW} height={maxH} viewBox={`0 0 ${maxW} ${maxH}`} style={{ display: 'block', margin: '0 auto 5px' }}>
+      <rect x={x} y={y} width={w} height={h} rx={2} fill="none" stroke={color} strokeWidth={1.5} />
+    </svg>
+  )
+}
+
+function ClockIcon({ active }: { active: boolean }) {
+  const c = active ? '#A5B4FC' : 'rgba(255,255,255,0.45)'
+  return (
+    <svg width={16} height={16} viewBox="0 0 16 16" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: 5, marginTop: -2 }}>
+      <circle cx={8} cy={8} r={6.5} stroke={c} strokeWidth={1.4} fill="none" />
+      <line x1={8} y1={4.5} x2={8} y2={8} stroke={c} strokeWidth={1.4} strokeLinecap="round" />
+      <line x1={8} y1={8} x2={10.5} y2={9.8} stroke={c} strokeWidth={1.4} strokeLinecap="round" />
+    </svg>
+  )
+}
 
 // ─── Sous-composants ─────────────────────────────────────────────────────────
 
@@ -256,13 +285,14 @@ export default function CommandePage() {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
                 {FORMATS.map(f => (
                   <button key={f.value} onClick={() => setFormat(f.value)} style={{
-                    padding: '14px 10px', borderRadius: 10, cursor: 'pointer',
+                    padding: '12px 10px', borderRadius: 10, cursor: 'pointer',
                     background: format === f.value ? s.accentBg : s.surface,
                     border: format === f.value ? `1.5px solid ${s.accent}` : s.border,
                     color: s.text, textAlign: 'center', transition: 'all .15s',
                   }}>
-                    <div style={{ fontSize: 16, fontWeight: 700, color: format === f.value ? s.accent : '#fff' }}>{f.label}</div>
-                    <div style={{ fontSize: 11, color: s.muted, marginTop: 3 }}>{f.desc}</div>
+                    <FormatIcon ratio={f.ratio} active={format === f.value} />
+                    <div style={{ fontSize: 14, fontWeight: 700, color: format === f.value ? s.accent : '#fff' }}>{f.label}</div>
+                    <div style={{ fontSize: 10, color: s.muted, marginTop: 2 }}>{f.desc}</div>
                   </button>
                 ))}
               </div>
@@ -274,19 +304,50 @@ export default function CommandePage() {
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                 {DURATIONS.map(d => (
                   <button key={d} onClick={() => setDuration(d)} style={{
-                    flex: '1 1 0', minWidth: 72, padding: '16px 8px', borderRadius: 10, cursor: 'pointer',
+                    flex: '1 1 0', minWidth: 72, padding: '14px 8px', borderRadius: 10, cursor: 'pointer',
                     background: duration === d ? s.accentBg : s.surface,
                     border: duration === d ? `1.5px solid ${s.accent}` : s.border,
                     color: s.text, textAlign: 'center', transition: 'all .15s',
                   }}>
-                    <div style={{ fontSize: 18, fontWeight: 700, color: duration === d ? s.accent : '#fff' }}>{d}s</div>
-                    <div style={{ fontSize: 12, color: duration === d ? s.accent : s.muted, marginTop: 2, fontWeight: 600 }}>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: duration === d ? s.accent : '#fff' }}>
+                      <ClockIcon active={duration === d} />{d}s
+                    </div>
+                    <div style={{ fontSize: 12, color: duration === d ? s.accent : s.muted, marginTop: 4, fontWeight: 600 }}>
                       {PRICE[d]} €
                     </div>
                   </button>
                 ))}
               </div>
             </div>
+
+            {/* Récap sélection */}
+            {(format || duration) && (
+              <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
+                {format && (() => {
+                  const f = FORMATS.find(x => x.value === format)!
+                  return (
+                    <div style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 7,
+                      padding: '7px 12px', borderRadius: 8,
+                      background: s.accentBg, border: `1px solid rgba(165,180,252,.3)`,
+                    }}>
+                      <FormatIcon ratio={f.ratio} active={true} />
+                      <span style={{ fontSize: 13, fontWeight: 700, color: s.accent }}>{format}</span>
+                    </div>
+                  )
+                })()}
+                {duration && (
+                  <div style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 6,
+                    padding: '7px 12px', borderRadius: 8,
+                    background: s.accentBg, border: `1px solid rgba(165,180,252,.3)`,
+                  }}>
+                    <ClockIcon active={true} />
+                    <span style={{ fontSize: 13, fontWeight: 700, color: s.accent }}>{duration}s</span>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Récap prix */}
             {format && duration && (
@@ -295,7 +356,7 @@ export default function CommandePage() {
                 borderRadius: 10, padding: '16px 20px', marginBottom: 28,
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
               }}>
-                <span style={{ fontSize: 14, color: s.accent }}>{format} · {duration}s · tous formats inclus · 10 itérations</span>
+                <span style={{ fontSize: 14, color: s.accent }}>Tous formats · 10 itérations · 48 h</span>
                 <span style={{ fontSize: 20, fontWeight: 700, color: '#fff' }}>{price}&nbsp;€&nbsp;<span style={{ fontSize: 13, fontWeight: 400, color: s.muted }}>HT</span></span>
               </div>
             )}
