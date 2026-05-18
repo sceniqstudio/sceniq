@@ -11,7 +11,15 @@ import Link from 'next/link'
 
 type Format = '21:9' | '16:9' | '4:3' | '1:1' | '3:4' | '9:16'
 type Duration = 5 | 8 | 10 | 12 | 15
-type CallSlot = 'matin' | 'après-midi' | 'soir'
+type CallDay  = 'Lun' | 'Mar' | 'Mer' | 'Jeu' | 'Ven' | 'Sam'
+type CallTime = 'Matin' | 'Après-midi' | 'Soir'
+
+const CALL_DAYS: CallDay[]  = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']
+const CALL_TIMES: { value: CallTime; range: string }[] = [
+  { value: 'Matin',      range: '9h – 12h'  },
+  { value: 'Après-midi', range: '13h – 18h' },
+  { value: 'Soir',       range: '18h – 20h' },
+]
 
 const PRICE: Record<Duration, number> = {
   5: 69, 8: 89, 10: 109, 12: 129, 15: 159,
@@ -158,7 +166,8 @@ export default function CommandePage() {
   const [clientEmail, setClientEmail] = useState('')
   const [clientPhone, setClientPhone] = useState('')
   const [clientCompany, setClientCompany] = useState('')
-  const [callSlot, setCallSlot]       = useState<CallSlot | null>(null)
+  const [callDay,  setCallDay]        = useState<CallDay | null>(null)
+  const [callTime, setCallTime]       = useState<CallTime | null>(null)
   const [submitting, setSubmitting]   = useState(false)
   const [error, setError]             = useState<string | null>(null)
   const [dragOver, setDragOver]       = useState(false)
@@ -224,7 +233,7 @@ export default function CommandePage() {
           client_email: clientEmail,
           client_phone: clientPhone || undefined,
           client_company: clientCompany || undefined,
-          preferred_call_slot: callSlot || undefined,
+          preferred_call_slot: (callDay && callTime) ? `${callDay} · ${callTime} (${CALL_TIMES.find(t => t.value === callTime)!.range})` : undefined,
           ref_paths: paths,
         }),
       })
@@ -513,18 +522,36 @@ export default function CommandePage() {
             {/* Créneau d'appel */}
             <div style={{ marginBottom: 28 }}>
               <Label>Créneau préféré pour l'appel</Label>
-              <div style={{ display: 'flex', gap: 10 }}>
-                {(['matin', 'après-midi', 'soir'] as CallSlot[]).map(slot => (
-                  <button key={slot} onClick={() => setCallSlot(slot)} style={{
-                    flex: 1, padding: '12px 8px', borderRadius: 10, cursor: 'pointer',
-                    background: callSlot === slot ? s.accentBg : s.surface,
-                    border: callSlot === slot ? `1.5px solid ${s.accent}` : s.border,
-                    color: callSlot === slot ? s.accent : s.muted,
-                    fontSize: 14, fontWeight: callSlot === slot ? 700 : 400,
+
+              {/* Jour */}
+              <div style={{ display: 'flex', gap: 6, marginBottom: 10, flexWrap: 'wrap' }}>
+                {CALL_DAYS.map(day => (
+                  <button key={day} onClick={() => setCallDay(day)} style={{
+                    flex: '1 1 0', minWidth: 44, padding: '10px 6px', borderRadius: 8, cursor: 'pointer',
+                    background: callDay === day ? s.accentBg : s.surface,
+                    border: callDay === day ? `1.5px solid ${s.accent}` : s.border,
+                    color: callDay === day ? s.accent : s.muted,
+                    fontSize: 13, fontWeight: callDay === day ? 700 : 400,
                     transition: 'all .15s',
-                    textTransform: 'capitalize',
                   }}>
-                    {slot}
+                    {day}
+                  </button>
+                ))}
+              </div>
+
+              {/* Tranche horaire */}
+              <div style={{ display: 'flex', gap: 8 }}>
+                {CALL_TIMES.map(({ value, range }) => (
+                  <button key={value} onClick={() => setCallTime(value)} style={{
+                    flex: 1, padding: '11px 8px', borderRadius: 8, cursor: 'pointer',
+                    background: callTime === value ? s.accentBg : s.surface,
+                    border: callTime === value ? `1.5px solid ${s.accent}` : s.border,
+                    color: callTime === value ? s.accent : s.muted,
+                    fontSize: 13, fontWeight: callTime === value ? 700 : 400,
+                    transition: 'all .15s', textAlign: 'center',
+                  }}>
+                    <div style={{ fontWeight: 700, marginBottom: 2 }}>{value}</div>
+                    <div style={{ fontSize: 11, opacity: 0.75 }}>{range}</div>
                   </button>
                 ))}
               </div>
@@ -586,7 +613,7 @@ export default function CommandePage() {
                   {clientCompany && <span style={{ color: s.muted }}> — {clientCompany}</span>}<br />
                   {clientEmail}
                   {clientPhone && <><br />{clientPhone}</>}
-                  {callSlot && <><br /><span style={{ color: s.muted }}>Créneau : {callSlot}</span></>}
+                  {(callDay || callTime) && <><br /><span style={{ color: s.muted }}>Créneau : {[callDay, callTime].filter(Boolean).join(' · ')}</span></>}
                 </p>
               </div>
 
