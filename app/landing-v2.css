@@ -584,6 +584,124 @@ body:has(.lv2) {
 }
 .lv2 .rv.on { opacity: 1; transform: translateY(0); }
 
+/* ════════════════════════════════════════════════════════════════
+   PROTOTYPE V2 — nouvelles sections
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── SPLIT LAYOUT ─────────────────────────────────────────────── */
+.lv2-split {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+}
+.lv2-split-reverse { direction: rtl; }
+.lv2-split-reverse > * { direction: ltr; }
+
+/* ── FEATURE LIST (check icons) ──────────────────────────────── */
+.lv2-feat-list {
+  list-style: none; display: flex; flex-direction: column; gap: 14px; margin-top: 28px;
+}
+.lv2-feat-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 15px; color: var(--g4); line-height: 1.5;
+}
+.lv2-feat-check {
+  width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+  background: rgba(124,92,252,0.1); border: 1px solid rgba(124,92,252,0.3);
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ── PLACEHOLDER VISUAL ──────────────────────────────────────── */
+.lv2-placeholder {
+  background: #141427;
+  border: 1.5px dashed rgba(124,92,252,0.3);
+  border-radius: 20px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; color: var(--g6); font-size: 13px; font-weight: 500;
+  aspect-ratio: 4/3; width: 100%; opacity: 0.7;
+}
+
+/* ── PROCESS 5-STEP GRID ─────────────────────────────────────── */
+.lv2-process-grid {
+  display: grid; grid-template-columns: repeat(5,1fr); gap: 1px;
+  background: var(--bdr); border: 1px solid var(--bdr);
+  border-radius: 20px; overflow: hidden; margin-top: 56px;
+}
+.lv2-process-step {
+  background: #0F0F1C; padding: 32px 24px;
+  display: flex; flex-direction: column; gap: 12px;
+  transition: background 0.2s;
+}
+.lv2-process-step:hover { background: #141427; }
+.lv2-process-num {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(124,92,252,0.12); border: 1px solid rgba(124,92,252,0.25);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: var(--accent);
+  flex-shrink: 0;
+}
+.lv2-process-title { font-size: 16px; font-weight: 700; }
+.lv2-process-desc { font-size: 13px; color: var(--g4); line-height: 1.6; }
+
+/* ── STATS ROW ───────────────────────────────────────────────── */
+.lv2-stats-row {
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 1px;
+  background: var(--bdr); border: 1px solid var(--bdr);
+  border-radius: 20px; overflow: hidden; margin-top: 0;
+}
+.lv2-stat { background: #0F0F1C; padding: 40px 32px; text-align: center; }
+.lv2-stat-num {
+  font-size: 48px; font-weight: 800; letter-spacing: -0.04em; margin-bottom: 6px;
+}
+.lv2-stat-num em { font-style: normal; color: var(--accent); }
+.lv2-stat-label { font-size: 14px; color: var(--g4); }
+
+/* ── TESTIMONIALS 2×2 ────────────────────────────────────────── */
+.lv2-testimonials {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 56px;
+}
+.lv2-testimonial {
+  background: #0F0F1C; border: 1px solid var(--bdr);
+  border-radius: 20px; padding: 32px;
+}
+.lv2-test-stars { display: flex; gap: 4px; margin-bottom: 16px; }
+.lv2-test-star  { color: #F59E0B; font-size: 15px; }
+.lv2-test-text  {
+  font-size: 16px; line-height: 1.7; color: var(--g4);
+  margin-bottom: 20px; font-style: italic;
+}
+.lv2-test-text em { font-style: normal; color: #fff; }
+.lv2-test-author { display: flex; align-items: center; gap: 12px; }
+.lv2-test-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: #141427; border: 1px solid rgba(255,255,255,0.12);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 700; color: var(--accent); flex-shrink: 0;
+}
+.lv2-test-name { font-size: 14px; font-weight: 600; }
+.lv2-test-role { font-size: 12px; color: var(--g6); }
+
+/* ── FAQ 2-COL GRID ──────────────────────────────────────────── */
+.lv2-faq-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  margin-top: 56px; align-items: start;
+}
+.lv2-faq-col { display: flex; flex-direction: column; gap: 8px; }
+
+/* ── FINAL CTA SIMPLE ────────────────────────────────────────── */
+.lv2-final-cta {
+  padding: 96px 0; text-align: center;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(124,92,252,0.12) 0%, transparent 70%);
+  border-top: 1px solid var(--bdr);
+}
+.lv2-final-cta-inner {
+  max-width: 600px; margin: 0 auto; padding: 0 24px;
+}
+.lv2-final-cta-sub {
+  font-size: 18px; color: var(--g4); margin: 16px 0 36px; line-height: 1.6;
+}
+.lv2-final-cta-btns {
+  display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+}
+
 /* ── SEEDANCE DEMO (hérite du thème sombre existant) ─────────── */
 .lv2 .sdemo-outer { width: 100%; }
 .lv2 .sdemo-head  { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
@@ -604,6 +722,11 @@ body:has(.lv2) {
   .lv2 .why-grid { grid-template-columns: repeat(2, 1fr); }
   .lv2-footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
   .lv2-price-perks-row { grid-template-columns: 1fr 1fr; }
+
+  /* V2 prototype sections */
+  .lv2-process-grid { grid-template-columns: repeat(3, 1fr); }
+  .lv2-stats-row { grid-template-columns: repeat(2, 1fr); }
+  .lv2-split { gap: 48px; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -627,6 +750,15 @@ body:has(.lv2) {
   .lv2 .ag-grid { grid-template-columns: 1fr; }
   .lv2 .why-grid { grid-template-columns: 1fr; }
   .lv2-prices { grid-template-columns: 1fr 1fr; }
+
+  /* V2 prototype sections */
+  .lv2-split, .lv2-split-reverse { grid-template-columns: 1fr; direction: ltr; }
+  .lv2-process-grid { grid-template-columns: repeat(2, 1fr); }
+  .lv2-stats-row { grid-template-columns: repeat(2, 1fr); }
+  .lv2-testimonials { grid-template-columns: 1fr; }
+  .lv2-faq-grid { grid-template-columns: 1fr; }
+  .lv2-final-cta-btns { flex-direction: column; align-items: center; }
+  .lv2-stat-num { font-size: 36px; }
   .lv2-price-perks-row { grid-template-columns: 1fr; }
 
   .lv2-footer-inner { grid-template-columns: 1fr; gap: 28px; }
@@ -646,6 +778,12 @@ body:has(.lv2) {
   .lv2-prices { grid-template-columns: 1fr; }
   .lv2 h2 { font-size: clamp(24px, 7vw, 36px); }
   .lv2-h1 { font-size: clamp(36px, 10vw, 56px); }
+
+  /* V2 prototype sections */
+  .lv2-process-grid { grid-template-columns: 1fr; }
+  .lv2-stat-num { font-size: 32px; }
+  .lv2-testimonial { padding: 24px; }
+  .lv2-final-cta { padding: 64px 20px; }
 
   .lv2-trust-inner { flex-direction: column; align-items: flex-start; gap: 10px; }
   .lv2-cta-final { padding: 72px 20px; }
