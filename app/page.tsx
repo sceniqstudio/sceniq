@@ -485,7 +485,7 @@ export default function HomePage() {
           <div className="lv2-split lv2-split-reverse rv">
             <div>
               <div className="lv2-label">Génération vidéo</div>
-              <h2>Génération vidéo.<br />Un prompt. Un film monté.</h2>
+              <h2>Génération vidéo.<br />Un prompt. Un spot livré.</h2>
               <p className="lv2-s-sub" style={{ marginTop: 16 }}>
                 Le Storyboarder produit un prompt multi-shot unifié. Un seul appel génère la vidéo déjà montée — pas de post-prod, pas d&apos;assemblage manuel. Cohérence visuelle garantie entre chaque plan.
               </p>
@@ -547,124 +547,105 @@ export default function HomePage() {
       </section>
 
       {/* ── MODÈLES IA ───────────────────────────────────────────────────── */}
-      <section className="lv2-s" id="modeles" style={{ background: 'linear-gradient(180deg, var(--bg) 0%, rgba(124,92,252,0.04) 50%, var(--bg) 100%)' }}>
+      <section className="lv2-s alt" id="modeles">
         <div className="lv2-si">
-          <div className="rv" style={{ textAlign: 'center' }}>
-            <div className="lv2-label">Option disponible</div>
-            <h2>Votre publicité.<br />Avec un visage.</h2>
-            <p className="lv2-s-sub" style={{ maxWidth: 560, margin: '16px auto 0' }}>
-              Ajoutez un modèle ou une influenceuse IA sur mesure à votre spot — selon votre description, sans casting, sans agence.
-            </p>
-          </div>
+          <div className="lv2-split rv">
 
-          {/* Grille modèles */}
-          <div className="lv2-models-grid rv">
-            {[
-              {
-                slug: 'kaelys', name: 'Kaelys', type: 'Influenceuse IA · ScenIQ',
-                featured: true,
-                bg: 'linear-gradient(155deg, #1a0f3a 0%, #2d1866 40%, #120b2a 100%)',
-                icon: '✦',
-              },
-              {
-                slug: 'modele-1', name: 'Sofia', type: 'Lifestyle · 25–35 ans',
-                featured: false,
-                bg: 'linear-gradient(155deg, #0a1929 0%, #1a3a5c 50%, #080f1a 100%)',
-                icon: '◆',
-              },
-              {
-                slug: 'modele-2', name: 'Marcus', type: 'Urbain · 28–40 ans',
-                featured: false,
-                bg: 'linear-gradient(155deg, #111a0a 0%, #243a10 50%, #0a0e06 100%)',
-                icon: '●',
-              },
-              {
-                slug: 'modele-3', name: 'Léa', type: 'Beauté · 20–30 ans',
-                featured: false,
-                bg: 'linear-gradient(155deg, #1f0a1a 0%, #3d1535 50%, #0e0609 100%)',
-                icon: '◈',
-              },
-              {
-                slug: 'modele-4', name: 'Sur mesure', type: 'Selon votre brief',
-                featured: false,
-                bg: 'linear-gradient(155deg, #111118 0%, #1c1c2e 50%, #07070f 100%)',
-                icon: '+',
-              },
-            ].map((m) => (
-              <div key={m.slug} className={`lv2-model-card${m.featured ? ' featured' : ''}`} style={{ background: m.bg }}>
-                {/* Image réelle quand disponible — placeholder gradient sinon */}
-                <img
-                  src={`/models/${m.slug}.jpg`}
-                  alt={m.name}
-                  className="lv2-model-img"
-                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-                />
-                {/* Placeholder visible tant que l'image n'est pas uploadée */}
-                <div className="lv2-model-ph" aria-hidden="true">
-                  <div className="lv2-model-ph-icon">{m.icon}</div>
-                  <div className="lv2-model-ph-lbl">Image à venir</div>
-                </div>
-                {/* Badge légal */}
-                <div className="lv2-model-ai-badge" aria-label="Image générée par intelligence artificielle">
-                  <div className="lv2-model-ai-dot" />
-                  Généré par IA
-                </div>
-                {/* Info */}
-                <div className="lv2-model-info">
-                  <div className="lv2-model-name">{m.name}</div>
-                  <div className="lv2-model-type">{m.type}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Différenciateurs — pourquoi c'est mieux */}
-          <div className="lv2-model-diff rv">
-            <div className="lv2-model-diff-item">
-              <div className="lv2-model-diff-cross">✕ Fini le casting</div>
-              <div className="lv2-model-diff-title">Pas de cachet. Pas de caprice.</div>
-              <div className="lv2-model-diff-desc">
-                Pas de contrat modèle, pas de droits à l&apos;image à négocier, pas d&apos;heure de retard sur le tournage. Le modèle est généré depuis votre description en quelques heures.
-              </div>
-            </div>
-            <div className="lv2-model-diff-item">
-              <div className="lv2-model-diff-cross">✕ Fini les tarifs lunaires</div>
-              <div className="lv2-model-diff-title">+49 € fixe. Rien d&apos;autre.</div>
-              <div className="lv2-model-diff-desc">
-                Une agence vous facture 800–3 000 € de casting pour un modèle d&apos;une journée. ScenIQ génère votre visage de marque pour 49 € en option, directement dans votre forfait.
-              </div>
-            </div>
-            <div className="lv2-model-diff-item">
-              <div className="lv2-model-diff-cross">✕ Fini les indisponibilités</div>
-              <div className="lv2-model-diff-title">Disponible 24h/24. Recadrable à volonté.</div>
-              <div className="lv2-model-diff-desc">
-                Besoin d&apos;un angle différent, d&apos;une expression autre ou d&apos;un format vertical ? On regenere. Pas de rappel, pas de nouveau shooting, inclus dans vos 10 itérations.
-              </div>
-            </div>
-          </div>
-
-          {/* Notice légale — sérieux et transparent */}
-          <div className="lv2-model-legal rv">
-            <span style={{ fontSize: 16, flexShrink: 0, marginTop: 1 }}>⚖️</span>
+            {/* Texte */}
             <div>
-              <strong>Transparence légale — nous prenons ça au sérieux.</strong>{' '}
-              Conformément au <strong>Règlement Européen sur l&apos;IA (EU AI Act, art. 50)</strong> et à la{' '}
-              <strong>loi française du 9 juin 2023 sur les influenceurs</strong>, toute image ou personnage généré
-              par IA dans une communication commerciale doit être clairement labellisé.{' '}
-              ScenIQ vous fournit automatiquement la mention adaptée à chaque format de publication
-              (<em>«&nbsp;Image générée par IA&nbsp;»</em>). Vous restez responsable de l&apos;afficher
-              sur vos supports — nous vous le rappelons par écrit dans chaque livraison.{' '}
-              Tous les personnages générés sont <strong>entièrement fictifs</strong> — aucune ressemblance
-              avec une personne réelle n&apos;est recherchée ni reproduite.
+              <div className="lv2-label">Option · +49 €</div>
+              <h2>Un modèle IA.<br />Sur votre brief.</h2>
+              <p className="lv2-s-sub" style={{ marginTop: 16 }}>
+                Décrivez le profil, ScenIQ génère le personnage. Intégré directement dans votre spot — pas de casting, pas d&apos;intermédiaire.
+              </p>
+              <ul className="lv2-feat-list">
+                {[
+                  { label: 'Pas de cachet',        desc: 'pas de contrat modèle, pas de droits à l\'image à négocier' },
+                  { label: 'Pas de tarif agence',  desc: '800–3 000 € de casting en agence — 49 € ici, dans votre forfait' },
+                  { label: 'Disponible à volonté', desc: 'recadré, retravaillé ou remplacé à chaque itération' },
+                  { label: 'Mention légale fournie', desc: 'conforme EU AI Act + loi influenceurs FR — livrée par écrit avec le MP4' },
+                ].map((item) => (
+                  <li key={item.label} className="lv2-feat-item">
+                    <span className="lv2-feat-check">
+                      <svg viewBox="0 0 12 12" fill="none" stroke="#7C5CFC" strokeWidth="2" width="10" height="10">
+                        <polyline points="2,6 5,9 10,3"/>
+                      </svg>
+                    </span>
+                    <span>
+                      <strong style={{ color: '#fff' }}>{item.label}</strong>
+                      {' '}— {item.desc}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <p style={{ marginTop: 16, fontSize: 12, color: 'var(--g6)', lineHeight: 1.65 }}>
+                Personnages entièrement fictifs — aucune ressemblance avec une personne réelle.
+                La mention «&nbsp;Image générée par IA&nbsp;» est obligatoire sur vos publications
+                (EU AI Act art.&nbsp;50 · loi FR 9 juin 2023). ScenIQ vous la fournit dans chaque livraison.
+              </p>
+              <div style={{ marginTop: 24 }}>
+                <a href="/commande" className="lv2-btn lv2-btn-accent">
+                  Ajouter l&apos;option à ma commande →
+                </a>
+              </div>
             </div>
-          </div>
 
-          {/* CTA */}
-          <div className="lv2-model-cta rv">
-            <a href="/commande" className="lv2-btn lv2-btn-accent lv2-btn-lg">
-              Ajouter un modèle IA à ma commande → +49 €
-            </a>
-            <span style={{ fontSize: 13, color: 'var(--g6)' }}>Option disponible à l&apos;étape 1 du formulaire</span>
+            {/* Cartes modèles */}
+            <div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+                {[
+                  { slug: 'kaelys',   name: 'Kaelys', type: 'Influenceuse', featured: true  },
+                  { slug: 'modele-1', name: 'Sofia',  type: 'Lifestyle',    featured: false },
+                  { slug: 'modele-2', name: 'Marcus', type: 'Urbain',       featured: false },
+                ].map((m) => (
+                  <div
+                    key={m.slug}
+                    style={{
+                      aspectRatio: '3/4', borderRadius: 12, overflow: 'hidden', position: 'relative',
+                      background: m.featured ? 'linear-gradient(160deg,#1a0f3a,#0e0e1a)' : 'var(--surface)',
+                      border: `1px solid ${m.featured ? 'rgba(124,92,252,0.35)' : 'var(--bdr-md)'}`,
+                    }}
+                  >
+                    <img
+                      src={`/models/${m.slug}.jpg`}
+                      alt={m.name}
+                      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                    />
+                    {/* Tag IA */}
+                    <div style={{
+                      position: 'absolute', top: 8, left: 8,
+                      padding: '2px 7px', borderRadius: 4,
+                      background: 'rgba(7,7,15,0.82)', border: '1px solid rgba(255,255,255,0.1)',
+                      fontSize: 9, fontWeight: 700, letterSpacing: '0.09em',
+                      color: m.featured ? 'rgba(165,180,252,0.7)' : 'rgba(255,255,255,0.45)',
+                    }}>
+                      IA
+                    </div>
+                    <div style={{
+                      position: 'absolute', bottom: 0, left: 0, right: 0,
+                      padding: '32px 10px 10px',
+                      background: 'linear-gradient(to top,rgba(7,7,15,0.96),transparent)',
+                    }}>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: m.featured ? '#A5B4FC' : '#fff' }}>{m.name}</div>
+                      <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.38)', textTransform: 'uppercase', letterSpacing: '0.07em', marginTop: 1 }}>{m.type}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {/* Carte sur mesure */}
+              <div style={{
+                marginTop: 10, padding: '14px 16px', borderRadius: 12,
+                border: '1px dashed rgba(124,92,252,0.25)',
+                background: 'rgba(124,92,252,0.03)',
+                textAlign: 'center',
+              }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--g6)' }}>
+                  + Sur mesure selon votre description
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
