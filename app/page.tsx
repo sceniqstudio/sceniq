@@ -798,7 +798,7 @@ export default function HomePage() {
           </div>
 
           <p className="rv" style={{ textAlign: 'center', marginTop: 24, fontSize: 13, color: 'var(--g6)' }}>
-            Tous prix HT · MP4 livré par e-mail · Remboursement si résultat impossible après 10 itérations · Paiement sécurisé Stripe
+            Tous prix HT · MP4 livré par e-mail · Paiement sécurisé Stripe
           </p>
         </div>
       </section>
