@@ -11,34 +11,36 @@ const SHOWCASE_SLUGS = [
 ] as const
 
 // ── Portfolio — items avec vraies vidéos ────────────────────────────────────
-type PortfolioItem = { id: string; ratio: number; label: string; grad: string; src?: string }
+type PortfolioItem = { id: string; slug: string; ratio: number; label: string; grad: string; src?: string }
 
 // exemple1-18 : portrait ~9:16 (414×720) | exemple19 : paysage 16:9 (1280×720)
-const PORTRAIT_R = 414 / 720   // ratio réel des reels
+const PORTRAIT_R  = 414 / 720
 const LANDSCAPE_R = 16 / 9
 
 const PORTFOLIO_ITEMS: PortfolioItem[] = [
   ...Array.from({ length: 18 }, (_, i) => ({
     id:    `e${String(i + 1).padStart(2, '0')}`,
+    slug:  `exemple${i + 1}`,
     ratio: PORTRAIT_R,
     label: '9:16',
     grad:  'linear-gradient(135deg,#0a0a14,#1a0a3c)',
     src:   `/showcase/exemple${i + 1}.mp4`,
   })),
-  { id: 'e19', ratio: LANDSCAPE_R, label: '16:9', grad: 'linear-gradient(135deg,#0f0c29,#302b63)', src: '/showcase/exemple19.mp4' },
+  { id: 'e19', slug: 'exemple19', ratio: LANDSCAPE_R, label: '16:9', grad: 'linear-gradient(135deg,#0f0c29,#302b63)', src: '/showcase/exemple19.mp4' },
 ]
 
 // ── PortfolioRow — infinite scroll + drag souris/touch ─────────────────────
 function PortfolioRow({
-  items, direction, rowHeight = 190, gap = 12, speed = 0.45,
+  items, direction, rowHeight = 190, gap = 12, speed = 0.45, onCardClick,
 }: {
   items: PortfolioItem[]; direction: 'left' | 'right'
   rowHeight?: number; gap?: number; speed?: number
+  onCardClick?: (slug: string) => void
 }) {
-  const trackRef = useRef<HTMLDivElement>(null)
-  const posRef   = useRef(0)
-  const animRef  = useRef<number>()
-  const drag     = useRef({ active: false, startX: 0, startPos: 0 })
+  const trackRef  = useRef<HTMLDivElement>(null)
+  const posRef    = useRef(0)
+  const animRef   = useRef<number>()
+  const drag      = useRef({ active: false, startX: 0, startPos: 0, didDrag: false })
 
   useEffect(() => {
     const track = trackRef.current
@@ -62,12 +64,14 @@ function PortfolioRow({
     animRef.current = requestAnimationFrame(tick)
 
     const startDrag = (x: number) => {
-      drag.current = { active: true, startX: x, startPos: posRef.current }
+      drag.current = { active: true, startX: x, startPos: posRef.current, didDrag: false }
     }
     const moveDrag = (x: number) => {
       if (!drag.current.active) return
+      const delta = drag.current.startX - x
+      if (Math.abs(delta) > 4) drag.current.didDrag = true
       const total = getTotal()
-      posRef.current = mod(drag.current.startPos + (drag.current.startX - x), total)
+      posRef.current = mod(drag.current.startPos + delta, total)
       track.style.transform = `translateX(${-posRef.current}px)`
     }
     const endDrag = () => { drag.current.active = false }
@@ -108,24 +112,30 @@ function PortfolioRow({
         {doubled.map((item, i) => {
           const w = Math.round(rowHeight * item.ratio)
           return (
-            <div key={`${item.id}-${i}`} style={{
-              width: w, height: rowHeight, flexShrink: 0, borderRadius: 10,
-              background: item.grad, border: '1px solid rgba(255,255,255,0.06)',
-              position: 'relative', overflow: 'hidden',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
+            <button
+              key={`${item.id}-${i}`}
+              type="button"
+              onClick={() => { if (!drag.current.didDrag && onCardClick) onCardClick(item.slug) }}
+              style={{
+                width: w, height: rowHeight, flexShrink: 0, borderRadius: 10,
+                background: item.grad, border: '1px solid rgba(255,255,255,0.06)',
+                position: 'relative', overflow: 'hidden', padding: 0,
+                cursor: onCardClick ? 'pointer' : 'inherit',
+              }}
+              aria-label={`Lire ${item.slug}`}
+            >
               {item.src ? (
                 <video
                   src={item.src}
                   autoPlay muted loop playsInline preload="none"
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
                 />
               ) : (
                 <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: 'rgba(255,255,255,0.18)', textTransform: 'uppercase' }}>
                   {item.label}
                 </span>
               )}
-            </div>
+            </button>
           )
         })}
       </div>
@@ -820,8 +830,8 @@ export default function HomePage() {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <PortfolioRow items={portfolioRows[0]} direction="left"  rowHeight={320} speed={0.5} />
-          <PortfolioRow items={portfolioRows[1]} direction="right" rowHeight={320} speed={0.42} />
+          <PortfolioRow items={portfolioRows[0]} direction="left"  rowHeight={320} speed={0.5}  onCardClick={setOpenVideo} />
+          <PortfolioRow items={portfolioRows[1]} direction="right" rowHeight={320} speed={0.42} onCardClick={setOpenVideo} />
         </div>
 
         <p style={{ textAlign: 'center', marginTop: 20, fontSize: 11, color: 'var(--g6)', letterSpacing: '0.06em' }}>
@@ -1222,13 +1232,14 @@ export default function HomePage() {
               key={openVideo}
               className="video-modal-video"
               src={`/showcase/${openVideo}.mp4`}
+              autoPlay
               controls
               playsInline
               ref={(el) => {
                 if (!el) return
+                // Forcer unmute avant que autoPlay ne démarre
                 el.muted = false
                 el.volume = 1
-                el.play().catch(() => { /* controls visibles si autoplay bloqué */ })
               }}
             />
           </div>
