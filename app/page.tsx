@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { ShowcaseClip } from '@/app/_components/ShowcaseClip'
 
 const SHOWCASE_SLUGS = [
@@ -25,13 +25,13 @@ export default function HomePage() {
   const [qForm, setQForm]                   = useState({ name: '', email: '', message: '' })
 
   // ── Question form handler ────────────────────────────────────────────────
-  const handleQuestionSubmit = (e: React.FormEvent) => {
+  const handleQuestionSubmit = (e: FormEvent) => {
     e.preventDefault()
     const subject = encodeURIComponent(`Question ScenIQ — ${qForm.name}`)
     const body = encodeURIComponent(
       `Prénom : ${qForm.name}\nEmail : ${qForm.email}\n\nQuestion :\n${qForm.message}`
     )
-    window.open(`mailto:hello@sceniq.app?subject=${subject}&body=${body}`, '_blank')
+    window.open(`mailto:support@sceniq.studio?subject=${subject}&body=${body}`, '_blank')
     setQuestionSent(true)
   }
 
@@ -1062,7 +1062,7 @@ export default function HomePage() {
               Pour l&apos;instant je préfère vous accompagner à la main — c&apos;est comme ça que je garantis la qualité.
             </p>
             <a
-              href={`mailto:hello@sceniq.app?subject=${encodeURIComponent('Waitlist V2 self-service ScenIQ')}&body=${encodeURIComponent('Bonjour,\n\nJe souhaite être prévenu(e) du lancement de la version self-service de ScenIQ en 2027.\n\nMon email : \nMa structure : \nUsage prévu : \n\nMerci !')}`}
+              href={`mailto:support@sceniq.studio?subject=${encodeURIComponent('Waitlist V2 self-service ScenIQ')}&body=${encodeURIComponent('Bonjour,\n\nJe souhaite être prévenu(e) du lancement de la version self-service de ScenIQ en 2027.\n\nMon email : \nMa structure : \nUsage prévu : \n\nMerci !')}`}
               className="lv2-waitlist-link"
             >
               M&apos;inscrire à la waitlist →
@@ -1103,7 +1103,7 @@ export default function HomePage() {
             <div className="lv2-footer-col-title">Contact direct</div>
             <ul className="lv2-footer-links">
               <li><a href="tel:+33756808831">📞 07 56 80 88 31</a></li>
-              <li><a href="mailto:hello@sceniq.app">hello@sceniq.app</a></li>
+              <li><a href="mailto:support@sceniq.studio">support@sceniq.studio</a></li>
               <li><a href="/commande">Commander</a></li>
               <li><a href="#">Mentions légales</a></li>
               <li><a href="#">Confidentialité</a></li>
