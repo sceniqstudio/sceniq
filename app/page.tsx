@@ -1229,6 +1229,8 @@ export default function HomePage() {
               autoPlay
               controls
               playsInline
+              muted={false}
+              ref={(el) => { if (el) { el.muted = false; el.play().catch(() => {}); } }}
             />
           </div>
         </div>
