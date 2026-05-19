@@ -156,13 +156,21 @@ body:has(.lv2) {
   display: flex; flex-direction: column; justify-content: center;
 }
 
-/* BG animated columns */
+/* BG animated columns — 3 gauche · centre vide · 2 droite */
 .lv2-hbg {
   position: absolute; inset: 0;
-  display: flex; flex-direction: row; gap: 10px; padding: 0 5px;
+  display: flex; flex-direction: row;
   pointer-events: none; overflow: hidden;
   align-items: flex-start;
 }
+.lv2-hbg-side {
+  display: flex; flex-direction: row; gap: 10px;
+  overflow: hidden; flex-shrink: 0;
+  padding: 0 5px;
+}
+.lv2-hbg-left  { flex: 3; }
+.lv2-hbg-center{ flex: 4; }   /* espace vide — texte hero */
+.lv2-hbg-right { flex: 2; }
 .lv2-hcol {
   flex: 1; min-width: 0;
   display: flex; flex-direction: column; gap: 10px;
@@ -183,28 +191,31 @@ body:has(.lv2) {
 .lv2-hcard {
   width: 100%; aspect-ratio: 9/16;
   border-radius: 12px; overflow: hidden;
+  background-color: #0F0F1C;
   background-size: cover; background-position: center center;
   border: 1px solid rgba(255,255,255,0.08);
   opacity: 0.5;
   flex-shrink: 0;
 }
-/* Colored fallback per column when no poster image */
-.lv2-hcol:nth-child(1) .lv2-hcard { background-color: #1a0f2e; }
-.lv2-hcol:nth-child(2) .lv2-hcard { background-color: #1e0e08; }
-.lv2-hcol:nth-child(3) .lv2-hcard { background-color: #0a0f28; }
-.lv2-hcol:nth-child(4) .lv2-hcard { background-color: #081a12; }
-.lv2-hcol:nth-child(5) .lv2-hcard { background-color: #1a1408; }
-.lv2-hcol:nth-child(6) .lv2-hcard { background-color: #1a0f2e; }
-.lv2-hcol:nth-child(7) .lv2-hcard { background-color: #1e0e08; }
-.lv2-hcol:nth-child(8) .lv2-hcard { background-color: #0a0f28; }
+/* Video fill inside hcard */
+.lv2-hcard video {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
 
-/* Gradient overlay — top/bottom fade + subtle vignette */
+/* Colored fallback per column */
+.lv2-hbg-left  .lv2-hcol:nth-child(1) .lv2-hcard { background-color: #1a0f2e; }
+.lv2-hbg-left  .lv2-hcol:nth-child(2) .lv2-hcard { background-color: #1e0e08; }
+.lv2-hbg-left  .lv2-hcol:nth-child(3) .lv2-hcard { background-color: #0a0f28; }
+.lv2-hbg-right .lv2-hcol:nth-child(1) .lv2-hcard { background-color: #081a12; }
+.lv2-hbg-right .lv2-hcol:nth-child(2) .lv2-hcard { background-color: #1a1408; }
+
+/* Gradient overlay — top/bottom fade + fondu latéral sur les colonnes */
 .lv2-hover {
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background:
-    radial-gradient(ellipse 70% 70% at 50% 50%, rgba(7,7,15,0.72) 0%, rgba(7,7,15,0.10) 100%),
-    linear-gradient(to bottom, rgba(7,7,15,0.88) 0%, rgba(7,7,15,0) 18%, rgba(7,7,15,0) 78%, rgba(7,7,15,0.92) 100%),
-    linear-gradient(to right, rgba(7,7,15,0.75) 0%, rgba(7,7,15,0) 15%, rgba(7,7,15,0) 85%, rgba(7,7,15,0.75) 100%);
+    linear-gradient(to bottom, rgba(7,7,15,0.95) 0%, rgba(7,7,15,0) 20%, rgba(7,7,15,0) 75%, rgba(7,7,15,0.97) 100%),
+    linear-gradient(to right, rgba(7,7,15,0.85) 0%, rgba(7,7,15,0.10) 28%, rgba(7,7,15,0) 35%, rgba(7,7,15,0) 65%, rgba(7,7,15,0.10) 72%, rgba(7,7,15,0.85) 100%);
 }
 
 /* Hero content */
@@ -737,8 +748,10 @@ body:has(.lv2) {
   .lv2-nav-right { display: none; }
   .lv2-burger    { display: flex; }
 
-  /* Hero: 4 colonnes au lieu de 8 */
-  .lv2-hcol:nth-child(n+5) { display: none; }
+  /* Hero mobile — on cache la colonne droite entière, garde 3 gauche */
+  .lv2-hbg-right { display: none; }
+  .lv2-hbg-center { flex: 2; }
+  .lv2-hbg-left { flex: 3; }
   .lv2-hcontent { padding: 64px 20px 52px; }
   .lv2-ctas { flex-direction: column; align-items: stretch; }
   .lv2-ctas .lv2-btn { width: 100%; justify-content: center; }
@@ -771,8 +784,9 @@ body:has(.lv2) {
    RESPONSIVE — Small mobile 480px
    ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 480px) {
-  /* 3 colonnes en hero */
-  .lv2-hcol:nth-child(n+4) { display: none; }
+  /* Hero 480px — 2 colonnes gauche seulement */
+  .lv2-hbg-left  .lv2-hcol:nth-child(3) { display: none; }
+  .lv2-hbg-center { flex: 3; }
 
   .lv2 .steps { grid-template-columns: 1fr; }
   .lv2-prices { grid-template-columns: 1fr; }

@@ -9,11 +9,12 @@ const SHOWCASE_SLUGS = [
   'exemple13', 'exemple14', 'exemple15', 'exemple16', 'exemple17',
 ] as const
 
-// ── Hero animated columns ──────────────────────────────────────────────────
-const COL_DURATIONS = [32, 26, 38, 22, 28, 36, 24, 34]
-const COL_DELAYS    = [-6, -14, -2, -18, -8, -20, -4, -12]
-const COL_SLUGS     = Array.from({ length: 8 }, (_, c) =>
-  Array.from({ length: 6 }, (_, i) => SHOWCASE_SLUGS[(c * 3 + i) % SHOWCASE_SLUGS.length])
+// ── Hero animated columns — 3 left + empty center + 2 right ───────────────
+// 5 columns: index 0,1,2 → left side  |  index 3,4 → right side
+const COL_DURATIONS = [32, 26, 38, 24, 28]
+const COL_DELAYS    = [-6, -14, -2, -18, -8]
+const COL_SLUGS     = Array.from({ length: 5 }, (_, c) =>
+  Array.from({ length: 4 }, (_, i) => SHOWCASE_SLUGS[(c * 4 + i) % SHOWCASE_SLUGS.length])
 )
 
 export default function HomePage() {
@@ -307,27 +308,57 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* ── HERO — colonnes vidéos animées + contenu centré ──────────────── */}
+      {/* ── HERO — 3 cols gauche · centre vide · 2 cols droite ──────────── */}
       <section className="lv2-hero" id="main-content" aria-label="Hero ScenIQ">
         <div className="lv2-hbg" aria-hidden="true">
-          {COL_SLUGS.map((colSlugs, c) => (
-            <div
-              key={c}
-              className={`lv2-hcol${c % 2 === 1 ? ' down' : ''}`}
-              style={{
-                animationDuration: `${COL_DURATIONS[c]}s`,
-                animationDelay:    `${COL_DELAYS[c]}s`,
-              }}
-            >
-              {[...colSlugs, ...colSlugs].map((slug, i) => (
-                <div
-                  key={`${slug}-${c}-${i}`}
-                  className="lv2-hcard"
-                  style={{ backgroundImage: `url(/showcase/${slug}.jpg)` }}
-                />
-              ))}
-            </div>
-          ))}
+
+          {/* ── 3 colonnes gauche ── */}
+          <div className="lv2-hbg-side lv2-hbg-left">
+            {[0, 1, 2].map((c) => (
+              <div
+                key={c}
+                className={`lv2-hcol${c % 2 === 1 ? ' down' : ''}`}
+                style={{
+                  animationDuration: `${COL_DURATIONS[c]}s`,
+                  animationDelay:    `${COL_DELAYS[c]}s`,
+                }}
+              >
+                {[...COL_SLUGS[c], ...COL_SLUGS[c]].map((slug, i) => (
+                  <div key={`${slug}-${c}-${i}`} className="lv2-hcard">
+                    <video autoPlay muted loop playsInline preload="none" poster={`/showcase/${slug}.jpg`}>
+                      <source src={`/showcase/${slug}.mp4`} type="video/mp4" />
+                    </video>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+
+          {/* ── Centre vide — lisibilité du texte ── */}
+          <div className="lv2-hbg-center" />
+
+          {/* ── 2 colonnes droite ── */}
+          <div className="lv2-hbg-side lv2-hbg-right">
+            {[3, 4].map((c) => (
+              <div
+                key={c}
+                className={`lv2-hcol${c % 2 === 1 ? ' down' : ''}`}
+                style={{
+                  animationDuration: `${COL_DURATIONS[c]}s`,
+                  animationDelay:    `${COL_DELAYS[c]}s`,
+                }}
+              >
+                {[...COL_SLUGS[c], ...COL_SLUGS[c]].map((slug, i) => (
+                  <div key={`${slug}-${c}-${i}`} className="lv2-hcard">
+                    <video autoPlay muted loop playsInline preload="none" poster={`/showcase/${slug}.jpg`}>
+                      <source src={`/showcase/${slug}.mp4`} type="video/mp4" />
+                    </video>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+
         </div>
         <div className="lv2-hover" aria-hidden="true" />
         <div className="lv2-hcontent">
