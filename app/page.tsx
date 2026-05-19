@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, type FormEvent } from 'react'
+import { useEffect, useState, useRef, type FormEvent } from 'react'
 import { ShowcaseClip } from '@/app/_components/ShowcaseClip'
 
 const SHOWCASE_SLUGS = [
@@ -9,6 +9,126 @@ const SHOWCASE_SLUGS = [
   'exemple13', 'exemple14', 'exemple15', 'exemple16', 'exemple17',
   'exemple18', 'exemple19',
 ] as const
+
+// ── Portfolio — placeholders multi-format ───────────────────────────────────
+type PortfolioItem = { id: string; ratio: number; label: string; grad: string }
+
+const PORTFOLIO_ITEMS: PortfolioItem[] = [
+  { id: 'p01', ratio: 16/9, label: '16:9', grad: 'linear-gradient(135deg,#0f0c29,#302b63)' },
+  { id: 'p02', ratio: 9/16, label: '9:16', grad: 'linear-gradient(135deg,#0a1628,#1a0a3c)' },
+  { id: 'p03', ratio: 1,    label: '1:1',  grad: 'linear-gradient(135deg,#0c1a0f,#0f2a18)' },
+  { id: 'p04', ratio: 4/3,  label: '4:3',  grad: 'linear-gradient(135deg,#1a0c10,#3c1018)' },
+  { id: 'p05', ratio: 9/16, label: '9:16', grad: 'linear-gradient(135deg,#0c1520,#0a2035)' },
+  { id: 'p06', ratio: 16/9, label: '16:9', grad: 'linear-gradient(135deg,#0d0f1f,#1a1f3c)' },
+  { id: 'p07', ratio: 3/4,  label: '3:4',  grad: 'linear-gradient(135deg,#1f0a28,#300a40)' },
+  { id: 'p08', ratio: 1,    label: '1:1',  grad: 'linear-gradient(135deg,#0a1a1f,#0a2a30)' },
+  { id: 'p09', ratio: 16/9, label: '16:9', grad: 'linear-gradient(135deg,#200a14,#3c0a1e)' },
+  { id: 'p10', ratio: 9/16, label: '9:16', grad: 'linear-gradient(135deg,#141f0a,#243010)' },
+  { id: 'p11', ratio: 4/3,  label: '4:3',  grad: 'linear-gradient(135deg,#0f1e20,#1a2e30)' },
+  { id: 'p12', ratio: 1,    label: '1:1',  grad: 'linear-gradient(135deg,#200f1a,#301520)' },
+  { id: 'p13', ratio: 9/16, label: '9:16', grad: 'linear-gradient(135deg,#0a1428,#0a2040)' },
+  { id: 'p14', ratio: 16/9, label: '16:9', grad: 'linear-gradient(135deg,#1a1428,#2a1840)' },
+  { id: 'p15', ratio: 3/4,  label: '3:4',  grad: 'linear-gradient(135deg,#0a200a,#143014)' },
+  { id: 'p16', ratio: 1,    label: '1:1',  grad: 'linear-gradient(135deg,#200a0a,#301414)' },
+]
+
+// ── PortfolioRow — infinite scroll + drag souris/touch ─────────────────────
+function PortfolioRow({
+  items, direction, rowHeight = 190, gap = 12, speed = 0.45,
+}: {
+  items: PortfolioItem[]; direction: 'left' | 'right'
+  rowHeight?: number; gap?: number; speed?: number
+}) {
+  const trackRef = useRef<HTMLDivElement>(null)
+  const posRef   = useRef(0)
+  const animRef  = useRef<number>()
+  const drag     = useRef({ active: false, startX: 0, startPos: 0 })
+
+  useEffect(() => {
+    const track = trackRef.current
+    if (!track) return
+    const getTotal = () => track.scrollWidth / 2
+    const mod = (n: number, m: number) => ((n % m) + m) % m
+
+    const tick = () => {
+      if (!drag.current.active) {
+        const total = getTotal()
+        if (total > 0) {
+          posRef.current = mod(
+            posRef.current + (direction === 'left' ? speed : -speed),
+            total
+          )
+          track.style.transform = `translateX(${-posRef.current}px)`
+        }
+      }
+      animRef.current = requestAnimationFrame(tick)
+    }
+    animRef.current = requestAnimationFrame(tick)
+
+    const startDrag = (x: number) => {
+      drag.current = { active: true, startX: x, startPos: posRef.current }
+    }
+    const moveDrag = (x: number) => {
+      if (!drag.current.active) return
+      const total = getTotal()
+      posRef.current = mod(drag.current.startPos + (drag.current.startX - x), total)
+      track.style.transform = `translateX(${-posRef.current}px)`
+    }
+    const endDrag = () => { drag.current.active = false }
+
+    const onMouseDown  = (e: MouseEvent)  => { startDrag(e.clientX); track.style.cursor = 'grabbing' }
+    const onMouseMove  = (e: MouseEvent)  => moveDrag(e.clientX)
+    const onMouseUp    = ()               => { endDrag(); track.style.cursor = 'grab' }
+    const onTouchStart = (e: TouchEvent)  => startDrag(e.touches[0].clientX)
+    const onTouchMove  = (e: TouchEvent)  => moveDrag(e.touches[0].clientX)
+    const onTouchEnd   = ()               => endDrag()
+
+    track.addEventListener('mousedown', onMouseDown)
+    window.addEventListener('mousemove', onMouseMove)
+    window.addEventListener('mouseup', onMouseUp)
+    track.addEventListener('touchstart', onTouchStart, { passive: true })
+    window.addEventListener('touchmove', onTouchMove, { passive: false })
+    window.addEventListener('touchend', onTouchEnd)
+
+    return () => {
+      if (animRef.current) cancelAnimationFrame(animRef.current)
+      track.removeEventListener('mousedown', onMouseDown)
+      window.removeEventListener('mousemove', onMouseMove)
+      window.removeEventListener('mouseup', onMouseUp)
+      track.removeEventListener('touchstart', onTouchStart)
+      window.removeEventListener('touchmove', onTouchMove)
+      window.removeEventListener('touchend', onTouchEnd)
+    }
+  }, [direction, speed])
+
+  const doubled = [...items, ...items]
+
+  return (
+    <div style={{ overflow: 'hidden', cursor: 'grab' }}>
+      <div
+        ref={trackRef}
+        style={{ display: 'flex', alignItems: 'flex-start', gap, width: 'max-content', willChange: 'transform', userSelect: 'none' }}
+      >
+        {doubled.map((item, i) => {
+          const w = Math.round(rowHeight * item.ratio)
+          return (
+            <div key={`${item.id}-${i}`} style={{
+              width: w, height: rowHeight, flexShrink: 0, borderRadius: 10,
+              background: item.grad, border: '1px solid rgba(124,92,252,0.12)',
+              position: 'relative', overflow: 'hidden',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: 'rgba(255,255,255,0.18)', textTransform: 'uppercase' }}>
+                {item.label}
+              </span>
+              <div style={{ position: 'absolute', top: 8, right: 8, width: 5, height: 5, borderRadius: '50%', background: 'rgba(124,92,252,0.35)' }} />
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
 
 // ── Hero animated columns — 3 left + empty center + 2 right ───────────────
 // 5 columns: index 0,1,2 → left side  |  index 3,4 → right side
@@ -24,6 +144,9 @@ export default function HomePage() {
   const [questionOpen, setQuestionOpen]     = useState(false)
   const [questionSent, setQuestionSent]     = useState(false)
   const [qForm, setQForm]                   = useState({ name: '', email: '', message: '' })
+  const [portfolioRows, setPortfolioRows]   = useState<[PortfolioItem[], PortfolioItem[]]>([
+    PORTFOLIO_ITEMS.slice(0, 8), PORTFOLIO_ITEMS.slice(8),
+  ])
 
   // ── Question form handler ────────────────────────────────────────────────
   const handleQuestionSubmit = (e: FormEvent) => {
@@ -106,108 +229,10 @@ export default function HomePage() {
       fqHandlers.push({ btn: b, handler })
     })
 
-    // Carousel — scroll natif + drag souris + dots synchronisés
-    const track = document.getElementById('carTrack') as HTMLElement | null
-    const prev  = document.getElementById('cPrev')  as HTMLButtonElement | null
-    const next  = document.getElementById('cNext')  as HTMLButtonElement | null
-    const dots  = document.getElementById('cDots')
-
-    if (track && prev && next && dots) {
-      const N    = 17
-      const CW   = 220
-      const GAP  = 16
-      const STEP = CW + GAP
-
-      const visible  = () => Math.max(1, Math.floor((track.clientWidth - 88) / STEP))
-      const maxIndex = () => Math.max(0, N - visible())
-
-      let cur     = 0
-      let scrollT: ReturnType<typeof setTimeout> | null = null
-
-      const renderDotState = () => {
-        document.querySelectorAll('.cdot').forEach((d, j) =>
-          d.classList.toggle('on', j === cur)
-        )
-        prev.disabled = cur === 0
-        next.disabled = cur >= maxIndex()
-      }
-
-      const buildDots = () => {
-        dots.innerHTML = ''
-        const m = maxIndex()
-        for (let i = 0; i <= m; i++) {
-          const d = document.createElement('div')
-          d.className = 'cdot'
-          d.onclick = () => goTo(i)
-          dots.appendChild(d)
-        }
-        renderDotState()
-      }
-
-      const goTo = (i: number) => {
-        const m = maxIndex()
-        cur = Math.max(0, Math.min(i, m))
-        track.scrollTo({ left: cur * STEP, behavior: 'smooth' })
-        renderDotState()
-      }
-
-      const onScroll = () => {
-        if (scrollT) clearTimeout(scrollT)
-        scrollT = setTimeout(() => {
-          const i = Math.round(track.scrollLeft / STEP)
-          cur = Math.max(0, Math.min(i, maxIndex()))
-          renderDotState()
-        }, 80)
-      }
-      track.addEventListener('scroll', onScroll, { passive: true })
-
-      let isDown = false
-      let startX = 0
-      let startScrollLeft = 0
-      let didDrag = false
-
-      const onMouseDown = (e: MouseEvent) => {
-        if (e.button !== 0) return
-        isDown = true; didDrag = false; startX = e.pageX
-        startScrollLeft = track.scrollLeft
-        track.classList.add('dragging')
-      }
-      const onMouseMove = (e: MouseEvent) => {
-        if (!isDown) return
-        const walk = e.pageX - startX
-        if (Math.abs(walk) > 4) didDrag = true
-        e.preventDefault()
-        track.scrollLeft = startScrollLeft - walk
-      }
-      const onMouseUp = () => {
-        if (!isDown) return
-        isDown = false
-        track.classList.remove('dragging')
-        if (didDrag) { const i = Math.round(track.scrollLeft / STEP); goTo(i) }
-      }
-      const onClickCapture = (e: MouseEvent) => {
-        if (didDrag) { e.preventDefault(); e.stopPropagation(); didDrag = false }
-      }
-
-      track.addEventListener('mousedown', onMouseDown)
-      window.addEventListener('mousemove', onMouseMove)
-      window.addEventListener('mouseup', onMouseUp)
-      track.addEventListener('click', onClickCapture, true)
-      prev.onclick = () => goTo(cur - 1)
-      next.onclick = () => goTo(cur + 1)
-      buildDots()
-      const onResize = () => buildDots()
-      window.addEventListener('resize', onResize)
-      ;(track as any).__cleanupCarousel = () => {
-        track.removeEventListener('scroll', onScroll)
-        track.removeEventListener('mousedown', onMouseDown)
-        window.removeEventListener('mousemove', onMouseMove)
-        window.removeEventListener('mouseup', onMouseUp)
-        track.removeEventListener('click', onClickCapture, true)
-        window.removeEventListener('resize', onResize)
-        if (scrollT) clearTimeout(scrollT)
-      }
-    }
+    // Shuffle portfolio rows on mount
+    const shuffled = [...PORTFOLIO_ITEMS].sort(() => Math.random() - 0.5)
+    const mid = Math.ceil(shuffled.length / 2)
+    setPortfolioRows([shuffled.slice(0, mid), shuffled.slice(mid)])
 
     // Smooth scroll anchors
     const anchorHandlers: Array<{ a: Element; handler: (e: Event) => void }> = []
@@ -226,7 +251,6 @@ export default function HomePage() {
       obs.disconnect()
       fqHandlers.forEach(({ btn, handler }) => btn.removeEventListener('click', handler))
       anchorHandlers.forEach(({ a, handler }) => a.removeEventListener('click', handler))
-      if (track && (track as any).__cleanupCarousel) (track as any).__cleanupCarousel()
     }
   }, [])
 
@@ -779,46 +803,25 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── CAROUSEL EXEMPLES ────────────────────────────────────────────── */}
-      <section className="lv2-s" id="reels" style={{ background: '#0D0D1A', overflow: 'hidden' }}>
+      {/* ── PORTFOLIO — deux lignes défilantes ───────────────────────────── */}
+      <section id="reels" style={{ background: '#0D0D1A', padding: '80px 0 72px', overflow: 'hidden' }}>
         <div className="lv2-si">
-          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
-            <div>
-              <div className="lv2-label rv">Portfolio</div>
-              <h2 className="rv">Créé avec ScenIQ.</h2>
-              <p className="rv" style={{ color: 'var(--g4)', fontSize: 17, marginTop: 10, maxWidth: 460 }}>
-                Des publicités vidéo pour des marques de toutes tailles, dans tous les secteurs.
-              </p>
-            </div>
-            <div className="car-dots" id="cDots" />
+          <div className="rv" style={{ marginBottom: 40 }}>
+            <div className="lv2-label">Portfolio</div>
+            <h2>Créé avec ScenIQ.</h2>
+            <p style={{ color: 'var(--g4)', fontSize: 17, marginTop: 10, maxWidth: 460 }}>
+              Des publicités vidéo pour des marques de toutes tailles, dans tous les secteurs.
+            </p>
           </div>
         </div>
 
-        <div className="lv2-car-wrap" style={{ marginTop: 32 }}>
-          <div className="car-track" id="carTrack">
-            {SHOWCASE_SLUGS.map((slug) => (
-              <button
-                key={slug}
-                type="button"
-                className="vc"
-                onClick={() => setOpenVideo(slug)}
-                aria-label={`Lire ${slug} en grand format`}
-              >
-                <div className="vc-thumb">
-                  <ShowcaseClip
-                    slug={slug}
-                    fallbackBg="linear-gradient(135deg,#1a1a22,#2d2d3a)"
-                    fallbackEmoji="✦"
-                    ariaLabel={`${slug}.mp4`}
-                  />
-                  <div className="vc-play" aria-hidden="true" />
-                </div>
-              </button>
-            ))}
-          </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <PortfolioRow items={portfolioRows[0]} direction="left"  rowHeight={190} speed={0.4} />
+          <PortfolioRow items={portfolioRows[1]} direction="right" rowHeight={190} speed={0.35} />
         </div>
-        <p className="car-note" style={{ textAlign: 'center', marginTop: 12 }}>
-          ✦ Vidéos générées via Seedance 2.0 depuis un brief de 2 lignes
+
+        <p style={{ textAlign: 'center', marginTop: 20, fontSize: 11, color: 'var(--g6)', letterSpacing: '0.06em' }}>
+          ✦ Vidéos générées via Seedance 2.0 · formats 9:16 · 1:1 · 16:9
         </p>
       </section>
 
