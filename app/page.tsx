@@ -7,6 +7,7 @@ const SHOWCASE_SLUGS = [
   'exemple1', 'exemple2', 'exemple3', 'exemple4', 'exemple5', 'exemple6',
   'exemple7', 'exemple8', 'exemple9', 'exemple10', 'exemple11', 'exemple12',
   'exemple13', 'exemple14', 'exemple15', 'exemple16', 'exemple17',
+  'exemple18', 'exemple19',
 ] as const
 
 // ── Hero animated columns — 3 left + empty center + 2 right ───────────────
