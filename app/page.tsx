@@ -10,26 +10,22 @@ const SHOWCASE_SLUGS = [
   'exemple18', 'exemple19',
 ] as const
 
-// ── Portfolio — placeholders multi-format ───────────────────────────────────
-type PortfolioItem = { id: string; ratio: number; label: string; grad: string }
+// ── Portfolio — items avec vraies vidéos ────────────────────────────────────
+type PortfolioItem = { id: string; ratio: number; label: string; grad: string; src?: string }
+
+// exemple1-18 : portrait ~9:16 (414×720) | exemple19 : paysage 16:9 (1280×720)
+const PORTRAIT_R = 414 / 720   // ratio réel des reels
+const LANDSCAPE_R = 16 / 9
 
 const PORTFOLIO_ITEMS: PortfolioItem[] = [
-  { id: 'p01', ratio: 16/9, label: '16:9', grad: 'linear-gradient(135deg,#0f0c29,#302b63)' },
-  { id: 'p02', ratio: 9/16, label: '9:16', grad: 'linear-gradient(135deg,#0a1628,#1a0a3c)' },
-  { id: 'p03', ratio: 1,    label: '1:1',  grad: 'linear-gradient(135deg,#0c1a0f,#0f2a18)' },
-  { id: 'p04', ratio: 4/3,  label: '4:3',  grad: 'linear-gradient(135deg,#1a0c10,#3c1018)' },
-  { id: 'p05', ratio: 9/16, label: '9:16', grad: 'linear-gradient(135deg,#0c1520,#0a2035)' },
-  { id: 'p06', ratio: 16/9, label: '16:9', grad: 'linear-gradient(135deg,#0d0f1f,#1a1f3c)' },
-  { id: 'p07', ratio: 3/4,  label: '3:4',  grad: 'linear-gradient(135deg,#1f0a28,#300a40)' },
-  { id: 'p08', ratio: 1,    label: '1:1',  grad: 'linear-gradient(135deg,#0a1a1f,#0a2a30)' },
-  { id: 'p09', ratio: 16/9, label: '16:9', grad: 'linear-gradient(135deg,#200a14,#3c0a1e)' },
-  { id: 'p10', ratio: 9/16, label: '9:16', grad: 'linear-gradient(135deg,#141f0a,#243010)' },
-  { id: 'p11', ratio: 4/3,  label: '4:3',  grad: 'linear-gradient(135deg,#0f1e20,#1a2e30)' },
-  { id: 'p12', ratio: 1,    label: '1:1',  grad: 'linear-gradient(135deg,#200f1a,#301520)' },
-  { id: 'p13', ratio: 9/16, label: '9:16', grad: 'linear-gradient(135deg,#0a1428,#0a2040)' },
-  { id: 'p14', ratio: 16/9, label: '16:9', grad: 'linear-gradient(135deg,#1a1428,#2a1840)' },
-  { id: 'p15', ratio: 3/4,  label: '3:4',  grad: 'linear-gradient(135deg,#0a200a,#143014)' },
-  { id: 'p16', ratio: 1,    label: '1:1',  grad: 'linear-gradient(135deg,#200a0a,#301414)' },
+  ...Array.from({ length: 18 }, (_, i) => ({
+    id:    `e${String(i + 1).padStart(2, '0')}`,
+    ratio: PORTRAIT_R,
+    label: '9:16',
+    grad:  'linear-gradient(135deg,#0a0a14,#1a0a3c)',
+    src:   `/showcase/exemple${i + 1}.mp4`,
+  })),
+  { id: 'e19', ratio: LANDSCAPE_R, label: '16:9', grad: 'linear-gradient(135deg,#0f0c29,#302b63)', src: '/showcase/exemple19.mp4' },
 ]
 
 // ── PortfolioRow — infinite scroll + drag souris/touch ─────────────────────
@@ -114,14 +110,21 @@ function PortfolioRow({
           return (
             <div key={`${item.id}-${i}`} style={{
               width: w, height: rowHeight, flexShrink: 0, borderRadius: 10,
-              background: item.grad, border: '1px solid rgba(124,92,252,0.12)',
+              background: item.grad, border: '1px solid rgba(255,255,255,0.06)',
               position: 'relative', overflow: 'hidden',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
-              <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: 'rgba(255,255,255,0.18)', textTransform: 'uppercase' }}>
-                {item.label}
-              </span>
-              <div style={{ position: 'absolute', top: 8, right: 8, width: 5, height: 5, borderRadius: '50%', background: 'rgba(124,92,252,0.35)' }} />
+              {item.src ? (
+                <video
+                  src={item.src}
+                  autoPlay muted loop playsInline preload="none"
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                />
+              ) : (
+                <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: 'rgba(255,255,255,0.18)', textTransform: 'uppercase' }}>
+                  {item.label}
+                </span>
+              )}
             </div>
           )
         })}
@@ -1219,11 +1222,14 @@ export default function HomePage() {
               key={openVideo}
               className="video-modal-video"
               src={`/showcase/${openVideo}.mp4`}
-              autoPlay
               controls
               playsInline
-              muted={false}
-              ref={(el) => { if (el) { el.muted = false; el.play().catch(() => {}); } }}
+              ref={(el) => {
+                if (!el) return
+                el.muted = false
+                el.volume = 1
+                el.play().catch(() => { /* controls visibles si autoplay bloqué */ })
+              }}
             />
           </div>
         </div>
