@@ -4,7 +4,7 @@
 // Page checkout multi-step ScenIQ V1 agence services
 // Étapes : 1. Config (format + durée) → 2. Brief + refs → 3. Coordonnées → 4. Paiement Stripe
 
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import Link from 'next/link'
 
 // ─── Types ─────────────────────────────────────────────────────────────────
@@ -176,6 +176,17 @@ export default function CommandePage() {
   const [dragOver, setDragOver]       = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  // ─── Pré-remplissage depuis URL params (?duree=10&modele=1) ────────────────
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const duree  = params.get('duree')
+    if (duree) {
+      const n = parseInt(duree) as Duration
+      if (([5, 8, 10, 12, 15] as number[]).includes(n)) setDuration(n)
+    }
+    if (params.get('modele') === '1') setWantAiModel(true)
+  }, [])
+
   const basePrice  = duration ? PRICE[duration] : null
   const totalPrice = basePrice !== null ? basePrice + (wantAiModel ? AI_MODEL_ADDON : 0) : null
   const price      = totalPrice
@@ -305,26 +316,7 @@ export default function CommandePage() {
               Format et durée — le prix s'affiche en temps réel.
             </p>
 
-            {/* Format */}
-            <div style={{ marginBottom: 28 }}>
-              <Label>Format vidéo</Label>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
-                {FORMATS.map(f => (
-                  <button key={f.value} onClick={() => setFormat(f.value)} style={{
-                    padding: '12px 10px', borderRadius: 10, cursor: 'pointer',
-                    background: format === f.value ? s.accentBg : s.surface,
-                    border: format === f.value ? `1.5px solid ${s.accent}` : s.border,
-                    color: s.text, textAlign: 'center', transition: 'all .15s',
-                  }}>
-                    <FormatIcon ratio={f.ratio} active={format === f.value} />
-                    <div style={{ fontSize: 14, fontWeight: 700, color: format === f.value ? s.accent : '#fff' }}>{f.label}</div>
-                    <div style={{ fontSize: 10, color: s.muted, marginTop: 2 }}>{f.desc}</div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Durée */}
+            {/* Durée — en premier pour cohérence avec le flow depuis la page tarifs */}
             <div style={{ marginBottom: 32 }}>
               <Label>Durée</Label>
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
@@ -341,6 +333,25 @@ export default function CommandePage() {
                     <div style={{ fontSize: 12, color: duration === d ? s.accent : s.muted, marginTop: 4, fontWeight: 600 }}>
                       {PRICE[d]} €
                     </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Format */}
+            <div style={{ marginBottom: 28 }}>
+              <Label>Format vidéo</Label>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+                {FORMATS.map(f => (
+                  <button key={f.value} onClick={() => setFormat(f.value)} style={{
+                    padding: '12px 10px', borderRadius: 10, cursor: 'pointer',
+                    background: format === f.value ? s.accentBg : s.surface,
+                    border: format === f.value ? `1.5px solid ${s.accent}` : s.border,
+                    color: s.text, textAlign: 'center', transition: 'all .15s',
+                  }}>
+                    <FormatIcon ratio={f.ratio} active={format === f.value} />
+                    <div style={{ fontSize: 14, fontWeight: 700, color: format === f.value ? s.accent : '#fff' }}>{f.label}</div>
+                    <div style={{ fontSize: 10, color: s.muted, marginTop: 2 }}>{f.desc}</div>
                   </button>
                 ))}
               </div>

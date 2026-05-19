@@ -658,7 +658,7 @@ export default function HomePage() {
                 <a href="#reels" className="lv2-btn lv2-btn-accent">
                   Voir les clips avec modèles IA →
                 </a>
-                <a href="/commande" className="lv2-btn lv2-btn-ghost" style={{ fontSize: 14 }}>
+                <a href="/commande?modele=1" className="lv2-btn lv2-btn-ghost" style={{ fontSize: 14 }}>
                   Ajouter l&apos;option · +49 €
                 </a>
               </div>
@@ -762,7 +762,7 @@ export default function HomePage() {
                   <li className="lv2-price-perk">10 itérations</li>
                 </ul>
                 <a
-                  href="/commande"
+                  href={`/commande?duree=${parseInt(p.dur)}`}
                   className={`lv2-btn${p.featured ? ' lv2-btn-accent' : ' lv2-btn-ghost'}`}
                   style={{ marginTop: 8, width: '100%', justifyContent: 'center' }}
                 >
