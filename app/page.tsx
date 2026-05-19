@@ -507,15 +507,63 @@ export default function HomePage() {
                 ))}
               </ul>
             </div>
-            <div>
-              <div className="lv2-placeholder" aria-hidden="true">
-                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <polygon points="5,3 19,12 5,21"/>
-                </svg>
-                <span style={{ fontSize: 11, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-                  Exemple vidéo générée — à venir
-                </span>
+            {/* Composition vidéo : 16:9 + 9:16 superposés */}
+            <div style={{ position: 'relative', paddingBottom: '38%' }}>
+
+              {/* ── Carte 16:9 ── */}
+              <div style={{
+                aspectRatio: '16/9', borderRadius: 14, overflow: 'hidden',
+                background: 'var(--surface)', border: '1px solid var(--bdr-md)',
+                position: 'relative',
+              }}>
+                <video
+                  autoPlay muted loop playsInline preload="none"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                >
+                  <source src="/showcase/exemple3.mp4" type="video/mp4" />
+                </video>
+                {/* Label format */}
+                <div style={{
+                  position: 'absolute', top: 10, left: 12,
+                  padding: '3px 8px', borderRadius: 5,
+                  background: 'rgba(7,7,15,0.78)', border: '1px solid rgba(255,255,255,0.1)',
+                  fontSize: 10, fontWeight: 700, letterSpacing: '0.07em', color: 'rgba(255,255,255,0.55)',
+                }}>16:9</div>
               </div>
+
+              {/* ── Carte 9:16 — flottante en bas à droite ── */}
+              <div style={{
+                position: 'absolute', bottom: 0, right: 0,
+                width: '36%', aspectRatio: '9/16',
+                borderRadius: 14, overflow: 'hidden',
+                background: 'var(--surface)',
+                border: '1px solid rgba(124,92,252,0.4)',
+                boxShadow: '0 24px 64px rgba(0,0,0,0.55), 0 0 0 1px rgba(124,92,252,0.1)',
+              }}>
+                <video
+                  autoPlay muted loop playsInline preload="none"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                >
+                  <source src="/showcase/exemple7.mp4" type="video/mp4" />
+                </video>
+                {/* Label format */}
+                <div style={{
+                  position: 'absolute', top: 10, left: 10,
+                  padding: '3px 8px', borderRadius: 5,
+                  background: 'rgba(7,7,15,0.78)', border: '1px solid rgba(124,92,252,0.3)',
+                  fontSize: 10, fontWeight: 700, letterSpacing: '0.07em', color: 'rgba(165,180,252,0.7)',
+                }}>9:16</div>
+              </div>
+
+              {/* ── Note bas ── */}
+              <p style={{
+                position: 'absolute', bottom: -28, left: 0,
+                fontSize: 11, color: 'var(--g6)', letterSpacing: '0.04em',
+                margin: 0,
+              }}>
+                Clips générés via Seedance 2.0 depuis un brief de 2 lignes
+              </p>
+
             </div>
           </div>
 
