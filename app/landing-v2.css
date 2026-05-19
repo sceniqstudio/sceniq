@@ -3,6 +3,13 @@
    Tous les styles scopés sous .lv2 pour éviter tout conflit
    ═══════════════════════════════════════════════════════════════ */
 
+/* ── BODY OVERRIDE — annule le body blanc de globals.css ─────── */
+body:has(.lv2) {
+  background: #07070F;
+  color: #ffffff;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
 /* ── TOKENS ────────────────────────────────────────────────── */
 .lv2 {
   --bg:        #07070F;

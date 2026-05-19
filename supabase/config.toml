@@ -6,7 +6,7 @@ extra_search_path = ["public", "extensions"]
 
 [db]
 port = 54322
-major_version = 15
+major_version = 17
 
 [studio]
 port = 54323
@@ -16,29 +16,10 @@ port = 54324
 
 [storage]
 enabled = true
-
-[[storage.buckets]]
-name = "brand-assets"
-public = false
-file_size_limit = "10MB"
-allowed_mime_types = ["image/png", "image/jpeg", "image/svg+xml", "image/webp", "video/mp4", "video/quicktime", "application/pdf"]
-
-[[storage.buckets]]
-name = "clips"
-public = true
-file_size_limit = "500MB"
-allowed_mime_types = ["video/mp4"]
-
-[[storage.buckets]]
-name = "client-uploads"
-public = false
-file_size_limit = "25MB"
-allowed_mime_types = [
-  "image/jpeg", "image/png", "image/webp", "image/bmp", "image/tiff", "image/gif",
-  "image/heic", "image/heif",
-  "audio/mpeg", "audio/wav", "audio/mp4", "audio/aac", "audio/x-m4a",
-  "video/mp4", "video/quicktime", "video/webm"
-]
+# Buckets définis ici uniquement pour référence — créer manuellement dans le dashboard Supabase
+# brand-assets : privé, 10MB, images+vidéo
+# clips : public, 500MB, video/mp4
+# client-uploads : privé, 25MB, images+audio+vidéo (pour /commande)
 
 [auth]
 enabled = true

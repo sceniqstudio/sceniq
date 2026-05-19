@@ -6,7 +6,6 @@
 
 import { useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
-import { Logo } from '@/app/_components/Logo'
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 
@@ -283,7 +282,7 @@ export default function CommandePage() {
           <Link href="/" style={{ fontSize: 13, color: s.muted, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
             ← Retour
           </Link>
-          <Logo size={34} />
+          <img src="/logo-sceniq.svg" alt="ScenIQ" style={{ height: 40, display: 'block' }} />
         </div>
 
         {/* Step indicator */}
@@ -376,7 +375,10 @@ export default function CommandePage() {
                 borderRadius: 10, padding: '16px 20px', marginBottom: 28,
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
               }}>
-                <span style={{ fontSize: 14, color: s.accent }}>Tous formats · 10 itérations · 48 h</span>
+                <span style={{ fontSize: 13, color: s.accent, lineHeight: 1.5 }}>
+                  Tous formats inclus · 10 allers-retours inclus<br />
+                  <span style={{ color: 'rgba(165,180,252,.7)' }}>Livraison MP4 sous 48 h après validation</span>
+                </span>
                 <span style={{ fontSize: 20, fontWeight: 700, color: '#fff' }}>{price}&nbsp;€&nbsp;<span style={{ fontSize: 13, fontWeight: 400, color: s.muted }}>HT</span></span>
               </div>
             )}
@@ -607,7 +609,7 @@ export default function CommandePage() {
               <div style={{ borderBottom: s.border, padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
                   <div style={{ fontSize: 16, fontWeight: 700, color: '#fff' }}>Vidéo IA {duration}s · {format}</div>
-                  <div style={{ fontSize: 13, color: s.muted, marginTop: 2 }}>Tous formats inclus · 10 itérations · Livraison sous 48 h</div>
+                  <div style={{ fontSize: 13, color: s.muted, marginTop: 2 }}>Tous formats inclus · 10 allers-retours · MP4 livré sous 48 h après validation</div>
                 </div>
                 <div style={{ fontSize: 22, fontWeight: 700, color: s.accent }}>{price}&nbsp;€&nbsp;<span style={{ fontSize: 13, fontWeight: 400, color: s.muted }}>HT</span></div>
               </div>
@@ -646,7 +648,7 @@ export default function CommandePage() {
               borderRadius: 10, padding: '14px 18px', marginBottom: 24,
               fontSize: 13, color: 'rgba(255,255,255,.7)', lineHeight: 1.6,
             }}>
-              🔒 Paiement sécurisé Stripe · Remboursement si la préprod ne convient pas après 10 itérations · Facture TVA sur demande
+              🔒 Paiement sécurisé Stripe — vous recevez un email de confirmation immédiatement après le paiement. Je reviens sous 4 h ouvrées avec la préprod (concept + storyboard + ambiance). 10 allers-retours inclus pour affiner. Remboursement intégral si la direction créative ne convient pas. Facture TVA disponible sur demande.
             </div>
 
             {/* Erreur */}
