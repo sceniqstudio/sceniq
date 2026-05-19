@@ -597,16 +597,17 @@ export default function HomePage() {
             <div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
                 {[
-                  { slug: 'kaelys',   name: 'Kaelys', type: 'Influenceuse', featured: true  },
-                  { slug: 'modele-1', name: 'Sofia',  type: 'Lifestyle',    featured: false },
-                  { slug: 'modele-2', name: 'Marcus', type: 'Urbain',       featured: false },
+                  { slug: 'kaelys',   name: 'Kaelys', type: 'Influenceuse', featured: true,  ratio: '9/16' },
+                  { slug: 'modele-1', name: 'Marcus', type: 'Tech · Urbain', featured: false, ratio: '9/16' },
+                  { slug: 'modele-2', name: 'Sofia',  type: 'Business',     featured: false, ratio: '9/16' },
                 ].map((m) => (
                   <div
                     key={m.slug}
                     style={{
-                      aspectRatio: '3/4', borderRadius: 12, overflow: 'hidden', position: 'relative',
+                      aspectRatio: m.ratio, borderRadius: 12, overflow: 'hidden', position: 'relative',
                       background: m.featured ? 'linear-gradient(160deg,#1a0f3a,#0e0e1a)' : 'var(--surface)',
                       border: `1px solid ${m.featured ? 'rgba(124,92,252,0.35)' : 'var(--bdr-md)'}`,
+                      alignSelf: 'start',
                     }}
                   >
                     <img
