@@ -248,6 +248,7 @@ export default function HomePage() {
           <ul className="lv2-nav-links">
             <li><a href="#process">Comment ça marche</a></li>
             <li><a href="#qualite">Qualité</a></li>
+            <li><a href="#modeles">Modèles IA</a></li>
             <li><a href="#tarifs">Tarifs</a></li>
             <li><a href="#reels">Exemples</a></li>
             <li><a href="#faq">FAQ</a></li>
@@ -281,11 +282,12 @@ export default function HomePage() {
               <button className="lv2-mob-close" onClick={() => setMobileMenuOpen(false)} aria-label="Fermer">×</button>
             </div>
             <ul className="lv2-mob-links">
-              <li><a href="#process" onClick={() => setMobileMenuOpen(false)}>Comment ça marche</a></li>
-              <li><a href="#qualite" onClick={() => setMobileMenuOpen(false)}>Qualité</a></li>
-              <li><a href="#tarifs"  onClick={() => setMobileMenuOpen(false)}>Tarifs</a></li>
-              <li><a href="#reels"   onClick={() => setMobileMenuOpen(false)}>Exemples</a></li>
-              <li><a href="#faq"     onClick={() => setMobileMenuOpen(false)}>FAQ</a></li>
+              <li><a href="#process"  onClick={() => setMobileMenuOpen(false)}>Comment ça marche</a></li>
+              <li><a href="#qualite"  onClick={() => setMobileMenuOpen(false)}>Qualité</a></li>
+              <li><a href="#modeles"  onClick={() => setMobileMenuOpen(false)}>Modèles IA</a></li>
+              <li><a href="#tarifs"   onClick={() => setMobileMenuOpen(false)}>Tarifs</a></li>
+              <li><a href="#reels"    onClick={() => setMobileMenuOpen(false)}>Exemples</a></li>
+              <li><a href="#faq"      onClick={() => setMobileMenuOpen(false)}>FAQ</a></li>
             </ul>
             <div className="lv2-mob-cta">
               <a
@@ -544,6 +546,129 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── MODÈLES IA ───────────────────────────────────────────────────── */}
+      <section className="lv2-s" id="modeles" style={{ background: 'linear-gradient(180deg, var(--bg) 0%, rgba(124,92,252,0.04) 50%, var(--bg) 100%)' }}>
+        <div className="lv2-si">
+          <div className="rv" style={{ textAlign: 'center' }}>
+            <div className="lv2-label">Option disponible</div>
+            <h2>Votre publicité.<br />Avec un visage.</h2>
+            <p className="lv2-s-sub" style={{ maxWidth: 560, margin: '16px auto 0' }}>
+              Ajoutez un modèle ou une influenceuse IA sur mesure à votre spot — selon votre description, sans casting, sans agence.
+            </p>
+          </div>
+
+          {/* Grille modèles */}
+          <div className="lv2-models-grid rv">
+            {[
+              {
+                slug: 'kaelys', name: 'Kaelys', type: 'Influenceuse IA · ScenIQ',
+                featured: true,
+                bg: 'linear-gradient(155deg, #1a0f3a 0%, #2d1866 40%, #120b2a 100%)',
+                icon: '✦',
+              },
+              {
+                slug: 'modele-1', name: 'Sofia', type: 'Lifestyle · 25–35 ans',
+                featured: false,
+                bg: 'linear-gradient(155deg, #0a1929 0%, #1a3a5c 50%, #080f1a 100%)',
+                icon: '◆',
+              },
+              {
+                slug: 'modele-2', name: 'Marcus', type: 'Urbain · 28–40 ans',
+                featured: false,
+                bg: 'linear-gradient(155deg, #111a0a 0%, #243a10 50%, #0a0e06 100%)',
+                icon: '●',
+              },
+              {
+                slug: 'modele-3', name: 'Léa', type: 'Beauté · 20–30 ans',
+                featured: false,
+                bg: 'linear-gradient(155deg, #1f0a1a 0%, #3d1535 50%, #0e0609 100%)',
+                icon: '◈',
+              },
+              {
+                slug: 'modele-4', name: 'Sur mesure', type: 'Selon votre brief',
+                featured: false,
+                bg: 'linear-gradient(155deg, #111118 0%, #1c1c2e 50%, #07070f 100%)',
+                icon: '+',
+              },
+            ].map((m) => (
+              <div key={m.slug} className={`lv2-model-card${m.featured ? ' featured' : ''}`} style={{ background: m.bg }}>
+                {/* Image réelle quand disponible — placeholder gradient sinon */}
+                <img
+                  src={`/models/${m.slug}.jpg`}
+                  alt={m.name}
+                  className="lv2-model-img"
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                />
+                {/* Placeholder visible tant que l'image n'est pas uploadée */}
+                <div className="lv2-model-ph" aria-hidden="true">
+                  <div className="lv2-model-ph-icon">{m.icon}</div>
+                  <div className="lv2-model-ph-lbl">Image à venir</div>
+                </div>
+                {/* Badge légal */}
+                <div className="lv2-model-ai-badge" aria-label="Image générée par intelligence artificielle">
+                  <div className="lv2-model-ai-dot" />
+                  Généré par IA
+                </div>
+                {/* Info */}
+                <div className="lv2-model-info">
+                  <div className="lv2-model-name">{m.name}</div>
+                  <div className="lv2-model-type">{m.type}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Différenciateurs — pourquoi c'est mieux */}
+          <div className="lv2-model-diff rv">
+            <div className="lv2-model-diff-item">
+              <div className="lv2-model-diff-cross">✕ Fini le casting</div>
+              <div className="lv2-model-diff-title">Pas de cachet. Pas de caprice.</div>
+              <div className="lv2-model-diff-desc">
+                Pas de contrat modèle, pas de droits à l&apos;image à négocier, pas d&apos;heure de retard sur le tournage. Le modèle est généré depuis votre description en quelques heures.
+              </div>
+            </div>
+            <div className="lv2-model-diff-item">
+              <div className="lv2-model-diff-cross">✕ Fini les tarifs lunaires</div>
+              <div className="lv2-model-diff-title">+49 € fixe. Rien d&apos;autre.</div>
+              <div className="lv2-model-diff-desc">
+                Une agence vous facture 800–3 000 € de casting pour un modèle d&apos;une journée. ScenIQ génère votre visage de marque pour 49 € en option, directement dans votre forfait.
+              </div>
+            </div>
+            <div className="lv2-model-diff-item">
+              <div className="lv2-model-diff-cross">✕ Fini les indisponibilités</div>
+              <div className="lv2-model-diff-title">Disponible 24h/24. Recadrable à volonté.</div>
+              <div className="lv2-model-diff-desc">
+                Besoin d&apos;un angle différent, d&apos;une expression autre ou d&apos;un format vertical ? On regenere. Pas de rappel, pas de nouveau shooting, inclus dans vos 10 itérations.
+              </div>
+            </div>
+          </div>
+
+          {/* Notice légale — sérieux et transparent */}
+          <div className="lv2-model-legal rv">
+            <span style={{ fontSize: 16, flexShrink: 0, marginTop: 1 }}>⚖️</span>
+            <div>
+              <strong>Transparence légale — nous prenons ça au sérieux.</strong>{' '}
+              Conformément au <strong>Règlement Européen sur l&apos;IA (EU AI Act, art. 50)</strong> et à la{' '}
+              <strong>loi française du 9 juin 2023 sur les influenceurs</strong>, toute image ou personnage généré
+              par IA dans une communication commerciale doit être clairement labellisé.{' '}
+              ScenIQ vous fournit automatiquement la mention adaptée à chaque format de publication
+              (<em>«&nbsp;Image générée par IA&nbsp;»</em>). Vous restez responsable de l&apos;afficher
+              sur vos supports — nous vous le rappelons par écrit dans chaque livraison.{' '}
+              Tous les personnages générés sont <strong>entièrement fictifs</strong> — aucune ressemblance
+              avec une personne réelle n&apos;est recherchée ni reproduite.
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="lv2-model-cta rv">
+            <a href="/commande" className="lv2-btn lv2-btn-accent lv2-btn-lg">
+              Ajouter un modèle IA à ma commande → +49 €
+            </a>
+            <span style={{ fontSize: 13, color: 'var(--g6)' }}>Option disponible à l&apos;étape 1 du formulaire</span>
+          </div>
+        </div>
+      </section>
+
       {/* ── PRICING ──────────────────────────────────────────────────────── */}
       <section className="lv2-s alt" id="tarifs">
         <div className="lv2-si">
@@ -756,6 +881,10 @@ export default function HomePage() {
             <div className="lv2-faq-col">
               {[
                 {
+                  q: "Puis-je inclure un modèle ou une influenceuse IA dans ma vidéo ?",
+                  a: "Oui — c'est une option à +49 € sur votre forfait. Vous décrivez le profil (âge, style, ambiance), ScenIQ génère le personnage IA sur mesure. Tous les personnages sont entièrement fictifs. Conformément au EU AI Act et à la loi française sur les influenceurs (juin 2023), une mention 'Image générée par IA' est obligatoire sur vos publications. ScenIQ vous fournit cette mention dans chaque livraison. Vous restez responsable de l'afficher sur vos supports.",
+                },
+                {
                   q: "Que se passe-t-il si le résultat ne me convient pas ?",
                   a: "10 itérations sont incluses dans chaque commande. Si après 10 allers-retours nous n'arrivons pas à un résultat satisfaisant, vous êtes intégralement remboursé. C'est rare — ça ne nous est pas encore arrivé.",
                 },
@@ -834,6 +963,7 @@ export default function HomePage() {
             <div className="lv2-footer-col-title">Service</div>
             <ul className="lv2-footer-links">
               <li><a href="#process">Comment ça marche</a></li>
+              <li><a href="#modeles">Modèles IA</a></li>
               <li><a href="#tarifs">Tarifs</a></li>
               <li><a href="#reels">Exemples</a></li>
               <li><a href="/commande">Commander</a></li>

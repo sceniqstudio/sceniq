@@ -24,6 +24,7 @@ const CALL_TIMES: { value: CallTime; range: string }[] = [
 const PRICE: Record<Duration, number> = {
   5: 69, 8: 89, 10: 109, 12: 129, 15: 159,
 }
+const AI_MODEL_ADDON = 49
 
 const FORMATS: { value: Format; label: string; desc: string; ratio: [number, number] }[] = [
   { value: '21:9', label: '21:9', desc: 'Cinéma / Ultra-wide',    ratio: [21, 9] },
@@ -157,6 +158,8 @@ export default function CommandePage() {
   const [step, setStep]               = useState(0)
   const [format, setFormat]           = useState<Format | null>(null)
   const [duration, setDuration]       = useState<Duration | null>(null)
+  const [wantAiModel, setWantAiModel] = useState(false)
+  const [aiModelDesc, setAiModelDesc] = useState('')
   const [brief, setBrief]             = useState('')
   const [files, setFiles]             = useState<File[]>([])
   const [uploading, setUploading]     = useState(false)
@@ -173,7 +176,9 @@ export default function CommandePage() {
   const [dragOver, setDragOver]       = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const price = duration ? PRICE[duration] : null
+  const basePrice  = duration ? PRICE[duration] : null
+  const totalPrice = basePrice !== null ? basePrice + (wantAiModel ? AI_MODEL_ADDON : 0) : null
+  const price      = totalPrice
 
   // ─── Handlers ──────────────────────────────────────────────────────────────
 
@@ -239,6 +244,8 @@ export default function CommandePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           format, duration, brief,
+          want_ai_model: wantAiModel,
+          ai_model_desc: wantAiModel ? aiModelDesc : undefined,
           client_name: clientName,
           client_email: clientEmail,
           client_phone: clientPhone || undefined,
@@ -339,6 +346,93 @@ export default function CommandePage() {
               </div>
             </div>
 
+            {/* Option Modèle IA */}
+            <div style={{ marginBottom: 28 }}>
+              <Label>Option · Modèle IA sur mesure</Label>
+              <button
+                type="button"
+                onClick={() => setWantAiModel(v => !v)}
+                style={{
+                  width: '100%', padding: '16px 18px', borderRadius: 12, cursor: 'pointer',
+                  background: wantAiModel ? 'rgba(165,180,252,0.1)' : s.surface,
+                  border: wantAiModel ? `1.5px solid ${s.accent}` : s.border,
+                  color: s.text, textAlign: 'left', transition: 'all .15s',
+                  display: 'flex', alignItems: 'flex-start', gap: 14,
+                }}
+              >
+                {/* Toggle visuel */}
+                <div style={{
+                  width: 44, height: 24, borderRadius: 999, flexShrink: 0, marginTop: 2,
+                  background: wantAiModel ? s.accent : 'rgba(255,255,255,.15)',
+                  position: 'relative', transition: 'background .15s',
+                }}>
+                  <div style={{
+                    position: 'absolute', top: 3, width: 18, height: 18, borderRadius: '50%',
+                    background: '#fff', transition: 'left .15s',
+                    left: wantAiModel ? 23 : 3,
+                    boxShadow: '0 1px 4px rgba(0,0,0,0.4)',
+                  }} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: 15, fontWeight: 700, color: wantAiModel ? s.accent : '#fff' }}>
+                      Inclure un modèle IA sur mesure
+                    </span>
+                    <span style={{
+                      padding: '2px 9px', borderRadius: 999, fontSize: 12, fontWeight: 700,
+                      background: wantAiModel ? 'rgba(165,180,252,0.15)' : 'rgba(255,255,255,0.07)',
+                      color: wantAiModel ? s.accent : s.muted,
+                    }}>
+                      +{AI_MODEL_ADDON} €
+                    </span>
+                  </div>
+                  <p style={{ margin: '5px 0 0', fontSize: 12, color: s.muted, lineHeight: 1.55 }}>
+                    Personnage IA fictif selon votre description — pas de cachet, pas de contrat,
+                    pas de droits à gérer. Mention légale «&nbsp;Image générée par IA&nbsp;» fournie.
+                  </p>
+                </div>
+              </button>
+
+              {/* Champ description si activé */}
+              {wantAiModel && (
+                <div style={{ marginTop: 12 }}>
+                  <label style={{ fontSize: 12, fontWeight: 600, color: s.muted, display: 'block', marginBottom: 6, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                    Description du modèle
+                  </label>
+                  <textarea
+                    value={aiModelDesc}
+                    onChange={e => setAiModelDesc(e.target.value)}
+                    placeholder="Ex : Femme 28–35 ans, style urbain et décontracté, peau claire, cheveux mi-longs châtains, regard direct, ambiance moderne et accessible."
+                    rows={3}
+                    maxLength={400}
+                    style={{
+                      width: '100%', boxSizing: 'border-box', padding: '11px 14px',
+                      borderRadius: 8, background: s.surface, border: s.border,
+                      color: s.text, fontSize: 13, lineHeight: 1.55,
+                      resize: 'vertical', outline: 'none', fontFamily: 'inherit',
+                      transition: 'border-color .15s',
+                    }}
+                    onFocus={e => (e.target.style.borderColor = s.accent)}
+                    onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,.1)')}
+                  />
+                  {/* Notice légale inline */}
+                  <div style={{
+                    marginTop: 10, padding: '10px 14px', borderRadius: 8,
+                    background: 'rgba(165,180,252,0.06)',
+                    border: '1px solid rgba(165,180,252,0.15)',
+                    fontSize: 11, color: 'rgba(255,255,255,0.4)', lineHeight: 1.6,
+                  }}>
+                    ⚖️ Le personnage généré est <strong style={{ color: 'rgba(255,255,255,0.55)' }}>entièrement fictif</strong> —
+                    aucune ressemblance avec une personne réelle n&apos;est reproduite. Conformément au{' '}
+                    <strong style={{ color: 'rgba(255,255,255,0.55)' }}>EU AI Act (art. 50)</strong> et à la{' '}
+                    <strong style={{ color: 'rgba(255,255,255,0.55)' }}>loi du 9 juin 2023</strong> sur les influenceurs,
+                    la mention «&nbsp;Image générée par IA&nbsp;» est obligatoire sur vos publications.
+                    ScenIQ vous la fournit dans la livraison. Vous restez responsable de l&apos;afficher.
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Récap sélection */}
             {(format || duration) && (
               <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
@@ -373,13 +467,22 @@ export default function CommandePage() {
               <div style={{
                 background: s.accentBg, border: `1px solid rgba(165,180,252,.25)`,
                 borderRadius: 10, padding: '16px 20px', marginBottom: 28,
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
               }}>
-                <span style={{ fontSize: 13, color: s.accent, lineHeight: 1.5 }}>
-                  Tous formats inclus · 10 allers-retours inclus<br />
-                  <span style={{ color: 'rgba(165,180,252,.7)' }}>Livraison MP4 sous 48 h après validation</span>
-                </span>
-                <span style={{ fontSize: 20, fontWeight: 700, color: '#fff' }}>{price}&nbsp;€&nbsp;<span style={{ fontSize: 13, fontWeight: 400, color: s.muted }}>HT</span></span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <span style={{ fontSize: 13, color: s.accent, lineHeight: 1.5 }}>
+                    Tous formats inclus · 10 allers-retours inclus<br />
+                    <span style={{ color: 'rgba(165,180,252,.7)' }}>Livraison MP4 sous 48 h après validation</span>
+                  </span>
+                  <span style={{ fontSize: 20, fontWeight: 700, color: '#fff', whiteSpace: 'nowrap', marginLeft: 12 }}>
+                    {price}&nbsp;€&nbsp;<span style={{ fontSize: 13, fontWeight: 400, color: s.muted }}>HT</span>
+                  </span>
+                </div>
+                {wantAiModel && (
+                  <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid rgba(165,180,252,.15)', fontSize: 12, color: 'rgba(165,180,252,.8)', display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Forfait vidéo {duration}s …… {basePrice} €</span>
+                    <span style={{ color: s.accent }}>+ Modèle IA …… +{AI_MODEL_ADDON} €</span>
+                  </div>
+                )}
               </div>
             )}
 
@@ -606,12 +709,20 @@ export default function CommandePage() {
 
             {/* Récap */}
             <div style={{ background: s.surface, border: s.border, borderRadius: 12, overflow: 'hidden', marginBottom: 20 }}>
-              <div style={{ borderBottom: s.border, padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: '#fff' }}>Vidéo IA {duration}s · {format}</div>
-                  <div style={{ fontSize: 13, color: s.muted, marginTop: 2 }}>Tous formats inclus · 10 allers-retours · MP4 livré sous 48 h après validation</div>
+              <div style={{ borderBottom: s.border, padding: '16px 20px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: '#fff' }}>Vidéo IA {duration}s · {format}</div>
+                    <div style={{ fontSize: 13, color: s.muted, marginTop: 2 }}>Tous formats inclus · 10 allers-retours · MP4 livré sous 48 h après validation</div>
+                  </div>
+                  <div style={{ fontSize: 22, fontWeight: 700, color: s.accent, whiteSpace: 'nowrap', marginLeft: 12 }}>{price}&nbsp;€&nbsp;<span style={{ fontSize: 13, fontWeight: 400, color: s.muted }}>HT</span></div>
                 </div>
-                <div style={{ fontSize: 22, fontWeight: 700, color: s.accent }}>{price}&nbsp;€&nbsp;<span style={{ fontSize: 13, fontWeight: 400, color: s.muted }}>HT</span></div>
+                {wantAiModel && (
+                  <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid rgba(255,255,255,.06)', fontSize: 12, color: 'rgba(255,255,255,.5)', display: 'flex', justifyContent: 'space-between' }}>
+                    <span>dont option Modèle IA sur mesure (personnage fictif, mention légale fournie)</span>
+                    <span style={{ color: s.accent, fontWeight: 700, flexShrink: 0, marginLeft: 8 }}>+{AI_MODEL_ADDON} €</span>
+                  </div>
+                )}
               </div>
 
               <div style={{ padding: '16px 20px', borderBottom: s.border }}>
