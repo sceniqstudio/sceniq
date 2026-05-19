@@ -583,9 +583,12 @@ export default function HomePage() {
                 La mention «&nbsp;Image générée par IA&nbsp;» est obligatoire sur vos publications
                 (EU AI Act art.&nbsp;50 · loi FR 9 juin 2023). ScenIQ vous la fournit dans chaque livraison.
               </p>
-              <div style={{ marginTop: 24 }}>
-                <a href="/commande" className="lv2-btn lv2-btn-accent">
-                  Ajouter l&apos;option à ma commande →
+              <div style={{ marginTop: 24, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+                <a href="#reels" className="lv2-btn lv2-btn-accent">
+                  Voir les clips avec modèles IA →
+                </a>
+                <a href="/commande" className="lv2-btn lv2-btn-ghost" style={{ fontSize: 14 }}>
+                  Ajouter l&apos;option · +49 €
                 </a>
               </div>
             </div>
