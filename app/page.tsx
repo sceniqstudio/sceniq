@@ -443,7 +443,7 @@ export default function HomePage() {
               <div className="lv2-label">Intelligence artificielle</div>
               <h2>Cinq agents IA.<br />Une pré-prod complète.</h2>
               <p className="lv2-s-sub" style={{ marginTop: 16 }}>
-                Chaque agent est spécialisé. Ensemble, ils couvrent tout ce qu&apos;une équipe créa fait habituellement en plusieurs jours de réunions.
+                Chaque agent est spécialisé. Ensemble, ils couvrent tout ce qu&apos;une équipe créa fait habituellement en plusieurs jours de réunions — sans que vous n&apos;ouvriez aucune interface.
               </p>
               <ul className="lv2-feat-list">
                 {[
@@ -484,17 +484,17 @@ export default function HomePage() {
           {/* Split 2 : génération vidéo */}
           <div className="lv2-split lv2-split-reverse rv">
             <div>
-              <div className="lv2-label">Génération vidéo</div>
+              <div className="lv2-label">Seedance 2.0 by ByteDance</div>
               <h2>Génération vidéo.<br />Un prompt. Un clip livré.</h2>
               <p className="lv2-s-sub" style={{ marginTop: 16 }}>
-                Le Storyboarder produit un prompt multi-shot unifié. Un seul appel génère la vidéo déjà montée — pas de post-prod, pas d&apos;assemblage manuel. Cohérence visuelle garantie entre chaque plan.
+                Le Storyboarder produit un prompt multi-shot unifié. Un seul appel Seedance 2.0 génère la vidéo déjà montée — cohérence visuelle garantie entre chaque plan, sans post-prod ni assemblage manuel.
               </p>
               <ul className="lv2-feat-list">
                 {[
-                  'Formats 9:16, 1:1 et 16:9 inclus dans chaque commande',
-                  'De 2 à 4 shots selon la durée — rythmique adaptée à chaque format',
-                  'MP4 1080p livré directement, prêt pour Meta Ads, YouTube et TikTok',
-                  'Audio natif généré — voix off + ambiance sonore intégrées',
+                  'Résolution 1080p native — qualité broadcast, pas du 720p upscalé',
+                  'Audio natif intégré — ambiance sonore et voix off générées dans le même rendu',
+                  'Multi-shot en un seul appel — 2 à 4 plans selon la durée, déjà montés',
+                  'Formats 9:16, 1:1 et 16:9 inclus — prêts pour Meta Ads, TikTok et YouTube',
                 ].map((desc) => (
                   <li key={desc} className="lv2-feat-item">
                     <span className="lv2-feat-check">
@@ -511,16 +511,22 @@ export default function HomePage() {
             <div style={{ position: 'relative', paddingBottom: '38%' }}>
 
               {/* ── Carte 16:9 ── */}
-              <div style={{
-                aspectRatio: '16/9', borderRadius: 14, overflow: 'hidden',
-                background: 'var(--surface)', border: '1px solid var(--bdr-md)',
-                position: 'relative',
-              }}>
+              <button
+                type="button"
+                onClick={() => setOpenVideo('exemple19')}
+                style={{
+                  display: 'block', width: '100%',
+                  aspectRatio: '16/9', borderRadius: 14, overflow: 'hidden',
+                  background: 'var(--surface)', border: '1px solid var(--bdr-md)',
+                  position: 'relative', cursor: 'pointer', padding: 0,
+                }}
+                aria-label="Lire exemple 16:9 en grand format"
+              >
                 <video
                   autoPlay muted loop playsInline preload="none"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
                 >
-                  <source src="/showcase/exemple3.mp4" type="video/mp4" />
+                  <source src="/showcase/exemple19.mp4" type="video/mp4" />
                 </video>
                 {/* Label format */}
                 <div style={{
@@ -529,22 +535,39 @@ export default function HomePage() {
                   background: 'rgba(7,7,15,0.78)', border: '1px solid rgba(255,255,255,0.1)',
                   fontSize: 10, fontWeight: 700, letterSpacing: '0.07em', color: 'rgba(255,255,255,0.55)',
                 }}>16:9</div>
-              </div>
+                {/* Play hint */}
+                <div style={{
+                  position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  opacity: 0, transition: 'opacity 0.2s',
+                }}
+                  className="play-overlay"
+                >
+                  <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(124,92,252,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <svg viewBox="0 0 16 16" fill="white" width="16" height="16"><polygon points="4,2 14,8 4,14"/></svg>
+                  </div>
+                </div>
+              </button>
 
               {/* ── Carte 9:16 — flottante en bas à droite ── */}
-              <div style={{
-                position: 'absolute', bottom: 0, right: 0,
-                width: '36%', aspectRatio: '9/16',
-                borderRadius: 14, overflow: 'hidden',
-                background: 'var(--surface)',
-                border: '1px solid rgba(124,92,252,0.4)',
-                boxShadow: '0 24px 64px rgba(0,0,0,0.55), 0 0 0 1px rgba(124,92,252,0.1)',
-              }}>
+              <button
+                type="button"
+                onClick={() => setOpenVideo('exemple18')}
+                style={{
+                  position: 'absolute', bottom: 0, right: 0,
+                  width: '36%', aspectRatio: '9/16',
+                  borderRadius: 14, overflow: 'hidden',
+                  background: 'var(--surface)',
+                  border: '1px solid rgba(124,92,252,0.4)',
+                  boxShadow: '0 24px 64px rgba(0,0,0,0.55), 0 0 0 1px rgba(124,92,252,0.1)',
+                  cursor: 'pointer', padding: 0,
+                }}
+                aria-label="Lire exemple 9:16 en grand format"
+              >
                 <video
                   autoPlay muted loop playsInline preload="none"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
                 >
-                  <source src="/showcase/exemple7.mp4" type="video/mp4" />
+                  <source src="/showcase/exemple18.mp4" type="video/mp4" />
                 </video>
                 {/* Label format */}
                 <div style={{
@@ -553,7 +576,7 @@ export default function HomePage() {
                   background: 'rgba(7,7,15,0.78)', border: '1px solid rgba(124,92,252,0.3)',
                   fontSize: 10, fontWeight: 700, letterSpacing: '0.07em', color: 'rgba(165,180,252,0.7)',
                 }}>9:16</div>
-              </div>
+              </button>
 
               {/* ── Note bas ── */}
               <p style={{
@@ -916,6 +939,10 @@ export default function HomePage() {
                 {
                   q: "Puis-je inclure un modèle ou une influenceuse IA dans ma vidéo ?",
                   a: "Oui — c'est une option à +49 € sur votre forfait. Vous décrivez le profil (âge, style, ambiance), ScenIQ génère le personnage IA sur mesure. Tous les personnages sont entièrement fictifs. Conformément au EU AI Act et à la loi française sur les influenceurs (juin 2023), une mention 'Image générée par IA' est obligatoire sur vos publications. ScenIQ vous fournit cette mention dans chaque livraison. Vous restez responsable de l'afficher sur vos supports.",
+                },
+                {
+                  q: "Pourquoi Seedance 2.0 et pas Runway, Veo 3 ou Sora ?",
+                  a: "Seedance 2.0 est le moteur vidéo de ByteDance — la même entreprise que TikTok, donc optimisé pour les formats courts et les cuts dynamiques. Trois avantages concrets : (1) rendu 1080p natif avec audio intégré dans le même appel, là où les autres facturent son et image séparément. (2) architecture multi-shot en un seul prompt — la cohérence visuelle entre les plans est meilleure qu'en assemblant des clips séparés. (3) vitesse de rendu : un clip 10s est généré en moins de 3 minutes. Runway Gen-4 et Veo 3 produisent de bons résultats, mais sont plus lents, plus chers à l'usage, et moins optimisés pour le format pub court.",
                 },
                 {
                   q: "Que se passe-t-il si le résultat ne me convient pas ?",

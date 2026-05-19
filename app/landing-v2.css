@@ -1001,3 +1001,6 @@ body:has(.lv2) {
 @media (max-width: 600px) {
   .lv2-models-grid   { grid-template-columns: repeat(2, 1fr); gap: 10px; }
 }
+
+/* ── Composition vidéo — hover reveal play button ── */
+button:hover .play-overlay { opacity: 1 !important; }
