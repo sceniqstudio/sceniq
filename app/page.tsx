@@ -485,7 +485,7 @@ export default function HomePage() {
           <div className="lv2-split lv2-split-reverse rv">
             <div>
               <div className="lv2-label">Génération vidéo</div>
-              <h2>Génération vidéo.<br />Un prompt. Un spot livré.</h2>
+              <h2>Génération vidéo.<br />Un prompt. Un clip livré.</h2>
               <p className="lv2-s-sub" style={{ marginTop: 16 }}>
                 Le Storyboarder produit un prompt multi-shot unifié. Un seul appel génère la vidéo déjà montée — pas de post-prod, pas d&apos;assemblage manuel. Cohérence visuelle garantie entre chaque plan.
               </p>
@@ -556,7 +556,7 @@ export default function HomePage() {
               <div className="lv2-label">Option · +49 €</div>
               <h2>Un modèle IA.<br />Sur votre brief.</h2>
               <p className="lv2-s-sub" style={{ marginTop: 16 }}>
-                Décrivez le profil, ScenIQ génère le personnage. Intégré directement dans votre spot — pas de casting, pas d&apos;intermédiaire.
+                Décrivez le profil, ScenIQ génère le personnage. Intégré directement dans votre clip — pas de casting, pas d&apos;intermédiaire.
               </p>
               <ul className="lv2-feat-list">
                 {[
@@ -955,7 +955,7 @@ export default function HomePage() {
             <ul className="lv2-footer-links">
               <li><a href="#tarifs">Pub 5 secondes — 69 €</a></li>
               <li><a href="#tarifs">Reel 8 secondes — 89 €</a></li>
-              <li><a href="#tarifs">Spot 10 secondes — 109 €</a></li>
+              <li><a href="#tarifs">Clip 10 secondes — 109 €</a></li>
               <li><a href="#tarifs">Narration 12–15s</a></li>
             </ul>
           </div>
