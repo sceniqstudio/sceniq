@@ -790,19 +790,7 @@ export default function HomePage() {
                 Des publicités vidéo pour des marques de toutes tailles, dans tous les secteurs.
               </p>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <button className="car-arrow prev" id="cPrev" aria-label="Précédent">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <polyline points="15 18 9 12 15 6" />
-                </svg>
-              </button>
-              <div className="car-dots" id="cDots" />
-              <button className="car-arrow next" id="cNext" aria-label="Suivant">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </button>
-            </div>
+            <div className="car-dots" id="cDots" />
           </div>
         </div>
 
