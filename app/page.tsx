@@ -689,49 +689,50 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Cartes modèles */}
+            {/* Cartes modèles — layout éditorial */}
             <div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
-                {[
-                  { slug: 'kaelys',   name: 'Kaelys', type: 'Influenceuse', featured: true,  ratio: '9/16' },
-                  { slug: 'modele-1', name: 'Marcus', type: 'Tech · Urbain', featured: false, ratio: '9/16' },
-                  { slug: 'modele-2', name: 'Sofia',  type: 'Business',     featured: false, ratio: '9/16' },
-                ].map((m) => (
-                  <div
-                    key={m.slug}
-                    style={{
-                      aspectRatio: m.ratio, borderRadius: 12, overflow: 'hidden', position: 'relative',
-                      background: m.featured ? 'linear-gradient(160deg,#1a0f3a,#0e0e1a)' : 'var(--surface)',
-                      border: `1px solid ${m.featured ? 'rgba(124,92,252,0.35)' : 'var(--bdr-md)'}`,
-                      alignSelf: 'start',
-                    }}
-                  >
-                    <img
-                      src={`/models/${m.slug}.jpg`}
-                      alt={m.name}
-                      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-                    />
-                    {/* Tag IA */}
-                    <div style={{
-                      position: 'absolute', top: 8, left: 8,
-                      padding: '2px 7px', borderRadius: 4,
-                      background: 'rgba(7,7,15,0.82)', border: '1px solid rgba(255,255,255,0.1)',
-                      fontSize: 9, fontWeight: 700, letterSpacing: '0.09em',
-                      color: m.featured ? 'rgba(165,180,252,0.7)' : 'rgba(255,255,255,0.45)',
-                    }}>
-                      IA
-                    </div>
-                    <div style={{
-                      position: 'absolute', bottom: 0, left: 0, right: 0,
-                      padding: '32px 10px 10px',
-                      background: 'linear-gradient(to top,rgba(7,7,15,0.96),transparent)',
-                    }}>
-                      <div style={{ fontSize: 12, fontWeight: 700, color: m.featured ? '#A5B4FC' : '#fff' }}>{m.name}</div>
-                      <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.38)', textTransform: 'uppercase', letterSpacing: '0.07em', marginTop: 1 }}>{m.type}</div>
-                    </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1.25fr 1fr', gap: 10, height: 520 }}>
+
+                {/* Kaelys — pleine hauteur */}
+                <div style={{
+                  borderRadius: 14, overflow: 'hidden', position: 'relative', height: '100%',
+                  background: 'linear-gradient(160deg,#1a0f3a,#0e0e1a)',
+                  border: '1px solid rgba(124,92,252,0.35)',
+                }}>
+                  <img src="/models/kaelys.jpg" alt="Kaelys"
+                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                  />
+                  <div style={{ position: 'absolute', top: 10, left: 10, padding: '2px 8px', borderRadius: 4, background: 'rgba(7,7,15,0.82)', border: '1px solid rgba(255,255,255,0.1)', fontSize: 9, fontWeight: 700, letterSpacing: '0.09em', color: 'rgba(165,180,252,0.7)' }}>IA</div>
+                  <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '48px 14px 14px', background: 'linear-gradient(to top,rgba(7,7,15,0.97),transparent)' }}>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: '#A5B4FC' }}>Kaelys</div>
+                    <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.38)', textTransform: 'uppercase', letterSpacing: '0.07em', marginTop: 2 }}>Influenceuse</div>
                   </div>
-                ))}
+                </div>
+
+                {/* Marcus + Sofia empilés */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, height: '100%' }}>
+                  {[
+                    { slug: 'modele-1', name: 'Marcus', type: 'Tech · Urbain' },
+                    { slug: 'modele-2', name: 'Sofia',  type: 'Business' },
+                  ].map((m) => (
+                    <div key={m.slug} style={{
+                      flex: 1, borderRadius: 14, overflow: 'hidden', position: 'relative',
+                      background: 'var(--surface)', border: '1px solid var(--bdr-md)',
+                    }}>
+                      <img src={`/models/${m.slug}.jpg`} alt={m.name}
+                        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
+                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                      />
+                      <div style={{ position: 'absolute', top: 8, left: 8, padding: '2px 7px', borderRadius: 4, background: 'rgba(7,7,15,0.82)', border: '1px solid rgba(255,255,255,0.1)', fontSize: 9, fontWeight: 700, letterSpacing: '0.09em', color: 'rgba(255,255,255,0.45)' }}>IA</div>
+                      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '36px 12px 12px', background: 'linear-gradient(to top,rgba(7,7,15,0.97),transparent)' }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>{m.name}</div>
+                        <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.38)', textTransform: 'uppercase', letterSpacing: '0.07em', marginTop: 1 }}>{m.type}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
               </div>
               {/* Carte sur mesure */}
               <div style={{
@@ -816,8 +817,8 @@ export default function HomePage() {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <PortfolioRow items={portfolioRows[0]} direction="left"  rowHeight={190} speed={0.4} />
-          <PortfolioRow items={portfolioRows[1]} direction="right" rowHeight={190} speed={0.35} />
+          <PortfolioRow items={portfolioRows[0]} direction="left"  rowHeight={320} speed={0.5} />
+          <PortfolioRow items={portfolioRows[1]} direction="right" rowHeight={320} speed={0.42} />
         </div>
 
         <p style={{ textAlign: 'center', marginTop: 20, fontSize: 11, color: 'var(--g6)', letterSpacing: '0.06em' }}>
