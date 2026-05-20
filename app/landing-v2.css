@@ -650,8 +650,8 @@ body:has(.lv2) {
   font-size: 12px; font-weight: 700; color: var(--accent);
   flex-shrink: 0;
 }
-.lv2-process-title { font-size: 16px; font-weight: 700; }
-.lv2-process-desc { font-size: 13px; color: var(--g4); line-height: 1.6; }
+.lv2-process-title { font-size: 18px; font-weight: 700; }
+.lv2-process-desc { font-size: 15px; color: var(--g4); line-height: 1.65; }
 
 /* ── STATS ROW ───────────────────────────────────────────────── */
 .lv2-stats-row {
