@@ -433,12 +433,13 @@ export default function HomePage() {
       {/* ── TRUST STRIP ──────────────────────────────────────────────────── */}
       <div className="lv2-trust">
         <div className="lv2-trust-inner">
-          <span className="lv2-trust-lbl">Utilisé par</span>
+          <span className="lv2-trust-lbl">Pour</span>
           <div className="lv2-trust-items">
             <span className="lv2-trust-item">Agences pub</span>
             <span className="lv2-trust-item">Startups</span>
             <span className="lv2-trust-item">E-commerce</span>
-            <span className="lv2-trust-item">Directeurs créatifs</span>
+            <span className="lv2-trust-item">Créateurs</span>
+            <span className="lv2-trust-item">Particuliers</span>
             <span className="lv2-trust-item">Brand managers</span>
           </div>
         </div>
@@ -846,7 +847,7 @@ export default function HomePage() {
             <div className="lv2-label">Réalisations</div>
             <h2>Créé avec ScenIQ <span style={{ color: 'var(--g4)', fontWeight: 400 }}>+</span> Seedance 2.0</h2>
             <p style={{ color: 'var(--g4)', fontSize: 17, marginTop: 10, maxWidth: 460 }}>
-              Des publicités vidéo pour des marques de toutes tailles, dans tous les secteurs.
+              Produit 3D, action, lifestyle, animation, B2B. Tout ce qu&apos;une agence produit — généré en 48h.
             </p>
           </div>
         </div>
