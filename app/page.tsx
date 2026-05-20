@@ -808,7 +808,7 @@ export default function HomePage() {
           {/* ── Langues inline ── */}
           <div className="rv" style={{ textAlign: 'center', marginTop: 16 }}>
             <p style={{ fontSize: 13, color: 'var(--g6)' }}>
-              Voix-off ou dialogue inclus · 🇫🇷 🇺🇸 🇯🇵 🇪🇸 🇧🇷 🇮🇩
+              Lip sync · voix off ou dialogue · sous-titres · 🇫🇷 🇺🇸 🇯🇵 🇪🇸 🇧🇷 🇮🇩
             </p>
           </div>
 
@@ -869,7 +869,8 @@ export default function HomePage() {
                     <li className="lv2-price-perk">{p.shots} shots vidéo · {p.fmts}</li>
                     <li className="lv2-price-perk">Script IA + storyboard complet</li>
                     <li className="lv2-price-perk">Musique de fond + bruitages</li>
-                    <li className="lv2-price-perk">1 langue au choix <span style={{ color: 'var(--g6)', fontWeight: 400 }}>🇫🇷 🇺🇸 🇯🇵 🇪🇸 🇧🇷 🇮🇩</span></li>
+                    <li className="lv2-price-perk">Lip sync · voix off ou dialogue <span style={{ color: 'var(--g6)', fontWeight: 400 }}>🇫🇷 🇺🇸 🇯🇵 🇪🇸 🇧🇷 🇮🇩</span></li>
+                    <li className="lv2-price-perk">Sous-titres inclus</li>
                     {p.voix && <li className="lv2-price-perk">Voix-off au montage</li>}
                     {pricingModel && <li className="lv2-price-perk" style={{ color: 'var(--accent)' }}>Comédien IA sur mesure</li>}
                   </ul>
