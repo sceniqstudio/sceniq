@@ -827,6 +827,7 @@ export default function HomePage() {
             </p>
             <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 8 }}>
               {[
+                { flag: '🇫🇷', lang: 'Français' },
                 { flag: '🇺🇸', lang: 'Anglais' },
                 { flag: '🇯🇵', lang: 'Japonais' },
                 { flag: '🇪🇸', lang: 'Espagnol' },
@@ -844,7 +845,7 @@ export default function HomePage() {
               ))}
             </div>
             <p style={{ fontSize: 11, color: 'var(--g6)', marginTop: 10 }}>
-              Précisez la langue souhaitée dans votre brief — prise en charge native par Seedance 2.0
+              Précisez la langue souhaitée dans votre brief — voix-off ou dialogue inclus dans le prix
             </p>
           </div>
 
@@ -905,7 +906,7 @@ export default function HomePage() {
                     <li className="lv2-price-perk">{p.shots} shots vidéo · {p.fmts}</li>
                     <li className="lv2-price-perk">Script IA + storyboard complet</li>
                     <li className="lv2-price-perk">Musique de fond + bruitages</li>
-                    <li className="lv2-price-perk">1 langue au choix <span style={{ color: 'var(--g6)', fontWeight: 400 }}>🇺🇸 🇯🇵 🇪🇸 🇧🇷 🇮🇩</span></li>
+                    <li className="lv2-price-perk">1 langue au choix <span style={{ color: 'var(--g6)', fontWeight: 400 }}>🇫🇷 🇺🇸 🇯🇵 🇪🇸 🇧🇷 🇮🇩</span></li>
                     {p.voix && <li className="lv2-price-perk">Voix-off au montage</li>}
                     {pricingModel && <li className="lv2-price-perk" style={{ color: 'var(--accent)' }}>Comédien IA sur mesure</li>}
                   </ul>
