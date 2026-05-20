@@ -194,7 +194,7 @@ body:has(.lv2) {
   background-color: #0F0F1C;
   background-size: cover; background-position: center center;
   border: 1px solid rgba(255,255,255,0.08);
-  opacity: 0.5;
+  opacity: 0.82;
   flex-shrink: 0;
 }
 /* Video fill inside hcard */
