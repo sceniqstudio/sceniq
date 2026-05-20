@@ -669,7 +669,7 @@ export default function HomePage() {
               </p>
               <ul className="lv2-feat-list">
                 {[
-                  { label: 'Pas de cachet',        desc: 'pas de contrat modèle, pas de droits à l\'image à négocier' },
+                  { label: 'Pas de casting, pas de cachet', desc: 'aucun contrat modèle, aucun droit à l\'image à négocier' },
                   { label: 'Pas de tarif agence',  desc: '800–3 000 € de casting en agence — 49 € ici, dans votre forfait' },
                   { label: 'Disponible à volonté', desc: 'recadré, retravaillé ou remplacé à chaque itération' },
                   { label: 'Mention légale fournie', desc: 'conforme EU AI Act + loi influenceurs FR — livrée par écrit avec le MP4' },
