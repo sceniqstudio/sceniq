@@ -167,6 +167,7 @@ export default function HomePage() {
   const [questionOpen, setQuestionOpen]     = useState(false)
   const [questionSent, setQuestionSent]     = useState(false)
   const [qForm, setQForm]                   = useState({ name: '', email: '', phone: '', message: '' })
+  const [pricingModel, setPricingModel]     = useState(false)
   const [portfolioRows, setPortfolioRows]   = useState<[PortfolioItem[], PortfolioItem[]]>([
     PORTFOLIO_ITEMS.slice(0, 11), PORTFOLIO_ITEMS.slice(11),
   ])
@@ -798,45 +799,96 @@ export default function HomePage() {
           <div className="rv" style={{ textAlign: 'center' }}>
             <div className="lv2-label">Tarifs</div>
             <h2>Prix fixe. Sans surprise.</h2>
-            <p className="lv2-s-sub" style={{ maxWidth: 480, margin: '16px auto 0' }}>
-              Choisissez la durée de votre clip. Tous les formats sont inclus dans chaque forfait.
+            <p className="lv2-s-sub" style={{ maxWidth: 520, margin: '16px auto 0' }}>
+              Choisissez la durée de votre clip. Chaque forfait inclut <strong style={{ color: 'var(--white)' }}>la production complète</strong> — script, storyboard, musique, bruitages et montage final.
             </p>
+          </div>
+
+          {/* ── Ce qui est inclus dans TOUS les forfaits ── */}
+          <div className="rv" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '10px 20px', margin: '28px auto 0', maxWidth: 640 }}>
+            {[
+              '✦ Script IA complet',
+              '✦ Storyboard scène par scène',
+              '✦ Musique de fond licensée',
+              '✦ Bruitages & ambiances sonores',
+              '✦ Montage final MP4 1080p',
+              '✦ 10 itérations incluses',
+              '✦ Livraison sous 48h',
+            ].map((item) => (
+              <span key={item} style={{ fontSize: 13, color: 'var(--g4)', whiteSpace: 'nowrap' }}>{item}</span>
+            ))}
+          </div>
+
+          {/* ── Toggle Comédien IA ── */}
+          <div className="rv lv2-model-toggle-wrap">
+            <button
+              type="button"
+              onClick={() => setPricingModel(v => !v)}
+              className={`lv2-model-toggle${pricingModel ? ' active' : ''}`}
+            >
+              <div className="lv2-model-toggle-left">
+                <div className="lv2-model-toggle-icon">{pricingModel ? '🎭' : '🎭'}</div>
+                <div>
+                  <div className="lv2-model-toggle-title">Ajouter un comédien IA</div>
+                  <div className="lv2-model-toggle-desc">Personnage IA sur mesure intégré dans votre clip — âge, style, ambiance au choix</div>
+                </div>
+              </div>
+              <div className="lv2-model-toggle-right">
+                <span className="lv2-model-toggle-price">+49 €</span>
+                <div className={`lv2-model-toggle-switch${pricingModel ? ' on' : ''}`}>
+                  <div className="lv2-model-toggle-thumb" />
+                </div>
+              </div>
+            </button>
+            {pricingModel && (
+              <p style={{ fontSize: 12, color: 'var(--g6)', textAlign: 'center', marginTop: 10 }}>
+                ✓ Mention légale &quot;Image générée par IA&quot; fournie · conforme EU AI Act
+              </p>
+            )}
           </div>
 
           <div className="lv2-prices rv">
             {[
-              { dur: '5s',  fmt: 'Format court',    price: 69,  shots: '2 shots vidéo', fmts: 'Formats 9:16 + 1:1',         extra: 'Script + musique',            featured: false },
-              { dur: '8s',  fmt: 'Format reel',     price: 89,  shots: '3 shots vidéo', fmts: 'Formats 9:16 + 1:1',         extra: 'Script + musique',            featured: false },
-              { dur: '10s', fmt: 'Format pub',      price: 109, shots: '3 shots vidéo', fmts: 'Formats 9:16 + 1:1 + 16:9', extra: 'Script + voix-off + musique', featured: true  },
-              { dur: '12s', fmt: 'Format narration',price: 129, shots: '4 shots vidéo', fmts: 'Formats 9:16 + 1:1 + 16:9', extra: 'Script + voix-off + musique', featured: false },
-              { dur: '15s', fmt: 'Format histoire', price: 159, shots: '4 shots vidéo', fmts: 'Formats 9:16 + 1:1 + 16:9', extra: 'Script + voix-off + musique', featured: false },
-            ].map((p) => (
-              <div key={p.dur} className={`lv2-price-card${p.featured ? ' featured' : ''}`}>
-                {p.featured && <div className="lv2-price-badge">⭐ Populaire</div>}
-                <div className="lv2-price-dur">{p.dur}</div>
-                <div style={{ fontSize: 12, color: 'var(--g6)', fontWeight: 500, marginTop: -10, marginBottom: 10 }}>
-                  {p.fmt}
+              { dur: '5s',  fmt: 'Format court',     price: 69,  shots: 2, voix: false, fmts: '9:16 · 1:1',         featured: false },
+              { dur: '8s',  fmt: 'Format reel',      price: 89,  shots: 3, voix: false, fmts: '9:16 · 1:1',         featured: false },
+              { dur: '10s', fmt: 'Format pub',       price: 109, shots: 3, voix: true,  fmts: '9:16 · 1:1 · 16:9', featured: true  },
+              { dur: '12s', fmt: 'Format narration', price: 129, shots: 4, voix: true,  fmts: '9:16 · 1:1 · 16:9', featured: false },
+              { dur: '15s', fmt: 'Format histoire',  price: 159, shots: 4, voix: true,  fmts: '9:16 · 1:1 · 16:9', featured: false },
+            ].map((p) => {
+              const total = p.price + (pricingModel ? 49 : 0)
+              return (
+                <div key={p.dur} className={`lv2-price-card${p.featured ? ' featured' : ''}`}>
+                  {p.featured && <div className="lv2-price-badge">⭐ Populaire</div>}
+                  <div className="lv2-price-dur">{p.dur}</div>
+                  <div style={{ fontSize: 12, color: 'var(--g6)', fontWeight: 500, marginTop: -10, marginBottom: 10 }}>
+                    {p.fmt}
+                  </div>
+                  <hr style={{ border: 'none', borderTop: '1px solid var(--bdr)', margin: '0 0 14px' }} />
+                  <div className="lv2-price-num">
+                    <sup>€</sup>{total}
+                    {pricingModel && (
+                      <span style={{ fontSize: 11, fontWeight: 500, color: 'var(--accent)', marginLeft: 6, verticalAlign: 'middle' }}>
+                        comédien inclus
+                      </span>
+                    )}
+                  </div>
+                  <ul className="lv2-price-perks">
+                    <li className="lv2-price-perk">{p.shots} shots vidéo · {p.fmts}</li>
+                    <li className="lv2-price-perk">Script IA + storyboard complet</li>
+                    <li className="lv2-price-perk">Musique de fond + bruitages</li>
+                    {p.voix && <li className="lv2-price-perk">Voix-off française au montage</li>}
+                    {pricingModel && <li className="lv2-price-perk" style={{ color: 'var(--accent)' }}>Comédien IA sur mesure</li>}
+                  </ul>
+                  <a
+                    href={`/commande?duree=${parseInt(p.dur)}${pricingModel ? '&modele=1' : ''}`}
+                    className={`lv2-btn${p.featured ? ' lv2-btn-accent' : ' lv2-btn-ghost'}`}
+                    style={{ marginTop: 8, width: '100%', justifyContent: 'center' }}
+                  >
+                    {p.featured ? 'Commander →' : 'Commander'}
+                  </a>
                 </div>
-                <hr style={{ border: 'none', borderTop: '1px solid var(--bdr)', margin: '0 0 14px' }} />
-                <div className="lv2-price-num">
-                  <sup>€</sup>{p.price}
-                  <span style={{ fontSize: 14, fontWeight: 400, color: 'var(--g4)', marginLeft: 2 }}></span>
-                </div>
-                <ul className="lv2-price-perks">
-                  <li className="lv2-price-perk">{p.shots}</li>
-                  <li className="lv2-price-perk">{p.fmts}</li>
-                  <li className="lv2-price-perk">{p.extra}</li>
-                  <li className="lv2-price-perk">10 itérations</li>
-                </ul>
-                <a
-                  href={`/commande?duree=${parseInt(p.dur)}`}
-                  className={`lv2-btn${p.featured ? ' lv2-btn-accent' : ' lv2-btn-ghost'}`}
-                  style={{ marginTop: 8, width: '100%', justifyContent: 'center' }}
-                >
-                  {p.featured ? 'Commander →' : 'Commander'}
-                </a>
-              </div>
-            ))}
+              )
+            })}
           </div>
 
           <p className="rv" style={{ textAlign: 'center', marginTop: 24, fontSize: 13, color: 'var(--g6)' }}>
