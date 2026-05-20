@@ -747,8 +747,8 @@ export default function HomePage() {
                   />
                   <div style={{ position: 'absolute', top: 10, left: 10, padding: '2px 8px', borderRadius: 4, background: 'rgba(7,7,15,0.82)', border: '1px solid rgba(255,255,255,0.1)', fontSize: 9, fontWeight: 700, letterSpacing: '0.09em', color: 'rgba(165,180,252,0.7)' }}>IA</div>
                   <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '48px 14px 14px', background: 'linear-gradient(to top,rgba(7,7,15,0.97),transparent)' }}>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: '#A5B4FC' }}>Kaelys</div>
-                    <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.38)', textTransform: 'uppercase', letterSpacing: '0.07em', marginTop: 2 }}>Influenceuse</div>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(165,180,252,0.65)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Exemple de rendu</div>
+                    <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>Comédienne IA · style influenceuse</div>
                   </div>
                 </div>
 
@@ -768,24 +768,25 @@ export default function HomePage() {
                       />
                       <div style={{ position: 'absolute', top: 8, left: 8, padding: '2px 7px', borderRadius: 4, background: 'rgba(7,7,15,0.82)', border: '1px solid rgba(255,255,255,0.1)', fontSize: 9, fontWeight: 700, letterSpacing: '0.09em', color: 'rgba(255,255,255,0.45)' }}>IA</div>
                       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '36px 12px 12px', background: 'linear-gradient(to top,rgba(7,7,15,0.97),transparent)' }}>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>{m.name}</div>
-                        <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.38)', textTransform: 'uppercase', letterSpacing: '0.07em', marginTop: 1 }}>{m.type}</div>
+                        <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Exemple de rendu</div>
+                        <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.28)', marginTop: 1 }}>{m.type}</div>
                       </div>
                     </div>
                   ))}
                 </div>
 
               </div>
-              {/* Carte sur mesure */}
+              {/* Note exemples */}
               <div style={{
-                marginTop: 10, padding: '14px 16px', borderRadius: 12,
-                border: '1px dashed rgba(124,92,252,0.25)',
-                background: 'rgba(124,92,252,0.03)',
-                textAlign: 'center',
+                marginTop: 10, padding: '12px 16px', borderRadius: 12,
+                border: '1px dashed rgba(124,92,252,0.22)',
+                background: 'rgba(124,92,252,0.04)',
+                display: 'flex', alignItems: 'center', gap: 10,
               }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--g6)' }}>
-                  + Sur mesure selon votre description
-                </div>
+                <span style={{ fontSize: 16, flexShrink: 0 }}>💡</span>
+                <p style={{ fontSize: 12, color: 'var(--g6)', lineHeight: 1.5, margin: 0 }}>
+                  Ces visuels sont des <strong style={{ color: 'var(--g4)' }}>exemples de rendu</strong> — votre comédien IA est généré sur mesure d&apos;après votre description (âge, style, ambiance, tenue).
+                </p>
               </div>
             </div>
 
