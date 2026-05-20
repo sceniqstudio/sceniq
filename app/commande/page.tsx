@@ -485,7 +485,7 @@ export default function CommandePage() {
                     <span style={{ color: 'rgba(165,180,252,.7)' }}>Livraison MP4 sous 48 h après validation</span>
                   </span>
                   <span style={{ fontSize: 20, fontWeight: 700, color: '#fff', whiteSpace: 'nowrap', marginLeft: 12 }}>
-                    {price}&nbsp;€&nbsp;<span style={{ fontSize: 13, fontWeight: 400, color: s.muted }}>HT</span>
+                    {price}&nbsp;€&nbsp;
                   </span>
                 </div>
                 {wantAiModel && (
@@ -726,7 +726,7 @@ export default function CommandePage() {
                     <div style={{ fontSize: 16, fontWeight: 700, color: '#fff' }}>Vidéo IA {duration}s · {format}</div>
                     <div style={{ fontSize: 13, color: s.muted, marginTop: 2 }}>Tous formats inclus · 10 allers-retours · MP4 livré sous 48 h après validation</div>
                   </div>
-                  <div style={{ fontSize: 22, fontWeight: 700, color: s.accent, whiteSpace: 'nowrap', marginLeft: 12 }}>{price}&nbsp;€&nbsp;<span style={{ fontSize: 13, fontWeight: 400, color: s.muted }}>HT</span></div>
+                  <div style={{ fontSize: 22, fontWeight: 700, color: s.accent, whiteSpace: 'nowrap', marginLeft: 12 }}>{price}&nbsp;€&nbsp;</div>
                 </div>
                 {wantAiModel && (
                   <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid rgba(255,255,255,.06)', fontSize: 12, color: 'rgba(255,255,255,.5)', display: 'flex', justifyContent: 'space-between' }}>
@@ -804,7 +804,7 @@ export default function CommandePage() {
               >
                 {submitting
                   ? (uploading ? 'Upload des références…' : 'Redirection Stripe…')
-                  : `Payer ${price} € HT →`}
+                  : `Payer ${price} € →`}
               </button>
             </div>
 

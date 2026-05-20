@@ -426,7 +426,7 @@ export default function HomePage() {
               Voir les réalisations
             </a>
           </div>
-          <p className="lv2-footnote">À partir de 69 € HT · 5 à 15 secondes · 10 itérations incluses</p>
+          <p className="lv2-footnote">À partir de 69 € · 5 à 15 secondes · 10 itérations incluses</p>
         </div>
       </section>
 
@@ -815,7 +815,7 @@ export default function HomePage() {
                 <hr style={{ border: 'none', borderTop: '1px solid var(--bdr)', margin: '0 0 14px' }} />
                 <div className="lv2-price-num">
                   <sup>€</sup>{p.price}
-                  <span style={{ fontSize: 14, fontWeight: 400, color: 'var(--g4)', marginLeft: 2 }}>HT</span>
+                  <span style={{ fontSize: 14, fontWeight: 400, color: 'var(--g4)', marginLeft: 2 }}></span>
                 </div>
                 <ul className="lv2-price-perks">
                   <li className="lv2-price-perk">{p.shots}</li>
@@ -835,7 +835,7 @@ export default function HomePage() {
           </div>
 
           <p className="rv" style={{ textAlign: 'center', marginTop: 24, fontSize: 13, color: 'var(--g6)' }}>
-            Tous prix HT · MP4 livré par e-mail · Paiement sécurisé Stripe
+            MP4 livré par e-mail · Paiement sécurisé Stripe
           </p>
         </div>
       </section>
