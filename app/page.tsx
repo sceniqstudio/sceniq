@@ -4,29 +4,33 @@ import { useEffect, useState, useRef, type FormEvent } from 'react'
 import { ShowcaseClip } from '@/app/_components/ShowcaseClip'
 
 const SHOWCASE_SLUGS = [
-  'exemple1', 'exemple2', 'exemple3', 'exemple4', 'exemple5', 'exemple6',
-  'exemple7', 'exemple8', 'exemple9', 'exemple10', 'exemple11', 'exemple12',
-  'exemple13', 'exemple14', 'exemple15', 'exemple16', 'exemple17',
-  'exemple18', 'exemple19',
+  'exemple1', 'exemple2', 'exemple3', 'exemple5', 'exemple6',
+  'exemple8', 'exemple9', 'exemple10', 'exemple11', 'exemple12',
+  'exemple13', 'exemple14', 'exemple15', 'exemple17',
+  'exemple18', 'exemple19', 'exemple20', 'exemple21',
 ] as const
 
 // ── Portfolio — items avec vraies vidéos ────────────────────────────────────
 type PortfolioItem = { id: string; slug: string; ratio: number; label: string; grad: string; src?: string }
 
-// exemple1-18 : portrait ~9:16 (414×720) | exemple19 : paysage 16:9 (1280×720)
+// Portrait ~9:16 (414×720 pour e1-18, 720×1280 pour e20-21) | Paysage 16:9 (e19)
 const PORTRAIT_R  = 414 / 720
+const PORTRAIT_R2 = 720 / 1280  // exemple20, exemple21
 const LANDSCAPE_R = 16 / 9
 
 const PORTFOLIO_ITEMS: PortfolioItem[] = [
-  ...Array.from({ length: 18 }, (_, i) => ({
-    id:    `e${String(i + 1).padStart(2, '0')}`,
-    slug:  `exemple${i + 1}`,
+  // exemple1-18 sauf 4, 7, 16 (retirés)
+  ...[1,2,3,5,6,8,9,10,11,12,13,14,15,17,18].map((n) => ({
+    id:    `e${String(n).padStart(2, '0')}`,
+    slug:  `exemple${n}`,
     ratio: PORTRAIT_R,
     label: '9:16',
     grad:  'linear-gradient(135deg,#0a0a14,#1a0a3c)',
-    src:   `/showcase/exemple${i + 1}.mp4`,
+    src:   `/showcase/exemple${n}.mp4`,
   })),
   { id: 'e19', slug: 'exemple19', ratio: LANDSCAPE_R, label: '16:9', grad: 'linear-gradient(135deg,#0f0c29,#302b63)', src: '/showcase/exemple19.mp4' },
+  { id: 'e20', slug: 'exemple20', ratio: PORTRAIT_R2, label: '9:16', grad: 'linear-gradient(135deg,#0a0a14,#1a0a3c)', src: '/showcase/exemple20.mp4' },
+  { id: 'e21', slug: 'exemple21', ratio: PORTRAIT_R2, label: '9:16', grad: 'linear-gradient(135deg,#0f0c29,#302b63)', src: '/showcase/exemple21.mp4' },
 ]
 
 // ── PortfolioRow — infinite scroll + drag souris/touch ─────────────────────
