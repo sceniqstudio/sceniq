@@ -794,7 +794,7 @@ export default function HomePage() {
             <div className="lv2-label">Tarifs</div>
             <h2>Prix fixe. Sans surprise.</h2>
             <p className="lv2-s-sub" style={{ maxWidth: 480, margin: '16px auto 0' }}>
-              Choisissez la durée de votre publicité. Tous les formats sont inclus dans chaque forfait.
+              Choisissez la durée de votre clip. Tous les formats sont inclus dans chaque forfait.
             </p>
           </div>
 
