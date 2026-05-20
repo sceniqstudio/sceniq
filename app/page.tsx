@@ -443,7 +443,7 @@ export default function HomePage() {
       <section className="lv2-s" id="process">
         <div className="lv2-si">
           <div className="rv" style={{ textAlign: 'center' }}>
-            <div className="lv2-label">Processus</div>
+            <div className="lv2-label">Comment ça marche</div>
             <h2>Du brief au MP4.<br />Cinq étapes.</h2>
             <p className="lv2-s-sub" style={{ maxWidth: 480, margin: '16px auto 0' }}>
               Vous écrivez deux lignes et vous payez. ScenIQ fait le reste — sans réunion, sans aller-retour interminable.
@@ -662,7 +662,7 @@ export default function HomePage() {
 
             {/* Texte */}
             <div>
-              <div className="lv2-label">Option · +49 €</div>
+              <div className="lv2-label">Comédiens IA</div>
               <h2>Un comédien IA.<br />Sur votre brief.</h2>
               <p className="lv2-s-sub" style={{ marginTop: 16 }}>
                 Décrivez le profil, ScenIQ génère le personnage. Intégré directement dans votre clip — pas de casting, pas d&apos;intermédiaire.
