@@ -801,51 +801,14 @@ export default function HomePage() {
             <div className="lv2-label">Tarifs</div>
             <h2>Prix fixe. Sans surprise.</h2>
             <p className="lv2-s-sub" style={{ maxWidth: 520, margin: '16px auto 0' }}>
-              Choisissez la durée de votre clip. Chaque forfait inclut <strong style={{ color: 'var(--white)' }}>la production complète</strong> — script, storyboard, musique, bruitages et montage final.
+              Choisissez la durée. Chaque forfait inclut <strong style={{ color: 'var(--white)' }}>la production complète</strong> — script, storyboard, musique et montage final MP4 1080p. Livraison sous 48h.
             </p>
           </div>
 
-          {/* ── Ce qui est inclus dans TOUS les forfaits ── */}
-          <div className="rv" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '10px 20px', margin: '28px auto 0', maxWidth: 640 }}>
-            {[
-              '✦ Script IA complet',
-              '✦ Storyboard scène par scène',
-              '✦ Musique de fond licensée',
-              '✦ Bruitages & ambiances sonores',
-              '✦ Montage final MP4 1080p',
-              '✦ 10 itérations incluses',
-              '✦ Livraison sous 48h',
-            ].map((item) => (
-              <span key={item} style={{ fontSize: 13, color: 'var(--g4)', whiteSpace: 'nowrap' }}>{item}</span>
-            ))}
-          </div>
-
-          {/* ── Langues disponibles ── */}
-          <div className="rv" style={{ margin: '24px auto 0', maxWidth: 560, textAlign: 'center' }}>
-            <p style={{ fontSize: 12, color: 'var(--g6)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.07em', fontWeight: 600 }}>
-              1 langue incluse par forfait — au choix parmi
-            </p>
-            <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 8 }}>
-              {[
-                { flag: '🇫🇷', lang: 'Français' },
-                { flag: '🇺🇸', lang: 'Anglais' },
-                { flag: '🇯🇵', lang: 'Japonais' },
-                { flag: '🇪🇸', lang: 'Espagnol' },
-                { flag: '🇧🇷', lang: 'Portugais' },
-                { flag: '🇮🇩', lang: 'Indonésien' },
-              ].map(({ flag, lang }) => (
-                <span key={lang} style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 6,
-                  padding: '6px 14px', borderRadius: 999,
-                  background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.10)',
-                  fontSize: 13, color: 'var(--g4)', fontWeight: 500,
-                }}>
-                  {flag} {lang}
-                </span>
-              ))}
-            </div>
-            <p style={{ fontSize: 11, color: 'var(--g6)', marginTop: 10 }}>
-              Précisez la langue souhaitée dans votre brief — voix-off ou dialogue inclus dans le prix
+          {/* ── Langues inline ── */}
+          <div className="rv" style={{ textAlign: 'center', marginTop: 16 }}>
+            <p style={{ fontSize: 13, color: 'var(--g6)' }}>
+              Voix-off ou dialogue inclus · 🇫🇷 🇺🇸 🇯🇵 🇪🇸 🇧🇷 🇮🇩
             </p>
           </div>
 
@@ -860,7 +823,7 @@ export default function HomePage() {
                 <div className="lv2-model-toggle-icon">{pricingModel ? '🎭' : '🎭'}</div>
                 <div>
                   <div className="lv2-model-toggle-title">Ajouter un comédien IA</div>
-                  <div className="lv2-model-toggle-desc">Personnage IA sur mesure intégré dans votre clip — âge, style, ambiance au choix</div>
+                  <div className="lv2-model-toggle-desc">Personnage généré sur mesure d'après votre description</div>
                 </div>
               </div>
               <div className="lv2-model-toggle-right">
@@ -903,12 +866,9 @@ export default function HomePage() {
                     )}
                   </div>
                   <ul className="lv2-price-perks">
-                    <li className="lv2-price-perk">{p.shots} shots vidéo · {p.fmts}</li>
-                    <li className="lv2-price-perk">Script IA + storyboard complet</li>
-                    <li className="lv2-price-perk">Musique de fond + bruitages</li>
-                    <li className="lv2-price-perk">1 langue au choix <span style={{ color: 'var(--g6)', fontWeight: 400 }}>🇫🇷 🇺🇸 🇯🇵 🇪🇸 🇧🇷 🇮🇩</span></li>
-                    {p.voix && <li className="lv2-price-perk">Voix-off au montage</li>}
-                    {pricingModel && <li className="lv2-price-perk" style={{ color: 'var(--accent)' }}>Comédien IA sur mesure</li>}
+                    <li className="lv2-price-perk">{p.shots} shots · {p.fmts}</li>
+                    {p.voix && <li className="lv2-price-perk">Voix-off incluse</li>}
+                    {pricingModel && <li className="lv2-price-perk" style={{ color: 'var(--accent)' }}>+ Comédien IA sur mesure</li>}
                   </ul>
                   <a
                     href={`/commande?duree=${parseInt(p.dur)}${pricingModel ? '&modele=1' : ''}`}
@@ -940,12 +900,18 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <div className="portfolio-row-wrap">
-            <PortfolioRow items={portfolioRows[0]} direction="left"  rowHeight={640} speed={0.5}  onCardClick={setOpenVideo} />
+        <div className="portfolio-rows-container">
+          <div className="portfolio-scroll-hint" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7 }}><path d="M18 8L22 12L18 16"/><path d="M6 8L2 12L6 16"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+            Glisser ou swiper
           </div>
-          <div className="portfolio-row-wrap">
-            <PortfolioRow items={portfolioRows[1]} direction="right" rowHeight={640} speed={0.42} onCardClick={setOpenVideo} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div className="portfolio-row-wrap">
+              <PortfolioRow items={portfolioRows[0]} direction="left"  rowHeight={640} speed={0.5}  onCardClick={setOpenVideo} />
+            </div>
+            <div className="portfolio-row-wrap">
+              <PortfolioRow items={portfolioRows[1]} direction="right" rowHeight={640} speed={0.42} onCardClick={setOpenVideo} />
+            </div>
           </div>
         </div>
 

@@ -1095,6 +1095,35 @@ button:hover .play-overlay { opacity: 1 !important; }
   .portfolio-row-wrap::after { width: 40px; }
 }
 
+/* ── Portfolio scroll hint ──────────────────────────────────────────────── */
+.portfolio-rows-container {
+  position: relative;
+}
+.portfolio-scroll-hint {
+  position: absolute;
+  top: -36px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  font-size: 12px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  z-index: 10;
+}
+.portfolio-rows-container:hover .portfolio-scroll-hint {
+  opacity: 1;
+}
+
 /* ── Pricing — toggle comédien IA ───────────────────────────────────────── */
 .lv2-model-toggle-wrap {
   max-width: 560px;
