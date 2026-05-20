@@ -572,7 +572,13 @@ export default function CommandePage() {
               }}>
                 <div style={{ fontSize:13, color:s.accent, lineHeight:1.6 }}>
                   <strong>{totalVideos} vidéo{totalVideos > 1 ? 's' : ''}</strong> · Voix {language}<br />
-                  <span style={{ color:'rgba(165,180,252,.7)', fontSize:12 }}>10 allers-retours · MP4 sous 48h · tous formats inclus</span>
+                  <span style={{ color:'rgba(165,180,252,.7)', fontSize:12 }}>
+                    10 allers-retours · MP4 1080p sous 48h ·{' '}
+                    {cartItems.length === 1 && cartItems[0].duration
+                      ? `${cartItems[0].formats.length} format${cartItems[0].formats.length > 1 ? 's' : ''} inclus (${cartItems[0].formats.join(', ')})`
+                      : `${cartItems.reduce((s, i) => s + i.formats.length, 0)} exports MP4 au total`
+                    }
+                  </span>
                 </div>
                 <div style={{ fontSize:26, fontWeight:800, color:'#fff', whiteSpace:'nowrap' }}>
                   {totalPrice} €
