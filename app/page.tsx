@@ -295,12 +295,11 @@ export default function HomePage() {
             <li><a href="#tarifs">Tarifs</a></li>
             <li><a href="#reels">Réalisations</a></li>
             <li><a href="#faq">FAQ</a></li>
-            <li><button type="button" onClick={() => { setQuestionOpen(true); setQuestionSent(false) }} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'inherit', font: 'inherit' }}>Contact</button></li>
           </ul>
           <div className="lv2-nav-right">
-            <a href="mailto:support@sceniq.studio" className="lv2-btn lv2-btn-ghost lv2-btn-sm">
+            <button type="button" onClick={() => { setQuestionOpen(true); setQuestionSent(false) }} className="lv2-btn lv2-btn-ghost lv2-btn-sm">
               Une question ?
-            </a>
+            </button>
             <a href="/commande" className="lv2-btn lv2-btn-accent lv2-btn-sm">
               Commander →
             </a>
@@ -332,7 +331,6 @@ export default function HomePage() {
               <li><a href="#tarifs"   onClick={() => setMobileMenuOpen(false)}>Tarifs</a></li>
               <li><a href="#reels"    onClick={() => setMobileMenuOpen(false)}>Réalisations</a></li>
               <li><a href="#faq"      onClick={() => setMobileMenuOpen(false)}>FAQ</a></li>
-              <li><button type="button" onClick={() => { setMobileMenuOpen(false); setQuestionOpen(true); setQuestionSent(false) }} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'inherit', font: 'inherit' }}>Contact</button></li>
             </ul>
             <div className="lv2-mob-cta">
               <a
@@ -342,14 +340,14 @@ export default function HomePage() {
               >
                 Commander ma vidéo →
               </a>
-              <a
-                href="mailto:support@sceniq.studio"
+              <button
+                type="button"
                 className="lv2-btn lv2-btn-ghost"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={() => { setMobileMenuOpen(false); setQuestionOpen(true); setQuestionSent(false) }}
                 style={{ justifyContent: 'center' }}
               >
                 Une question ?
-              </a>
+              </button>
             </div>
           </div>
         </div>
