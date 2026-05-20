@@ -698,7 +698,7 @@ export default function CommandePage() {
               Vos coordonnées
             </h1>
             <p style={{ fontSize:14, color:s.muted, margin:'0 0 28px', lineHeight:1.5 }}>
-              Je vous rappelle sous 4 h ouvrées après paiement.
+              On vous rappelle sous 4 h ouvrées pour aligner la direction créative avant de lancer les agents.
             </p>
 
             <FieldInput label="Nom complet" value={clientName} onChange={setClientName} placeholder="Marie Dupont" required />
@@ -829,7 +829,7 @@ export default function CommandePage() {
               borderRadius:10, padding:'14px 18px', marginBottom:24,
               fontSize:13, color:'rgba(255,255,255,.7)', lineHeight:1.6,
             }}>
-              🔒 Paiement sécurisé Stripe · Confirmation email immédiate · Pré-prod sous 4 h ouvrées · 10 allers-retours inclus · Remboursement intégral si la direction créative ne convient pas
+              🔒 Paiement sécurisé Stripe · Confirmation email immédiate · On vous rappelle sous 4 h ouvrées · 10 allers-retours inclus · Remboursement intégral si la direction créative ne convient pas
             </div>
 
             {error && (

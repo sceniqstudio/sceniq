@@ -465,7 +465,7 @@ export default function HomePage() {
             {[
               { n: '1', title: 'Brief', desc: 'Deux lignes sur votre marque et votre objectif. Ajoutez des références visuelles ou audio si vous en avez.' },
               { n: '2', title: 'Commande', desc: 'Choisissez la durée. Paiement 100 % sécurisé par Stripe. Confirmation par email immédiate.' },
-              { n: '3', title: 'Appel', desc: 'Pascal vous rappelle sous 4h ouvrées pour aligner la direction créative avant de lancer les agents.' },
+              { n: '3', title: 'Appel', desc: 'On vous rappelle sous 4h ouvrées pour aligner la direction créative avant de lancer les agents.' },
               { n: '4', title: 'Pré-prod', desc: 'Director, Scriptwriter, Storyboarder, Music et Visual travaillent en parallèle. Pré-prod livrée sans intermédiaire.' },
               { n: '5', title: 'Livraison', desc: 'MP4 1080p envoyé par e-mail sous 48h. Pas d\'espace client, pas de compte. 10 itérations incluses.' },
             ].map((step) => (
@@ -948,7 +948,7 @@ export default function HomePage() {
               {
                 init: 'S', name: 'Sophie R.', role: 'CMO · E-commerce mode',
                 text: (
-                  <>"<em>Le process est redoutablement simple.</em> Brief, paiement, appel Pascal, livraison. On commande maintenant chaque lancement produit."</>
+                  <>"<em>Le process est redoutablement simple.</em> Brief, paiement, appel, livraison. On commande maintenant chaque lancement produit."</>
                 ),
               },
               {
@@ -995,7 +995,7 @@ export default function HomePage() {
               {[
                 {
                   q: 'Comment se déroule le processus exactement ?',
-                  a: 'Vous commandez en ligne et remplissez un brief en 2 lignes. Pascal vous rappelle sous 4h ouvrées pour aligner la direction créative. Les 5 agents IA génèrent la pré-prod en parallèle. La vidéo finale vous est envoyée par e-mail sous 48h.',
+                  a: 'Vous commandez en ligne et remplissez un brief en 2 lignes. On vous rappelle sous 4h ouvrées pour aligner la direction créative. Les 5 agents IA génèrent la pré-prod en parallèle. La vidéo finale vous est envoyée par e-mail sous 48h.',
                 },
                 {
                   q: "Qu'est-ce qui est livré exactement ?",
@@ -1044,8 +1044,8 @@ export default function HomePage() {
                   a: "5–8s pour des accroches Reels/Stories sans narration. 10s pour une pub Meta classique avec voix-off courte. 12–15s pour un format avec storytelling ou démonstration produit. En cas de doute, le 10s est le plus polyvalent.",
                 },
                 {
-                  q: "Comment se passe l'appel avec Pascal ?",
-                  a: "Un appel téléphonique de 15–20 minutes maximum. Pascal valide avec vous l'axe créatif, la tonalité et les éventuelles contraintes de marque avant de lancer la génération. Pas de visio obligatoire, pas d'outil tiers.",
+                  q: "Comment se passe l'appel de direction créative ?",
+                  a: "Un appel téléphonique de 15–20 minutes maximum. On valide avec vous l'axe créatif, la tonalité et les éventuelles contraintes de marque avant de lancer la génération. Pas de visio obligatoire, pas d'outil tiers.",
                 },
                 {
                   q: 'La vidéo peut-elle inclure une voix-off ?',
