@@ -408,8 +408,8 @@ export default function HomePage() {
         <div className="lv2-hover" aria-hidden="true" />
         <div className="lv2-hcontent">
           <div className="lv2-badge">
-            <span className="lv2-badge-pill">Agence IA</span>
-            Publicités vidéo — du brief au MP4 en 48h
+            <span className="lv2-badge-pill">Studio IA</span>
+            Vidéos courtes sur mesure — Shorts · Reels · Stories · Clips
           </div>
           <h1 className="lv2-h1">
             Du brief à l&apos;écran.<br />
