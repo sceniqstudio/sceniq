@@ -143,11 +143,11 @@ function PortfolioRow({
   )
 }
 
-// ── Hero animated columns — 3 left + empty center + 2 right ───────────────
-// 5 columns: index 0,1,2 → left side  |  index 3,4 → right side
-const COL_DURATIONS = [32, 26, 38, 24, 28]
-const COL_DELAYS    = [-6, -14, -2, -18, -8]
-const COL_SLUGS     = Array.from({ length: 5 }, (_, c) =>
+// ── Hero animated columns — 2 left + empty center + 2 right ───────────────
+// 4 columns: index 0,1 → left side  |  index 2,3 → right side
+const COL_DURATIONS = [32, 26, 28, 36]
+const COL_DELAYS    = [-6, -14, -18, -4]
+const COL_SLUGS     = Array.from({ length: 4 }, (_, c) =>
   Array.from({ length: 4 }, (_, i) => SHOWCASE_SLUGS[(c * 4 + i) % SHOWCASE_SLUGS.length])
 )
 
@@ -348,13 +348,13 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* ── HERO — 3 cols gauche · centre vide · 2 cols droite ──────────── */}
+      {/* ── HERO — 2 cols gauche · centre vide · 2 cols droite ──────────── */}
       <section className="lv2-hero" id="main-content" aria-label="Hero ScenIQ">
         <div className="lv2-hbg" aria-hidden="true">
 
-          {/* ── 3 colonnes gauche ── */}
+          {/* ── 2 colonnes gauche ── */}
           <div className="lv2-hbg-side lv2-hbg-left">
-            {[0, 1, 2].map((c) => (
+            {[0, 1].map((c) => (
               <div
                 key={c}
                 className={`lv2-hcol${c % 2 === 1 ? ' down' : ''}`}
@@ -379,7 +379,7 @@ export default function HomePage() {
 
           {/* ── 2 colonnes droite ── */}
           <div className="lv2-hbg-side lv2-hbg-right">
-            {[3, 4].map((c) => (
+            {[2, 3].map((c) => (
               <div
                 key={c}
                 className={`lv2-hcol${c % 2 === 1 ? ' down' : ''}`}

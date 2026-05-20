@@ -156,7 +156,7 @@ body:has(.lv2) {
   display: flex; flex-direction: column; justify-content: center;
 }
 
-/* BG animated columns — 3 gauche · centre vide · 2 droite */
+/* BG animated columns — 2 gauche · centre vide · 2 droite */
 .lv2-hbg {
   position: absolute; inset: 0;
   display: flex; flex-direction: row;
@@ -169,8 +169,8 @@ body:has(.lv2) {
   padding: 0 5px;
 }
 .lv2-hbg-left  { flex: 3; }
-.lv2-hbg-center{ flex: 4; }   /* espace vide — texte hero */
-.lv2-hbg-right { flex: 2; }
+.lv2-hbg-center{ flex: 3; }   /* espace vide — texte hero */
+.lv2-hbg-right { flex: 3; }
 .lv2-hcol {
   flex: 1; min-width: 0;
   display: flex; flex-direction: column; gap: 10px;
@@ -206,9 +206,8 @@ body:has(.lv2) {
 /* Colored fallback per column */
 .lv2-hbg-left  .lv2-hcol:nth-child(1) .lv2-hcard { background-color: #1a0f2e; }
 .lv2-hbg-left  .lv2-hcol:nth-child(2) .lv2-hcard { background-color: #1e0e08; }
-.lv2-hbg-left  .lv2-hcol:nth-child(3) .lv2-hcard { background-color: #0a0f28; }
 .lv2-hbg-right .lv2-hcol:nth-child(1) .lv2-hcard { background-color: #081a12; }
-.lv2-hbg-right .lv2-hcol:nth-child(2) .lv2-hcard { background-color: #1a1408; }
+.lv2-hbg-right .lv2-hcol:nth-child(2) .lv2-hcard { background-color: #0a0f28; }
 
 /* Gradient overlay — top/bottom fade + fondu latéral sur les colonnes */
 .lv2-hover {
