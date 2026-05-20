@@ -7,7 +7,7 @@ const SHOWCASE_SLUGS = [
   'exemple1', 'exemple2', 'exemple3', 'exemple4', 'exemple5', 'exemple6',
   'exemple7', 'exemple8', 'exemple9', 'exemple10', 'exemple11', 'exemple12',
   'exemple13', 'exemple14', 'exemple15', 'exemple16', 'exemple17',
-  'exemple18', 'exemple19', 'exemple20', 'exemple21',
+  'exemple18', 'exemple19', 'exemple20', 'exemple21', 'exemple22',
 ] as const
 
 // ── Portfolio — items avec vraies vidéos ────────────────────────────────────
@@ -31,6 +31,7 @@ const PORTFOLIO_ITEMS: PortfolioItem[] = [
   { id: 'e19', slug: 'exemple19', ratio: LANDSCAPE_R, label: '16:9', grad: 'linear-gradient(135deg,#0f0c29,#302b63)', src: '/showcase/exemple19.mp4' },
   { id: 'e20', slug: 'exemple20', ratio: PORTRAIT_R2, label: '9:16', grad: 'linear-gradient(135deg,#0a0a14,#1a0a3c)', src: '/showcase/exemple20.mp4' },
   { id: 'e21', slug: 'exemple21', ratio: PORTRAIT_R2, label: '9:16', grad: 'linear-gradient(135deg,#0f0c29,#302b63)', src: '/showcase/exemple21.mp4' },
+  { id: 'e22', slug: 'exemple22', ratio: PORTRAIT_R2, label: '9:16', grad: 'linear-gradient(135deg,#0a0a14,#1a0a3c)', src: '/showcase/exemple22.mp4' },
 ]
 
 // ── PortfolioRow — infinite scroll + drag souris/touch ─────────────────────
