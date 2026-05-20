@@ -663,9 +663,9 @@ export default function HomePage() {
             {/* Texte */}
             <div>
               <div className="lv2-label">Comédiens IA</div>
-              <h2>Un comédien IA.<br />Sur votre brief.</h2>
+              <h2>Un comédien IA.<br />Créé pour votre marque.</h2>
               <p className="lv2-s-sub" style={{ marginTop: 16 }}>
-                Décrivez le profil, ScenIQ génère le personnage. Intégré directement dans votre clip — pas de casting, pas d&apos;intermédiaire.
+                Un brief suffit. ScenIQ génère le comédien, l&apos;intègre au clip et vous livre la mention légale obligatoire. Rien d&apos;autre à gérer.
               </p>
               <ul className="lv2-feat-list">
                 {[
