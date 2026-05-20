@@ -132,6 +132,7 @@ function PortfolioRow({
               {item.src ? (
                 <video
                   src={item.src}
+                  poster={`/showcase/${item.slug}.jpg`}
                   autoPlay muted loop playsInline preload="none"
                   style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
                 />
@@ -271,8 +272,27 @@ export default function HomePage() {
       anchorHandlers.push({ a, handler })
     })
 
+    // ── IntersectionObserver : pause/play vidéos hors viewport ──────────────
+    // Exclure les vidéos hero (section .lv2-hero) et le lecteur modal
+    const videoObs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const vid = entry.target as HTMLVideoElement
+        if (entry.isIntersecting) {
+          if (vid.paused) vid.play().catch(() => {/* autoplay bloqué : silencieux */})
+        } else {
+          if (!vid.paused) vid.pause()
+        }
+      })
+    }, { rootMargin: '200px 0px', threshold: 0 })
+
+    // Observer toutes les vidéos hors hero
+    document.querySelectorAll('video:not(.lv2-hero video):not(#modal-video)').forEach(v => {
+      videoObs.observe(v)
+    })
+
     return () => {
       obs.disconnect()
+      videoObs.disconnect()
       fqHandlers.forEach(({ btn, handler }) => btn.removeEventListener('click', handler))
       anchorHandlers.forEach(({ a, handler }) => a.removeEventListener('click', handler))
     }
@@ -529,18 +549,19 @@ export default function HomePage() {
                 }}
                 aria-label="Lire la vidéo volt"
               >
-                {/* Poster statique sur mobile — vidéo autoplay sur desktop */}
+                {/* Poster mobile (position absolute pour overlay correct) */}
                 <img
                   src="/showcase/volt.jpg"
                   alt="Aperçu vidéo studio"
                   className="studio-poster-mobile"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
                 />
+                {/* Vidéo autoplay desktop uniquement */}
                 <video
                   autoPlay muted loop playsInline preload="metadata"
                   poster="/showcase/volt.jpg"
                   className="studio-video-desktop"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }}
                 >
                   <source src="/showcase/volt.mp4" type="video/mp4" />
                 </video>
@@ -597,9 +618,14 @@ export default function HomePage() {
                 }}
                 aria-label="Lire exemple 16:9 en grand format"
               >
+                <img src="/showcase/exemple19.jpg" alt="" aria-hidden="true"
+                  className="studio-poster-mobile"
+                  style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover' }} />
                 <video
-                  autoPlay muted loop playsInline preload="none"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
+                  autoPlay muted loop playsInline preload="metadata"
+                  poster="/showcase/exemple19.jpg"
+                  className="studio-video-desktop"
+                  style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', pointerEvents:'none' }}
                 >
                   <source src="/showcase/exemple19.mp4" type="video/mp4" />
                 </video>
@@ -638,9 +664,14 @@ export default function HomePage() {
                 }}
                 aria-label="Lire exemple 9:16 en grand format"
               >
+                <img src="/showcase/exemple18.jpg" alt="" aria-hidden="true"
+                  className="studio-poster-mobile"
+                  style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover' }} />
                 <video
-                  autoPlay muted loop playsInline preload="none"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
+                  autoPlay muted loop playsInline preload="metadata"
+                  poster="/showcase/exemple18.jpg"
+                  className="studio-video-desktop"
+                  style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', pointerEvents:'none' }}
                 >
                   <source src="/showcase/exemple18.mp4" type="video/mp4" />
                 </video>
