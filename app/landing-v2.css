@@ -82,11 +82,11 @@ body:has(.lv2) {
   display: flex; align-items: center; gap: 2px; list-style: none; flex: 1; justify-content: center;
 }
 .lv2-nav-links a {
-  padding: 7px 15px; border-radius: 8px;
-  font-size: 14px; font-weight: 500; color: var(--g4);
+  padding: 8px 16px; border-radius: 8px;
+  font-size: 15px; font-weight: 500; color: var(--white);
   transition: color 0.15s, background 0.15s;
 }
-.lv2-nav-links a:hover { color: var(--white); background: rgba(255,255,255,0.06); }
+.lv2-nav-links a:hover { color: var(--white); background: rgba(255,255,255,0.08); }
 .lv2-nav-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
 
 /* Burger — hidden desktop */
