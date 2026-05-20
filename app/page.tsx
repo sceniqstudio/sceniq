@@ -822,7 +822,7 @@ export default function HomePage() {
         <div className="lv2-si">
           <div className="rv" style={{ marginBottom: 40 }}>
             <div className="lv2-label">Réalisations</div>
-            <h2>Créé avec ScenIQ.</h2>
+            <h2>Créé avec ScenIQ <span style={{ color: 'var(--g4)', fontWeight: 400 }}>+</span> Seedance 2.0</h2>
             <p style={{ color: 'var(--g4)', fontSize: 17, marginTop: 10, maxWidth: 460 }}>
               Des publicités vidéo pour des marques de toutes tailles, dans tous les secteurs.
             </p>
