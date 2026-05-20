@@ -161,7 +161,7 @@ export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [questionOpen, setQuestionOpen]     = useState(false)
   const [questionSent, setQuestionSent]     = useState(false)
-  const [qForm, setQForm]                   = useState({ name: '', email: '', message: '' })
+  const [qForm, setQForm]                   = useState({ name: '', email: '', phone: '', message: '' })
   const [portfolioRows, setPortfolioRows]   = useState<[PortfolioItem[], PortfolioItem[]]>([
     PORTFOLIO_ITEMS.slice(0, 8), PORTFOLIO_ITEMS.slice(8),
   ])
@@ -171,7 +171,7 @@ export default function HomePage() {
     e.preventDefault()
     const subject = encodeURIComponent(`Question ScenIQ — ${qForm.name}`)
     const body = encodeURIComponent(
-      `Prénom : ${qForm.name}\nEmail : ${qForm.email}\n\nQuestion :\n${qForm.message}`
+      `Prénom : ${qForm.name}\nEmail : ${qForm.email}${qForm.phone ? `\nTéléphone : ${qForm.phone}` : ''}\n\nQuestion :\n${qForm.message}`
     )
     window.open(`mailto:support@sceniq.studio?subject=${subject}&body=${body}`, '_blank')
     setQuestionSent(true)
@@ -295,6 +295,7 @@ export default function HomePage() {
             <li><a href="#tarifs">Tarifs</a></li>
             <li><a href="#reels">Réalisations</a></li>
             <li><a href="#faq">FAQ</a></li>
+            <li><a href="#contact">Contact</a></li>
           </ul>
           <div className="lv2-nav-right">
             <a href="mailto:support@sceniq.studio" className="lv2-btn lv2-btn-ghost lv2-btn-sm">
@@ -331,6 +332,7 @@ export default function HomePage() {
               <li><a href="#tarifs"   onClick={() => setMobileMenuOpen(false)}>Tarifs</a></li>
               <li><a href="#reels"    onClick={() => setMobileMenuOpen(false)}>Réalisations</a></li>
               <li><a href="#faq"      onClick={() => setMobileMenuOpen(false)}>FAQ</a></li>
+              <li><a href="#contact"  onClick={() => setMobileMenuOpen(false)}>Contact</a></li>
             </ul>
             <div className="lv2-mob-cta">
               <a
@@ -1008,7 +1010,7 @@ export default function HomePage() {
       </section>
 
       {/* ── FINAL CTA ────────────────────────────────────────────────────── */}
-      <section className="lv2-final-cta">
+      <section className="lv2-final-cta" id="contact">
         <div className="lv2-si">
           <div className="lv2-final-cta-inner">
             <div className="lv2-label" style={{ margin: '0 auto 20px' }}>Prêt à commencer ?</div>
@@ -1175,6 +1177,21 @@ export default function HomePage() {
                         }}
                       />
                     </div>
+                  </div>
+                  <div>
+                    <label style={{ fontSize: 12, fontWeight: 600, color: '#94A3B8', display: 'block', marginBottom: 6 }}>
+                      Téléphone <span style={{ fontWeight: 400, color: '#475569' }}>(optionnel)</span>
+                    </label>
+                    <input
+                      type="tel" placeholder="+33 6 00 00 00 00"
+                      value={qForm.phone}
+                      onChange={(e) => setQForm((f) => ({ ...f, phone: e.target.value }))}
+                      style={{
+                        width: '100%', padding: '11px 14px',
+                        background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+                        borderRadius: 10, color: '#fff', fontSize: 14, fontFamily: 'inherit', outline: 'none',
+                      }}
+                    />
                   </div>
                   <div>
                     <label style={{ fontSize: 12, fontWeight: 600, color: '#94A3B8', display: 'block', marginBottom: 6 }}>
