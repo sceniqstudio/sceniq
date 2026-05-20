@@ -4,9 +4,9 @@ import { useEffect, useState, useRef, type FormEvent } from 'react'
 import { ShowcaseClip } from '@/app/_components/ShowcaseClip'
 
 const SHOWCASE_SLUGS = [
-  'exemple1', 'exemple2', 'exemple3', 'exemple5', 'exemple6',
-  'exemple8', 'exemple9', 'exemple10', 'exemple11', 'exemple12',
-  'exemple13', 'exemple14', 'exemple15', 'exemple17',
+  'exemple1', 'exemple2', 'exemple3', 'exemple4', 'exemple5', 'exemple6',
+  'exemple7', 'exemple8', 'exemple9', 'exemple10', 'exemple11', 'exemple12',
+  'exemple13', 'exemple14', 'exemple15', 'exemple16', 'exemple17',
   'exemple18', 'exemple19', 'exemple20', 'exemple21',
 ] as const
 
@@ -19,8 +19,8 @@ const PORTRAIT_R2 = 720 / 1280  // exemple20, exemple21
 const LANDSCAPE_R = 16 / 9
 
 const PORTFOLIO_ITEMS: PortfolioItem[] = [
-  // exemple1-18 sauf 4, 7, 16 (retirés)
-  ...[1,2,3,5,6,8,9,10,11,12,13,14,15,17,18].map((n) => ({
+  // exemple1-18 complets
+  ...[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18].map((n) => ({
     id:    `e${String(n).padStart(2, '0')}`,
     slug:  `exemple${n}`,
     ratio: PORTRAIT_R,
