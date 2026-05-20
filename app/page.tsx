@@ -285,10 +285,10 @@ export default function HomePage() {
           </a>
           <ul className="lv2-nav-links">
             <li><a href="#process">Comment ça marche</a></li>
-            <li><a href="#qualite">Qualité</a></li>
-            <li><a href="#modeles">Modèles IA</a></li>
+            <li><a href="#qualite">Le studio</a></li>
+            <li><a href="#modeles">Comédiens IA</a></li>
             <li><a href="#tarifs">Tarifs</a></li>
-            <li><a href="#reels">Exemples</a></li>
+            <li><a href="#reels">Réalisations</a></li>
             <li><a href="#faq">FAQ</a></li>
           </ul>
           <div className="lv2-nav-right">
@@ -321,10 +321,10 @@ export default function HomePage() {
             </div>
             <ul className="lv2-mob-links">
               <li><a href="#process"  onClick={() => setMobileMenuOpen(false)}>Comment ça marche</a></li>
-              <li><a href="#qualite"  onClick={() => setMobileMenuOpen(false)}>Qualité</a></li>
-              <li><a href="#modeles"  onClick={() => setMobileMenuOpen(false)}>Modèles IA</a></li>
+              <li><a href="#qualite"  onClick={() => setMobileMenuOpen(false)}>Le studio</a></li>
+              <li><a href="#modeles"  onClick={() => setMobileMenuOpen(false)}>Comédiens IA</a></li>
               <li><a href="#tarifs"   onClick={() => setMobileMenuOpen(false)}>Tarifs</a></li>
-              <li><a href="#reels"    onClick={() => setMobileMenuOpen(false)}>Exemples</a></li>
+              <li><a href="#reels"    onClick={() => setMobileMenuOpen(false)}>Réalisations</a></li>
               <li><a href="#faq"      onClick={() => setMobileMenuOpen(false)}>FAQ</a></li>
             </ul>
             <div className="lv2-mob-cta">
@@ -418,7 +418,7 @@ export default function HomePage() {
               Commander ma vidéo →
             </a>
             <a href="#reels" className="lv2-btn lv2-btn-ghost lv2-btn-lg">
-              Voir les exemples
+              Voir les réalisations
             </a>
           </div>
           <p className="lv2-footnote">À partir de 69 € HT · 5 à 15 secondes · 10 itérations incluses</p>
@@ -478,8 +478,8 @@ export default function HomePage() {
           {/* Split 1 : agents IA */}
           <div className="lv2-split rv" style={{ marginBottom: 96 }}>
             <div>
-              <div className="lv2-label">Intelligence artificielle</div>
-              <h2>Cinq agents IA.<br />Une pré-prod complète.</h2>
+              <div className="lv2-label">Le studio</div>
+              <h2>Cinq agents IA.<br />Une équipe créa complète.</h2>
               <p className="lv2-s-sub" style={{ marginTop: 16 }}>
                 Chaque agent est spécialisé. Ensemble, ils couvrent tout ce qu&apos;une équipe créa fait habituellement en plusieurs jours de réunions — sans que vous n&apos;ouvriez aucune interface.
               </p>
@@ -663,7 +663,7 @@ export default function HomePage() {
             {/* Texte */}
             <div>
               <div className="lv2-label">Option · +49 €</div>
-              <h2>Un modèle IA.<br />Sur votre brief.</h2>
+              <h2>Un comédien IA.<br />Sur votre brief.</h2>
               <p className="lv2-s-sub" style={{ marginTop: 16 }}>
                 Décrivez le profil, ScenIQ génère le personnage. Intégré directement dans votre clip — pas de casting, pas d&apos;intermédiaire.
               </p>
@@ -694,7 +694,7 @@ export default function HomePage() {
               </p>
               <div style={{ marginTop: 24, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
                 <a href="#reels" className="lv2-btn lv2-btn-accent">
-                  Voir les clips avec modèles IA →
+                  Voir les clips avec comédiens IA →
                 </a>
                 <a href="/commande?modele=1" className="lv2-btn lv2-btn-ghost" style={{ fontSize: 14 }}>
                   Ajouter l&apos;option · +49 €
@@ -821,7 +821,7 @@ export default function HomePage() {
       <section id="reels" style={{ background: '#0D0D1A', padding: '80px 0 72px', overflow: 'hidden' }}>
         <div className="lv2-si">
           <div className="rv" style={{ marginBottom: 40 }}>
-            <div className="lv2-label">Portfolio</div>
+            <div className="lv2-label">Réalisations</div>
             <h2>Créé avec ScenIQ.</h2>
             <p style={{ color: 'var(--g4)', fontSize: 17, marginTop: 10, maxWidth: 460 }}>
               Des publicités vidéo pour des marques de toutes tailles, dans tous les secteurs.
@@ -1029,9 +1029,9 @@ export default function HomePage() {
             <div className="lv2-footer-col-title">Service</div>
             <ul className="lv2-footer-links">
               <li><a href="#process">Comment ça marche</a></li>
-              <li><a href="#modeles">Modèles IA</a></li>
+              <li><a href="#modeles">Comédiens IA</a></li>
               <li><a href="#tarifs">Tarifs</a></li>
-              <li><a href="#reels">Exemples</a></li>
+              <li><a href="#reels">Réalisations</a></li>
               <li><a href="/commande">Commander</a></li>
             </ul>
           </div>
