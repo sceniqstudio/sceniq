@@ -1003,3 +1003,76 @@ body:has(.lv2) {
 
 /* ── Composition vidéo — hover reveal play button ── */
 button:hover .play-overlay { opacity: 1 !important; }
+
+/* ── Portfolio rows — WOW layout ────────────────────────────────────────── */
+.portfolio-row-wrap {
+  overflow: hidden;
+  cursor: grab;
+  position: relative;
+}
+.portfolio-row-wrap:active { cursor: grabbing; }
+.portfolio-row-wrap::before,
+.portfolio-row-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 120px;
+  z-index: 3;
+  pointer-events: none;
+}
+.portfolio-row-wrap::before {
+  left: 0;
+  background: linear-gradient(to right, #0D0D1A 0%, transparent 100%);
+}
+.portfolio-row-wrap::after {
+  right: 0;
+  background: linear-gradient(to left, #0D0D1A 0%, transparent 100%);
+}
+
+.portfolio-card {
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  padding: 0;
+  border: none !important;
+  transition: transform 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow  0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.portfolio-card:hover {
+  transform: scale(1.04) translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 0 1.5px rgba(124, 92, 252, 0.4);
+  z-index: 4;
+}
+.portfolio-card-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(7, 7, 15, 0.38);
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+.portfolio-card:hover .portfolio-card-play { opacity: 1; }
+.portfolio-card-play-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(124, 92, 252, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 24px rgba(124, 92, 252, 0.6);
+}
+.portfolio-card-play-icon svg {
+  width: 22px;
+  height: 22px;
+  fill: #fff;
+  margin-left: 3px;
+}
+
+@media (max-width: 768px) {
+  .portfolio-row-wrap::before,
+  .portfolio-row-wrap::after { width: 40px; }
+}

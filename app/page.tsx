@@ -109,7 +109,7 @@ function PortfolioRow({
   const doubled = [...items, ...items]
 
   return (
-    <div style={{ overflow: 'hidden', cursor: 'grab' }}>
+    <div>
       <div
         ref={trackRef}
         style={{ display: 'flex', alignItems: 'flex-start', gap, width: 'max-content', willChange: 'transform', userSelect: 'none' }}
@@ -120,11 +120,11 @@ function PortfolioRow({
             <button
               key={`${item.id}-${i}`}
               type="button"
+              className="portfolio-card"
               onClick={() => { if (!drag.current.didDrag && onCardClick) onCardClick(item.slug) }}
               style={{
-                width: w, height: rowHeight, flexShrink: 0, borderRadius: 10,
-                background: item.grad, border: '1px solid rgba(255,255,255,0.06)',
-                position: 'relative', overflow: 'hidden', padding: 0,
+                width: w, height: rowHeight, borderRadius: 14,
+                background: item.grad,
                 cursor: onCardClick ? 'pointer' : 'inherit',
               }}
               aria-label={`Lire ${item.slug}`}
@@ -140,6 +140,11 @@ function PortfolioRow({
                   {item.label}
                 </span>
               )}
+              <div className="portfolio-card-play">
+                <div className="portfolio-card-play-icon">
+                  <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+              </div>
             </button>
           )
         })}
@@ -163,7 +168,7 @@ export default function HomePage() {
   const [questionSent, setQuestionSent]     = useState(false)
   const [qForm, setQForm]                   = useState({ name: '', email: '', phone: '', message: '' })
   const [portfolioRows, setPortfolioRows]   = useState<[PortfolioItem[], PortfolioItem[]]>([
-    PORTFOLIO_ITEMS.slice(0, 8), PORTFOLIO_ITEMS.slice(8),
+    PORTFOLIO_ITEMS.slice(0, 11), PORTFOLIO_ITEMS.slice(11),
   ])
 
   // ── Question form handler ────────────────────────────────────────────────
@@ -852,9 +857,13 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <PortfolioRow items={portfolioRows[0]} direction="left"  rowHeight={320} speed={0.5}  onCardClick={setOpenVideo} />
-          <PortfolioRow items={portfolioRows[1]} direction="right" rowHeight={320} speed={0.42} onCardClick={setOpenVideo} />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div className="portfolio-row-wrap">
+            <PortfolioRow items={portfolioRows[0]} direction="left"  rowHeight={640} speed={0.5}  onCardClick={setOpenVideo} />
+          </div>
+          <div className="portfolio-row-wrap">
+            <PortfolioRow items={portfolioRows[1]} direction="right" rowHeight={640} speed={0.42} onCardClick={setOpenVideo} />
+          </div>
         </div>
 
         <p style={{ textAlign: 'center', marginTop: 20, fontSize: 11, color: 'var(--g6)', letterSpacing: '0.06em' }}>
