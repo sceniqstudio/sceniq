@@ -866,9 +866,12 @@ export default function HomePage() {
                     )}
                   </div>
                   <ul className="lv2-price-perks">
-                    <li className="lv2-price-perk">{p.shots} shots · {p.fmts}</li>
-                    {p.voix && <li className="lv2-price-perk">Voix-off incluse</li>}
-                    {pricingModel && <li className="lv2-price-perk" style={{ color: 'var(--accent)' }}>+ Comédien IA sur mesure</li>}
+                    <li className="lv2-price-perk">{p.shots} shots vidéo · {p.fmts}</li>
+                    <li className="lv2-price-perk">Script IA + storyboard complet</li>
+                    <li className="lv2-price-perk">Musique de fond + bruitages</li>
+                    <li className="lv2-price-perk">1 langue au choix <span style={{ color: 'var(--g6)', fontWeight: 400 }}>🇫🇷 🇺🇸 🇯🇵 🇪🇸 🇧🇷 🇮🇩</span></li>
+                    {p.voix && <li className="lv2-price-perk">Voix-off au montage</li>}
+                    {pricingModel && <li className="lv2-price-perk" style={{ color: 'var(--accent)' }}>Comédien IA sur mesure</li>}
                   </ul>
                   <a
                     href={`/commande?duree=${parseInt(p.dur)}${pricingModel ? '&modele=1' : ''}`}
