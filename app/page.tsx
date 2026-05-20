@@ -295,7 +295,7 @@ export default function HomePage() {
             <li><a href="#tarifs">Tarifs</a></li>
             <li><a href="#reels">Réalisations</a></li>
             <li><a href="#faq">FAQ</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><button type="button" onClick={() => { setQuestionOpen(true); setQuestionSent(false) }} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'inherit', font: 'inherit' }}>Contact</button></li>
           </ul>
           <div className="lv2-nav-right">
             <a href="mailto:support@sceniq.studio" className="lv2-btn lv2-btn-ghost lv2-btn-sm">
@@ -332,7 +332,7 @@ export default function HomePage() {
               <li><a href="#tarifs"   onClick={() => setMobileMenuOpen(false)}>Tarifs</a></li>
               <li><a href="#reels"    onClick={() => setMobileMenuOpen(false)}>Réalisations</a></li>
               <li><a href="#faq"      onClick={() => setMobileMenuOpen(false)}>FAQ</a></li>
-              <li><a href="#contact"  onClick={() => setMobileMenuOpen(false)}>Contact</a></li>
+              <li><button type="button" onClick={() => { setMobileMenuOpen(false); setQuestionOpen(true); setQuestionSent(false) }} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'inherit', font: 'inherit' }}>Contact</button></li>
             </ul>
             <div className="lv2-mob-cta">
               <a
@@ -1010,7 +1010,7 @@ export default function HomePage() {
       </section>
 
       {/* ── FINAL CTA ────────────────────────────────────────────────────── */}
-      <section className="lv2-final-cta" id="contact">
+      <section className="lv2-final-cta">
         <div className="lv2-si">
           <div className="lv2-final-cta-inner">
             <div className="lv2-label" style={{ margin: '0 auto 20px' }}>Prêt à commencer ?</div>
