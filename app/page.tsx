@@ -510,16 +510,33 @@ export default function HomePage() {
               </ul>
             </div>
             <div>
-              <div className="lv2-placeholder" aria-hidden="true">
-                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <circle cx="12" cy="12" r="10"/>
-                  <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/>
-                  <line x1="12" y1="17" x2="12.01" y2="17"/>
-                </svg>
-                <span style={{ fontSize: 11, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-                  Vue pré-prod agents — à venir
-                </span>
-              </div>
+              <button
+                type="button"
+                onClick={() => setOpenVideo('volt')}
+                style={{
+                  display: 'block', width: '100%',
+                  aspectRatio: '16/9', borderRadius: 14, overflow: 'hidden',
+                  background: 'var(--surface)', border: '1px solid var(--bdr-md)',
+                  position: 'relative', cursor: 'pointer', padding: 0,
+                }}
+                aria-label="Lire la vidéo volt"
+              >
+                <video
+                  autoPlay muted loop playsInline preload="none"
+                  poster="/showcase/volt.jpg"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
+                >
+                  <source src="/showcase/volt.mp4" type="video/mp4" />
+                </video>
+                <div style={{
+                  position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  opacity: 0, transition: 'opacity 0.2s',
+                }} className="play-overlay">
+                  <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(124,92,252,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <svg viewBox="0 0 16 16" fill="white" width="16" height="16"><polygon points="4,2 14,8 4,14"/></svg>
+                  </div>
+                </div>
+              </button>
             </div>
           </div>
 
