@@ -1082,7 +1082,7 @@ export default function HomePage() {
         <div className="lv2-si">
           <div className="lv2-final-cta-inner">
             <div className="lv2-label" style={{ margin: '0 auto 20px' }}>Prêt à commencer ?</div>
-            <h2>Votre prochaine pub vidéo.<br />Deux lignes. 48 heures.</h2>
+            <h2>Votre prochain clip vidéo.<br />Deux lignes. 48 heures.</h2>
             <p className="lv2-final-cta-sub">
               Un brief, un paiement, un appel. Pré-prod livrée sans réunion intermédiaire.
             </p>
