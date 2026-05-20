@@ -820,6 +820,34 @@ export default function HomePage() {
             ))}
           </div>
 
+          {/* ── Langues disponibles ── */}
+          <div className="rv" style={{ margin: '24px auto 0', maxWidth: 560, textAlign: 'center' }}>
+            <p style={{ fontSize: 12, color: 'var(--g6)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.07em', fontWeight: 600 }}>
+              1 langue incluse par forfait — au choix parmi
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 8 }}>
+              {[
+                { flag: '🇺🇸', lang: 'Anglais' },
+                { flag: '🇯🇵', lang: 'Japonais' },
+                { flag: '🇪🇸', lang: 'Espagnol' },
+                { flag: '🇧🇷', lang: 'Portugais' },
+                { flag: '🇮🇩', lang: 'Indonésien' },
+              ].map(({ flag, lang }) => (
+                <span key={lang} style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  padding: '6px 14px', borderRadius: 999,
+                  background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.10)',
+                  fontSize: 13, color: 'var(--g4)', fontWeight: 500,
+                }}>
+                  {flag} {lang}
+                </span>
+              ))}
+            </div>
+            <p style={{ fontSize: 11, color: 'var(--g6)', marginTop: 10 }}>
+              Précisez la langue souhaitée dans votre brief — prise en charge native par Seedance 2.0
+            </p>
+          </div>
+
           {/* ── Toggle Comédien IA ── */}
           <div className="rv lv2-model-toggle-wrap">
             <button
@@ -877,7 +905,8 @@ export default function HomePage() {
                     <li className="lv2-price-perk">{p.shots} shots vidéo · {p.fmts}</li>
                     <li className="lv2-price-perk">Script IA + storyboard complet</li>
                     <li className="lv2-price-perk">Musique de fond + bruitages</li>
-                    {p.voix && <li className="lv2-price-perk">Voix-off française au montage</li>}
+                    <li className="lv2-price-perk">1 langue au choix <span style={{ color: 'var(--g6)', fontWeight: 400 }}>🇺🇸 🇯🇵 🇪🇸 🇧🇷 🇮🇩</span></li>
+                    {p.voix && <li className="lv2-price-perk">Voix-off au montage</li>}
                     {pricingModel && <li className="lv2-price-perk" style={{ color: 'var(--accent)' }}>Comédien IA sur mesure</li>}
                   </ul>
                   <a
