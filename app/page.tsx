@@ -842,11 +842,11 @@ export default function HomePage() {
 
           <div className="lv2-prices rv">
             {[
-              { dur: '5s',  fmt: 'Format court',     price: 69,  shots: 2, voix: false, fmts: '9:16 · 1:1',         featured: false },
-              { dur: '8s',  fmt: 'Format reel',      price: 89,  shots: 3, voix: false, fmts: '9:16 · 1:1',         featured: false },
-              { dur: '10s', fmt: 'Format pub',       price: 109, shots: 3, voix: true,  fmts: '9:16 · 1:1 · 16:9', featured: true  },
-              { dur: '12s', fmt: 'Format narration', price: 129, shots: 4, voix: true,  fmts: '9:16 · 1:1 · 16:9', featured: false },
-              { dur: '15s', fmt: 'Format histoire',  price: 159, shots: 4, voix: true,  fmts: '9:16 · 1:1 · 16:9', featured: false },
+              { dur: '5 sec',  fmt: 'Format court',     price: 69,  shots: 2, voix: false, fmts: '9:16 · 1:1',         maxFmts: 2, featured: false },
+              { dur: '8 sec',  fmt: 'Format reel',      price: 89,  shots: 3, voix: false, fmts: '9:16 · 1:1',         maxFmts: 2, featured: false },
+              { dur: '10 sec', fmt: 'Format pub',       price: 109, shots: 3, voix: true,  fmts: '9:16 · 1:1 · 16:9', maxFmts: 3, featured: true  },
+              { dur: '12 sec', fmt: 'Format narration', price: 129, shots: 4, voix: true,  fmts: '9:16 · 1:1 · 16:9', maxFmts: 3, featured: false },
+              { dur: '15 sec', fmt: 'Format histoire',  price: 159, shots: 4, voix: true,  fmts: '9:16 · 1:1 · 16:9', maxFmts: 3, featured: false },
             ].map((p) => {
               const total = p.price + (pricingModel ? 49 : 0)
               return (
@@ -866,7 +866,7 @@ export default function HomePage() {
                     )}
                   </div>
                   <ul className="lv2-price-perks">
-                    <li className="lv2-price-perk">{p.shots} shots vidéo · {p.fmts}</li>
+                    <li className="lv2-price-perk">{p.shots} shots · {p.maxFmts} formats au choix <span style={{ color:'var(--g6)', fontWeight:400 }}>{p.fmts}</span></li>
                     <li className="lv2-price-perk">Script IA + storyboard complet</li>
                     <li className="lv2-price-perk">Musique de fond + bruitages</li>
                     <li className="lv2-price-perk">Lip sync · voix off ou dialogue <span style={{ color: 'var(--g6)', fontWeight: 400 }}>🇫🇷 🇺🇸 🇯🇵 🇪🇸 🇧🇷 🇮🇩</span></li>

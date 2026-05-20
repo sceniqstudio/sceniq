@@ -16,6 +16,7 @@ type CallTime = 'Matin' | 'Après-midi' | 'Soir'
 type CartItem = {
   id: string
   duration: Duration | null
+  formats: Format[]
   qty: number
   wantAiModel: boolean
   aiModelDesc: string
@@ -32,6 +33,14 @@ const PRICE: Record<Duration, number> = { 5: 69, 8: 89, 10: 109, 12: 129, 15: 15
 const AI_MODEL_ADDON = 49
 const DURATIONS: Duration[] = [5, 8, 10, 12, 15]
 const DUR_LABEL: Record<Duration, string> = { 5: 'Court', 8: 'Reel', 10: 'Pub', 12: 'Narration', 15: 'Histoire' }
+const MAX_FORMATS: Record<Duration, number> = { 5: 2, 8: 2, 10: 3, 12: 3, 15: 3 }
+const DEFAULT_FORMATS: Record<Duration, Format[]> = {
+  5:  ['9:16', '1:1'],
+  8:  ['9:16', '1:1'],
+  10: ['9:16', '1:1', '16:9'],
+  12: ['9:16', '1:1', '16:9'],
+  15: ['9:16', '1:1', '16:9'],
+}
 
 const FORMATS: { value: Format; label: string; desc: string; ratio: [number, number] }[] = [
   { value: '9:16',  label: '9:16',  desc: 'TikTok · Reels',      ratio: [9,  16] },
@@ -162,11 +171,10 @@ export default function CommandePage() {
 
   const newItem = (): CartItem => ({
     id: typeof crypto !== 'undefined' ? crypto.randomUUID() : Math.random().toString(36),
-    duration: null, qty: 1, wantAiModel: false, aiModelDesc: '',
+    duration: null, formats: [], qty: 1, wantAiModel: false, aiModelDesc: '',
   })
 
   const [step,        setStep]        = useState(0)
-  const [format,      setFormat]      = useState<Format | null>(null)
   const [language,    setLanguage]    = useState<string>('Français')
   const [cartItems,   setCartItems]   = useState<CartItem[]>([newItem()])
   const [brief,       setBrief]       = useState('')
@@ -192,7 +200,7 @@ export default function CommandePage() {
     if (duree) {
       const n = parseInt(duree) as Duration
       if (([5,8,10,12,15] as number[]).includes(n)) {
-        setCartItems([{ ...newItem(), duration: n }])
+        setCartItems([{ ...newItem(), duration: n, formats: DEFAULT_FORMATS[n] }])
       }
     }
     if (params.get('modele') === '1') {
@@ -249,7 +257,6 @@ export default function CommandePage() {
   }
 
   const handleSubmit = async () => {
-    if (!format) return
     setSubmitting(true); setError(null)
     try {
       let paths = uploadedPaths
@@ -260,10 +267,10 @@ export default function CommandePage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          format,
           language,
           cart_items: cartItems.map(it => ({
             duration:       it.duration,
+            formats:        it.formats,
             qty:            it.qty,
             want_ai_model:  it.wantAiModel,
             ai_model_desc:  it.wantAiModel ? it.aiModelDesc : undefined,
@@ -291,7 +298,7 @@ export default function CommandePage() {
 
   // ─── Validation ────────────────────────────────────────────────────────────
 
-  const step0Valid = format !== null && cartItems.length > 0 && cartItems.every(it => it.duration !== null)
+  const step0Valid = cartItems.length > 0 && cartItems.every(it => it.duration !== null && it.formats.length > 0)
   const step1Valid = brief.trim().length >= 10
   const step2Valid = clientName.trim().length >= 2 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clientEmail)
 
@@ -327,25 +334,6 @@ export default function CommandePage() {
               Ajoutez autant de vidéos que vous voulez — durées, quantités et options différentes dans une seule commande.
             </p>
 
-            {/* Format partagé */}
-            <div style={{ marginBottom:28 }}>
-              <Label>Format vidéo <span style={{ color:s.accent }}>*</span> — partagé pour toutes les vidéos</Label>
-              <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8 }}>
-                {FORMATS.map(f => (
-                  <button key={f.value} onClick={() => setFormat(f.value)} style={{
-                    padding:'10px 8px', borderRadius:10, cursor:'pointer',
-                    background: format === f.value ? s.accentBg : s.surface,
-                    border:     format === f.value ? s.borderAcc : s.border,
-                    color:s.text, textAlign:'center', transition:'all .15s',
-                  }}>
-                    <FormatIcon ratio={f.ratio} active={format === f.value} />
-                    <div style={{ fontSize:13, fontWeight:700, color: format === f.value ? s.accent : '#fff' }}>{f.label}</div>
-                    <div style={{ fontSize:10, color:s.muted, marginTop:1 }}>{f.desc}</div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
             {/* Langue */}
             <div style={{ marginBottom:32 }}>
               <Label>Langue de la voix-off / dialogue <span style={{ color:s.accent }}>*</span></Label>
@@ -380,7 +368,7 @@ export default function CommandePage() {
                   <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:14 }}>
                     <span style={{ fontSize:13, fontWeight:700, color:s.accent, letterSpacing:0.4 }}>
                       Vidéo {idx + 1}
-                      {item.duration && <span style={{ color:s.muted, fontWeight:400 }}> · {item.duration}s · {DUR_LABEL[item.duration]}</span>}
+                      {item.duration && <span style={{ color:s.muted, fontWeight:400 }}> · {item.duration} sec · {DUR_LABEL[item.duration]}{item.formats.length > 0 ? ` · ${item.formats.join(' · ')}` : ''}</span>}
                     </span>
                     {cartItems.length > 1 && (
                       <button onClick={() => removeItem(item.id)} style={{
@@ -399,14 +387,14 @@ export default function CommandePage() {
                     <p style={{ margin:'0 0 8px', fontSize:11, fontWeight:700, letterSpacing:1, textTransform:'uppercase', color:s.muted }}>Durée</p>
                     <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
                       {DURATIONS.map(d => (
-                        <button key={d} onClick={() => updateItem(item.id, { duration: d })} style={{
+                        <button key={d} onClick={() => updateItem(item.id, { duration: d, formats: DEFAULT_FORMATS[d] })} style={{
                           flex:'1 1 0', minWidth:58, padding:'10px 4px', borderRadius:8, cursor:'pointer',
                           background: item.duration === d ? s.accentBg : 'rgba(255,255,255,.04)',
                           border:     item.duration === d ? s.borderAcc : s.border,
                           color:s.text, textAlign:'center', transition:'all .15s',
                         }}>
                           <div style={{ fontSize:14, fontWeight:700, color: item.duration === d ? s.accent : '#fff' }}>
-                            <ClockIcon active={item.duration === d} />{d}s
+                            <ClockIcon active={item.duration === d} />{d} sec
                           </div>
                           <div style={{ fontSize:11, color: item.duration === d ? s.accent : s.muted, marginTop:2 }}>
                             {PRICE[d]} €
@@ -415,6 +403,58 @@ export default function CommandePage() {
                       ))}
                     </div>
                   </div>
+
+                  {/* Formats — affiché une fois la durée choisie */}
+                  {item.duration && (() => {
+                    const max = MAX_FORMATS[item.duration]
+                    const toggleFmt = (fmt: Format) => {
+                      const sel = item.formats
+                      if (sel.includes(fmt)) {
+                        if (sel.length <= 1) return
+                        updateItem(item.id, { formats: sel.filter(f => f !== fmt) })
+                      } else {
+                        if (sel.length >= max) return
+                        updateItem(item.id, { formats: [...sel, fmt] })
+                      }
+                    }
+                    return (
+                      <div style={{ marginBottom:14 }}>
+                        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
+                          <p style={{ margin:0, fontSize:11, fontWeight:700, letterSpacing:1, textTransform:'uppercase', color:s.muted }}>
+                            Formats livrés
+                          </p>
+                          <span style={{ fontSize:11, color: item.formats.length === max ? s.accent : s.muted }}>
+                            {item.formats.length}/{max} sélectionnés
+                          </span>
+                        </div>
+                        <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:6 }}>
+                          {FORMATS.map(f => {
+                            const active = item.formats.includes(f.value)
+                            const atMax  = !active && item.formats.length >= max
+                            return (
+                              <button key={f.value}
+                                onClick={() => toggleFmt(f.value)}
+                                disabled={atMax}
+                                style={{
+                                  padding:'8px 6px', borderRadius:8, cursor: atMax ? 'not-allowed' : 'pointer',
+                                  background: active ? s.accentBg : 'rgba(255,255,255,.03)',
+                                  border:     active ? s.borderAcc : s.border,
+                                  color: s.text, textAlign:'center', transition:'all .15s',
+                                  opacity: atMax ? 0.35 : 1,
+                                }}>
+                                <FormatIcon ratio={f.ratio} active={active} />
+                                <div style={{ fontSize:12, fontWeight:700, color: active ? s.accent : '#fff' }}>{f.label}</div>
+                                <div style={{ fontSize:10, color:s.muted, marginTop:1 }}>{f.desc}</div>
+                              </button>
+                            )
+                          })}
+                        </div>
+                        <p style={{ margin:'6px 0 0', fontSize:11, color:'rgba(255,255,255,.3)', lineHeight:1.4 }}>
+                          Jusqu&apos;à {max} formats inclus dans ce forfait — MP4 1080p pour chaque format choisi
+                        </p>
+                      </div>
+                    )
+                  })()}
 
                   {/* Quantité */}
                   <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
@@ -531,7 +571,7 @@ export default function CommandePage() {
                 display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:10,
               }}>
                 <div style={{ fontSize:13, color:s.accent, lineHeight:1.6 }}>
-                  <strong>{totalVideos} vidéo{totalVideos > 1 ? 's' : ''}</strong> · Format {format || '—'} · Voix {language}<br />
+                  <strong>{totalVideos} vidéo{totalVideos > 1 ? 's' : ''}</strong> · Voix {language}<br />
                   <span style={{ color:'rgba(165,180,252,.7)', fontSize:12 }}>10 allers-retours · MP4 sous 48h · tous formats inclus</span>
                 </div>
                 <div style={{ fontSize:26, fontWeight:800, color:'#fff', whiteSpace:'nowrap' }}>
@@ -723,7 +763,7 @@ export default function CommandePage() {
               {/* Vidéos */}
               <div style={{ padding:'16px 20px', borderBottom:s.border }}>
                 <div style={{ fontSize:12, fontWeight:700, letterSpacing:1, textTransform:'uppercase', color:s.muted, marginBottom:12 }}>
-                  Vidéos commandées — Format {format} · Voix {language}
+                  Vidéos commandées — Voix {language}
                 </div>
                 {cartItems.map((item, idx) => item.duration && (
                   <div key={item.id} style={{
@@ -733,7 +773,7 @@ export default function CommandePage() {
                   }}>
                     <div>
                       <div style={{ fontSize:14, fontWeight:700, color:'#fff' }}>
-                        Vidéo {item.duration}s · {DUR_LABEL[item.duration]}
+                        Vidéo {item.duration} sec · {DUR_LABEL[item.duration]}{item.formats.length > 0 ? ` · ${item.formats.join(', ')}` : ''}
                         {item.qty > 1 && <span style={{ color:s.accent }}> × {item.qty}</span>}
                       </div>
                       {item.wantAiModel && (
