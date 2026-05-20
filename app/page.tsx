@@ -529,9 +529,17 @@ export default function HomePage() {
                 }}
                 aria-label="Lire la vidéo volt"
               >
+                {/* Poster statique sur mobile — vidéo autoplay sur desktop */}
+                <img
+                  src="/showcase/volt.jpg"
+                  alt="Aperçu vidéo studio"
+                  className="studio-poster-mobile"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                />
                 <video
-                  autoPlay muted loop playsInline preload="none"
+                  autoPlay muted loop playsInline preload="metadata"
                   poster="/showcase/volt.jpg"
+                  className="studio-video-desktop"
                   style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
                 >
                   <source src="/showcase/volt.mp4" type="video/mp4" />
