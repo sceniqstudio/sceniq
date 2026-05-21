@@ -1,17 +1,16 @@
 'use client'
 
-// app/commande/page.tsx — V2 multi-vidéos
+// app/commande/page.tsx — V2 multi-vidéos · i18n FR/EN
 // Étapes : 1. Panier (formats + durées + langues) → 2. Brief + refs → 3. Coordonnées → 4. Récap + Paiement
 
 import { useState, useRef, useCallback, useEffect } from 'react'
 import Link from 'next/link'
+import { translations, type Lang } from '@/lib/i18n'
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 
 type Format   = '16:9' | '1:1' | '9:16' | '4:3' | '3:4' | '21:9'
 type Duration = 5 | 8 | 10 | 12 | 15
-type CallDay  = 'Lun' | 'Mar' | 'Mer' | 'Jeu' | 'Ven' | 'Sam'
-type CallTime = 'Matin' | 'Après-midi' | 'Soir'
 
 type CartItem = {
   id: string
@@ -22,17 +21,9 @@ type CartItem = {
   aiModelDesc: string
 }
 
-const CALL_DAYS: CallDay[]  = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']
-const CALL_TIMES: { value: CallTime; range: string }[] = [
-  { value: 'Matin',      range: '9h – 12h'  },
-  { value: 'Après-midi', range: '13h – 18h' },
-  { value: 'Soir',       range: '18h – 20h' },
-]
-
 const PRICE: Record<Duration, number> = { 5: 69, 8: 89, 10: 109, 12: 129, 15: 159 }
 const AI_MODEL_ADDON = 49
 const DURATIONS: Duration[] = [5, 8, 10, 12, 15]
-const DUR_LABEL: Record<Duration, string> = { 5: 'Court', 8: 'Reel', 10: 'Pub', 12: 'Narration', 15: 'Histoire' }
 const MAX_FORMATS: Record<Duration, number> = { 5: 2, 8: 2, 10: 3, 12: 3, 15: 3 }
 const DEFAULT_FORMATS: Record<Duration, Format[]> = {
   5:  ['9:16', '1:1'],
@@ -48,18 +39,14 @@ const FORMATS: { value: Format; label: string; desc: string; ratio: [number, num
   { value: '16:9',  label: '16:9',  desc: 'YouTube · Web',        ratio: [16, 9]  },
   { value: '4:3',   label: '4:3',   desc: 'Square+',              ratio: [4,  3]  },
   { value: '3:4',   label: '3:4',   desc: 'Pinterest · Portrait', ratio: [3,  4]  },
-  { value: '21:9',  label: '21:9',  desc: 'Cinéma · Ultra-wide',  ratio: [21, 9]  },
+  { value: '21:9',  label: '21:9',  desc: 'Cinema · Ultra-wide',  ratio: [21, 9]  },
 ]
 
-const LANGUAGES = [
-  { code: 'fr', flag: '🇫🇷', label: 'Français' },
-  { code: 'en', flag: '🇺🇸', label: 'Anglais'  },
-  { code: 'ja', flag: '🇯🇵', label: 'Japonais' },
-  { code: 'es', flag: '🇪🇸', label: 'Espagnol' },
-  { code: 'pt', flag: '🇧🇷', label: 'Portugais'},
-  { code: 'id', flag: '🇮🇩', label: 'Indonésien'},
-  { code: 'zh', flag: '🇨🇳', label: 'Chinois'   },
-]
+// Language codes — label driven by tc.langLabels[code]
+const LANG_CODES = ['fr', 'en', 'ja', 'es', 'pt', 'id', 'zh']
+const LANG_FLAGS: Record<string, string> = {
+  fr: '🇫🇷', en: '🇺🇸', ja: '🇯🇵', es: '🇪🇸', pt: '🇧🇷', id: '🇮🇩', zh: '🇨🇳',
+}
 
 const ACCEPT_TYPES = 'image/jpeg,image/png,image/webp,image/gif,image/heic,audio/mpeg,audio/wav,audio/mp4,video/mp4,video/quicktime,video/webm'
 
@@ -107,8 +94,7 @@ function ClockIcon({ active }: { active: boolean }) {
   )
 }
 
-function StepIndicator({ current, total }: { current: number; total: number }) {
-  const labels = ['Vidéos', 'Brief', 'Contact', 'Paiement']
+function StepIndicator({ current, total, labels }: { current: number; total: number; labels: string[] }) {
   return (
     <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:36, overflowX:'auto' }}>
       {Array.from({ length: total }, (_, i) => (
@@ -116,7 +102,7 @@ function StepIndicator({ current, total }: { current: number; total: number }) {
           <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4 }}>
             <div style={{
               width:28, height:28, borderRadius:'50%',
-              background: i < current ? s.accent : i === current ? s.accent : 'rgba(255,255,255,.1)',
+              background: i <= current ? s.accent : 'rgba(255,255,255,.1)',
               display:'flex', alignItems:'center', justifyContent:'center',
               fontSize:12, fontWeight:700,
               color: i <= current ? '#1E1B4B' : s.muted,
@@ -175,8 +161,16 @@ export default function CommandePage() {
     duration: null, formats: [], qty: 1, wantAiModel: false, aiModelDesc: '',
   })
 
+  // UI language — read from landing page preference
+  const [uiLang, setUiLang] = useState<Lang>('fr')
+  useEffect(() => {
+    const saved = localStorage.getItem('sceniq-lang') as Lang | null
+    if (saved === 'en' || saved === 'fr') setUiLang(saved)
+  }, [])
+  const tc = translations[uiLang].checkout
+
   const [step,        setStep]        = useState(0)
-  const [language,    setLanguage]    = useState<string>('Français')
+  const [voiceLang,   setVoiceLang]   = useState<string>('fr')   // language code for video voice
   const [cartItems,   setCartItems]   = useState<CartItem[]>([newItem()])
   const [brief,       setBrief]       = useState('')
   const [files,       setFiles]       = useState<File[]>([])
@@ -187,8 +181,8 @@ export default function CommandePage() {
   const [clientEmail, setClientEmail] = useState('')
   const [clientPhone, setClientPhone] = useState('')
   const [clientCompany, setClientCompany] = useState('')
-  const [callDay,     setCallDay]     = useState<CallDay | null>(null)
-  const [callTime,    setCallTime]    = useState<CallTime | null>(null)
+  const [callDayIdx,  setCallDayIdx]  = useState<number | null>(null)
+  const [callTimeIdx, setCallTimeIdx] = useState<number | null>(null)
   const [submitting,  setSubmitting]  = useState(false)
   const [error,       setError]       = useState<string | null>(null)
   const [dragOver,    setDragOver]    = useState(false)
@@ -218,6 +212,16 @@ export default function CommandePage() {
     return sum + (PRICE[item.duration] + (item.wantAiModel ? AI_MODEL_ADDON : 0)) * item.qty
   }, 0)
 
+  // ─── Helpers ───────────────────────────────────────────────────────────────
+
+  const voiceLabel = tc.langLabels[voiceLang] ?? voiceLang
+  const callDayLabel  = callDayIdx  !== null ? tc.callDays[callDayIdx]           : null
+  const callTimeLabel = callTimeIdx !== null ? tc.callTimes[callTimeIdx].label    : null
+  const callTimeRange = callTimeIdx !== null ? tc.callTimes[callTimeIdx].range    : null
+  const callSlotStr   = (callDayLabel && callTimeLabel)
+    ? `${callDayLabel} · ${callTimeLabel} (${callTimeRange})`
+    : undefined
+
   // ─── Handlers panier ───────────────────────────────────────────────────────
 
   const updateItem = (id: string, patch: Partial<CartItem>) =>
@@ -244,15 +248,25 @@ export default function CommandePage() {
   const uploadFiles = async (): Promise<string[]> => {
     if (files.length === 0) return []
     const totalMb = files.reduce((acc, f) => acc + f.size, 0) / 1024 / 1024
-    if (totalMb > 4) throw new Error(`Fichiers trop volumineux (${totalMb.toFixed(1)} MB). Envoyez-les par email après paiement.`)
+    if (totalMb > 4) {
+      const msg = uiLang === 'en'
+        ? `Files too large (${totalMb.toFixed(1)} MB). Send them by email after payment.`
+        : `Fichiers trop volumineux (${totalMb.toFixed(1)} MB). Envoyez-les par email après paiement.`
+      throw new Error(msg)
+    }
     setUploading(true)
     try {
       const fd = new FormData()
       files.forEach(f => fd.append('file', f))
       const res = await fetch(`/api/orders/upload?sessionId=${sessionId}`, { method:'POST', body:fd })
       let json: { paths?: string[]; error?: string }
-      try { json = await res.json() } catch { throw new Error('Fichiers trop volumineux. Envoyez-les par email après paiement.') }
-      if (!res.ok) throw new Error(json.error ?? 'Erreur upload')
+      try { json = await res.json() } catch {
+        const msg = uiLang === 'en'
+          ? 'Files too large. Send them by email after payment.'
+          : 'Fichiers trop volumineux. Envoyez-les par email après paiement.'
+        throw new Error(msg)
+      }
+      if (!res.ok) throw new Error(json.error ?? (uiLang === 'en' ? 'Upload error' : 'Erreur upload'))
       return json.paths ?? []
     } finally { setUploading(false) }
   }
@@ -268,7 +282,7 @@ export default function CommandePage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          language,
+          language: voiceLabel,
           cart_items: cartItems.map(it => ({
             duration:       it.duration,
             formats:        it.formats,
@@ -282,17 +296,15 @@ export default function CommandePage() {
           client_email:   clientEmail,
           client_phone:   clientPhone || undefined,
           client_company: clientCompany || undefined,
-          preferred_call_slot: (callDay && callTime)
-            ? `${callDay} · ${callTime} (${CALL_TIMES.find(t => t.value === callTime)!.range})`
-            : undefined,
+          preferred_call_slot: callSlotStr,
           ref_paths: paths,
         }),
       })
       const json = await res.json()
-      if (!res.ok) throw new Error(json.error ?? 'Erreur lors de la création de la commande')
+      if (!res.ok) throw new Error(json.error ?? (uiLang === 'en' ? 'Error creating order' : 'Erreur lors de la création de la commande'))
       window.location.href = json.checkoutUrl
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erreur inattendue')
+      setError(err instanceof Error ? err.message : (uiLang === 'en' ? 'Unexpected error' : 'Erreur inattendue'))
       setSubmitting(false)
     }
   }
@@ -316,12 +328,12 @@ export default function CommandePage() {
         {/* Header */}
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:40 }}>
           <Link href="/" style={{ fontSize:13, color:s.muted, textDecoration:'none', display:'flex', alignItems:'center', gap:6 }}>
-            ← Retour
+            {tc.back}
           </Link>
           <img src="/logo-sceniq.svg" alt="ScenIQ" style={{ height:40, display:'block' }} />
         </div>
 
-        <StepIndicator current={step} total={4} />
+        <StepIndicator current={step} total={4} labels={tc.stepLabels} />
 
         {/* ══════════════════════════════════════════════════════════
             ÉTAPE 0 — Panier vidéos
@@ -329,33 +341,32 @@ export default function CommandePage() {
         {step === 0 && (
           <div>
             <h1 style={{ fontSize:'clamp(22px,4vw,30px)', fontWeight:700, letterSpacing:-0.5, color:'#fff', margin:'0 0 6px' }}>
-              Composez votre commande
+              {tc.s0.h1}
             </h1>
             <p style={{ fontSize:14, color:s.muted, margin:'0 0 32px', lineHeight:1.5 }}>
-              Ajoutez autant de vidéos que vous voulez — durées, quantités et options différentes dans une seule commande.
+              {tc.s0.sub}
             </p>
 
-            {/* Langue */}
+            {/* Langue de la voix */}
             <div style={{ marginBottom:32 }}>
-              <Label>Langue de la voix-off / dialogue <span style={{ color:s.accent }}>*</span></Label>
+              <Label>{tc.s0.langLabel} <span style={{ color:s.accent }}>*</span></Label>
               <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
-                {LANGUAGES.map(l => (
-                  <button key={l.code} onClick={() => setLanguage(l.label)} style={{
+                {LANG_CODES.map(code => (
+                  <button key={code} onClick={() => setVoiceLang(code)} style={{
                     display:'inline-flex', alignItems:'center', gap:6,
                     padding:'8px 14px', borderRadius:999, cursor:'pointer',
-                    background: language === l.label ? s.accentBg : s.surface,
-                    border:     language === l.label ? s.borderAcc : s.border,
-                    color:      language === l.label ? s.accent : s.muted,
-                    fontSize:13, fontWeight: language === l.label ? 700 : 400,
+                    background: voiceLang === code ? s.accentBg : s.surface,
+                    border:     voiceLang === code ? s.borderAcc : s.border,
+                    color:      voiceLang === code ? s.accent : s.muted,
+                    fontSize:13, fontWeight: voiceLang === code ? 700 : 400,
                     transition:'all .15s',
                   }}>
-                    {l.flag} {l.label}
+                    {LANG_FLAGS[code]} {tc.langLabels[code]}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* ── Ligne séparateur ── */}
             <div style={{ borderTop:s.border, marginBottom:24 }} />
 
             {/* Cart items */}
@@ -368,8 +379,12 @@ export default function CommandePage() {
                   {/* Header item */}
                   <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:14 }}>
                     <span style={{ fontSize:13, fontWeight:700, color:s.accent, letterSpacing:0.4 }}>
-                      Vidéo {idx + 1}
-                      {item.duration && <span style={{ color:s.muted, fontWeight:400 }}> · {item.duration} sec · {DUR_LABEL[item.duration]}{item.formats.length > 0 ? ` · ${item.formats.join(' · ')}` : ''}</span>}
+                      {tc.s0.video(idx + 1)}
+                      {item.duration && (
+                        <span style={{ color:s.muted, fontWeight:400 }}>
+                          {' · '}{item.duration} sec · {tc.durLabels[item.duration]}{item.formats.length > 0 ? ` · ${item.formats.join(' · ')}` : ''}
+                        </span>
+                      )}
                     </span>
                     {cartItems.length > 1 && (
                       <button onClick={() => removeItem(item.id)} style={{
@@ -385,7 +400,7 @@ export default function CommandePage() {
 
                   {/* Durée */}
                   <div style={{ marginBottom:14 }}>
-                    <p style={{ margin:'0 0 8px', fontSize:11, fontWeight:700, letterSpacing:1, textTransform:'uppercase', color:s.muted }}>Durée</p>
+                    <p style={{ margin:'0 0 8px', fontSize:11, fontWeight:700, letterSpacing:1, textTransform:'uppercase', color:s.muted }}>{tc.s0.durLabel}</p>
                     <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
                       {DURATIONS.map(d => (
                         <button key={d} onClick={() => updateItem(item.id, { duration: d, formats: DEFAULT_FORMATS[d] })} style={{
@@ -405,7 +420,7 @@ export default function CommandePage() {
                     </div>
                   </div>
 
-                  {/* Formats — affiché une fois la durée choisie */}
+                  {/* Formats */}
                   {item.duration && (() => {
                     const max = MAX_FORMATS[item.duration]
                     const toggleFmt = (fmt: Format) => {
@@ -422,10 +437,10 @@ export default function CommandePage() {
                       <div style={{ marginBottom:14 }}>
                         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
                           <p style={{ margin:0, fontSize:11, fontWeight:700, letterSpacing:1, textTransform:'uppercase', color:s.muted }}>
-                            Formats livrés
+                            {tc.s0.formatsLabel}
                           </p>
                           <span style={{ fontSize:11, color: item.formats.length === max ? s.accent : s.muted }}>
-                            {item.formats.length}/{max} sélectionnés
+                            {tc.s0.selected(item.formats.length, max)}
                           </span>
                         </div>
                         <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:6 }}>
@@ -451,7 +466,7 @@ export default function CommandePage() {
                           })}
                         </div>
                         <p style={{ margin:'6px 0 0', fontSize:11, color:'rgba(255,255,255,.3)', lineHeight:1.4 }}>
-                          Jusqu&apos;à {max} formats inclus dans ce forfait — MP4 1080p pour chaque format choisi
+                          {tc.s0.formatsNote(max)}
                         </p>
                       </div>
                     )
@@ -460,7 +475,7 @@ export default function CommandePage() {
                   {/* Quantité */}
                   <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
                     <div>
-                      <p style={{ margin:'0 0 2px', fontSize:11, fontWeight:700, letterSpacing:1, textTransform:'uppercase', color:s.muted }}>Quantité</p>
+                      <p style={{ margin:'0 0 2px', fontSize:11, fontWeight:700, letterSpacing:1, textTransform:'uppercase', color:s.muted }}>{tc.s0.qtyLabel}</p>
                       {item.duration && item.qty > 1 && (
                         <span style={{ fontSize:12, color:s.accent }}>
                           {item.qty} × {PRICE[item.duration]} € = {item.qty * PRICE[item.duration]} €
@@ -489,7 +504,6 @@ export default function CommandePage() {
                     display:'flex', alignItems:'center', justifyContent:'space-between', gap:12,
                   }}>
                     <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-                      {/* Toggle pill */}
                       <div style={{
                         width:36, height:20, borderRadius:999, flexShrink:0,
                         background: item.wantAiModel ? s.accent : 'rgba(255,255,255,.15)',
@@ -502,7 +516,7 @@ export default function CommandePage() {
                         }} />
                       </div>
                       <span style={{ fontSize:13, fontWeight:600, color: item.wantAiModel ? s.accent : s.muted }}>
-                        Comédien IA sur mesure
+                        {tc.s0.aiModel}
                       </span>
                     </div>
                     <span style={{
@@ -510,17 +524,16 @@ export default function CommandePage() {
                       background: item.wantAiModel ? 'rgba(165,180,252,.15)' : 'rgba(255,255,255,.07)',
                       color: item.wantAiModel ? s.accent : s.muted, whiteSpace:'nowrap',
                     }}>
-                      +{AI_MODEL_ADDON} € / vidéo
+                      {tc.s0.aiModelPrice(AI_MODEL_ADDON)}
                     </span>
                   </button>
 
-                  {/* Description comédien */}
                   {item.wantAiModel && (
                     <div style={{ marginTop:10 }}>
                       <textarea
                         value={item.aiModelDesc}
                         onChange={e => updateItem(item.id, { aiModelDesc: e.target.value })}
-                        placeholder="Ex : Femme 28–35 ans, style urbain, peau claire, cheveux châtains mi-longs, regard direct, ambiance moderne."
+                        placeholder={tc.s0.aiModelPh}
                         rows={2}
                         maxLength={400}
                         style={{
@@ -539,7 +552,7 @@ export default function CommandePage() {
                   {item.duration && (
                     <div style={{ marginTop:12, display:'flex', justifyContent:'flex-end' }}>
                       <span style={{ fontSize:13, color:s.muted }}>
-                        Sous-total :{' '}
+                        {tc.s0.subtotal}{' '}
                         <strong style={{ color:'#fff', fontSize:15 }}>
                           {(PRICE[item.duration] + (item.wantAiModel ? AI_MODEL_ADDON : 0)) * item.qty} €
                         </strong>
@@ -550,7 +563,7 @@ export default function CommandePage() {
               ))}
             </div>
 
-            {/* Bouton ajouter une vidéo */}
+            {/* Ajouter une vidéo */}
             <button onClick={addItem} style={{
               width:'100%', padding:'13px', borderRadius:12, cursor:'pointer',
               background:'transparent', border:`1.5px dashed rgba(165,180,252,.3)`,
@@ -561,10 +574,10 @@ export default function CommandePage() {
               onMouseEnter={e=>{ e.currentTarget.style.background=s.accentBg; e.currentTarget.style.borderColor=s.accent }}
               onMouseLeave={e=>{ e.currentTarget.style.background='transparent'; e.currentTarget.style.borderColor='rgba(165,180,252,.3)' }}
             >
-              + Ajouter une autre vidéo
+              {tc.s0.addVideo}
             </button>
 
-            {/* Total commande */}
+            {/* Total */}
             {totalPrice > 0 && (
               <div style={{
                 marginTop:20, padding:'16px 20px', borderRadius:12,
@@ -572,12 +585,12 @@ export default function CommandePage() {
                 display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:10,
               }}>
                 <div style={{ fontSize:13, color:s.accent, lineHeight:1.6 }}>
-                  <strong>{totalVideos} vidéo{totalVideos > 1 ? 's' : ''}</strong> · Voix {language}<br />
+                  <strong>{tc.s0.totalVoice(totalVideos, voiceLabel)}</strong><br />
                   <span style={{ color:'rgba(165,180,252,.7)', fontSize:12 }}>
-                    10 allers-retours · MP4 1080p sous 48h ·{' '}
-                    {cartItems.length === 1 && cartItems[0].duration
-                      ? `${cartItems[0].formats.length} format${cartItems[0].formats.length > 1 ? 's' : ''} inclus (${cartItems[0].formats.join(', ')})`
-                      : `${cartItems.reduce((s, i) => s + i.formats.length, 0)} exports MP4 au total`
+                    {tc.s0.totalMeta}{' '}
+                    {cartItems.length === 1 && cartItems[0].formats.length > 0
+                      ? tc.s0.totalFmts1(cartItems[0].formats.length, cartItems[0].formats.join(', '))
+                      : tc.s0.totalFmts2(cartItems.reduce((a, i) => a + i.formats.length, 0))
                     }
                   </span>
                 </div>
@@ -598,7 +611,7 @@ export default function CommandePage() {
                 cursor: step0Valid ? 'pointer' : 'not-allowed', transition:'all .15s',
               }}
             >
-              Continuer →
+              {tc.s0.continue}
             </button>
           </div>
         )}
@@ -609,18 +622,18 @@ export default function CommandePage() {
         {step === 1 && (
           <div>
             <h1 style={{ fontSize:'clamp(22px,4vw,30px)', fontWeight:700, letterSpacing:-0.5, color:'#fff', margin:'0 0 6px' }}>
-              Votre brief en 2–5 lignes
+              {tc.s1.h1}
             </h1>
             <p style={{ fontSize:14, color:s.muted, margin:'0 0 28px', lineHeight:1.5 }}>
-              Marque, ton, message, contexte. Je m'occupe du reste.
+              {tc.s1.sub}
             </p>
 
             <div style={{ marginBottom:24 }}>
-              <Label>Brief <span style={{ color:s.accent }}>*</span></Label>
+              <Label>{tc.s1.briefLabel} <span style={{ color:s.accent }}>*</span></Label>
               <textarea
                 value={brief}
                 onChange={e => setBrief(e.target.value)}
-                placeholder="Ex : Vidéo de lancement pour notre eau pétillante haut-de-gamme. Ton urbain et posé. Public 25-40 ans, grandes villes. On veut montrer la bouteille dans des contextes lifestyle — terrasse, bureau moderne, après-sport."
+                placeholder={tc.s1.briefPh}
                 rows={5}
                 maxLength={1000}
                 style={{
@@ -636,7 +649,7 @@ export default function CommandePage() {
             </div>
 
             <div style={{ marginBottom:28 }}>
-              <Label>Références (facultatif) — 10 max, 4 MB total</Label>
+              <Label>{tc.s1.refsLabel}</Label>
               <div
                 onClick={() => fileInputRef.current?.click()}
                 onDrop={handleDrop}
@@ -650,10 +663,10 @@ export default function CommandePage() {
               >
                 <div style={{ fontSize:24, marginBottom:8 }}>📁</div>
                 <p style={{ margin:0, fontSize:14, color:s.muted }}>
-                  Glissez vos fichiers ici ou <span style={{ color:s.accent, textDecoration:'underline' }}>parcourir</span>
+                  {tc.s1.dropZone} <span style={{ color:s.accent, textDecoration:'underline' }}>{tc.s1.dropLink}</span>
                 </p>
                 <p style={{ margin:'4px 0 0', fontSize:12, color:'rgba(255,255,255,.3)' }}>
-                  Images · audio · vidéos · logo · charte graphique
+                  {tc.s1.dropTypes}
                 </p>
               </div>
               <input ref={fileInputRef} type="file" multiple accept={ACCEPT_TYPES} style={{ display:'none' }} onChange={e=>addFiles(e.target.files)} />
@@ -678,14 +691,14 @@ export default function CommandePage() {
               <button onClick={() => setStep(0)} style={{
                 flex:'0 0 auto', padding:'14px 20px', borderRadius:10,
                 background:'transparent', border:s.border, color:s.muted, fontSize:14, cursor:'pointer',
-              }}>← Retour</button>
+              }}>{tc.back}</button>
               <button onClick={() => setStep(2)} disabled={!step1Valid} style={{
                 flex:1, padding:'14px', borderRadius:10,
                 background: step1Valid ? s.accent : 'rgba(255,255,255,.1)',
                 color:      step1Valid ? '#1E1B4B' : s.muted,
                 fontSize:15, fontWeight:700, border:'none',
                 cursor: step1Valid ? 'pointer' : 'not-allowed', transition:'all .15s',
-              }}>Continuer →</button>
+              }}>{tc.s1.continue}</button>
             </div>
           </div>
         )}
@@ -696,41 +709,41 @@ export default function CommandePage() {
         {step === 2 && (
           <div>
             <h1 style={{ fontSize:'clamp(22px,4vw,30px)', fontWeight:700, letterSpacing:-0.5, color:'#fff', margin:'0 0 6px' }}>
-              Vos coordonnées
+              {tc.s2.h1}
             </h1>
             <p style={{ fontSize:14, color:s.muted, margin:'0 0 28px', lineHeight:1.5 }}>
-              On vous rappelle sous 4 h ouvrées pour aligner la direction créative avant de lancer les agents.
+              {tc.s2.sub}
             </p>
 
-            <FieldInput label="Nom complet" value={clientName} onChange={setClientName} placeholder="Marie Dupont" required />
-            <FieldInput label="Email" value={clientEmail} onChange={setClientEmail} placeholder="marie@exemple.fr" type="email" required />
-            <FieldInput label="Téléphone" value={clientPhone} onChange={setClientPhone} placeholder="+33 6 12 34 56 78" type="tel" />
-            <FieldInput label="Société" value={clientCompany} onChange={setClientCompany} placeholder="Agence Pixel" />
+            <FieldInput label={tc.s2.fullName}  value={clientName}    onChange={setClientName}    placeholder={tc.s2.fullNamePh} required />
+            <FieldInput label={tc.s2.email}      value={clientEmail}   onChange={setClientEmail}   placeholder={tc.s2.emailPh} type="email" required />
+            <FieldInput label={tc.s2.phone}      value={clientPhone}   onChange={setClientPhone}   placeholder={tc.s2.phonePh} type="tel" />
+            <FieldInput label={tc.s2.company}    value={clientCompany} onChange={setClientCompany} placeholder={tc.s2.companyPh} />
 
             <div style={{ marginBottom:28 }}>
-              <Label>Créneau préféré pour l'appel</Label>
+              <Label>{tc.s2.callSlot}</Label>
               <div style={{ display:'flex', gap:6, marginBottom:10, flexWrap:'wrap' }}>
-                {CALL_DAYS.map(day => (
-                  <button key={day} onClick={() => setCallDay(day)} style={{
+                {tc.callDays.map((day, i) => (
+                  <button key={day} onClick={() => setCallDayIdx(i)} style={{
                     flex:'1 1 0', minWidth:44, padding:'10px 6px', borderRadius:8, cursor:'pointer',
-                    background: callDay === day ? s.accentBg : s.surface,
-                    border:     callDay === day ? s.borderAcc : s.border,
-                    color:      callDay === day ? s.accent : s.muted,
-                    fontSize:13, fontWeight: callDay === day ? 700 : 400, transition:'all .15s',
+                    background: callDayIdx === i ? s.accentBg : s.surface,
+                    border:     callDayIdx === i ? s.borderAcc : s.border,
+                    color:      callDayIdx === i ? s.accent : s.muted,
+                    fontSize:13, fontWeight: callDayIdx === i ? 700 : 400, transition:'all .15s',
                   }}>{day}</button>
                 ))}
               </div>
               <div style={{ display:'flex', gap:8 }}>
-                {CALL_TIMES.map(({ value, range }) => (
-                  <button key={value} onClick={() => setCallTime(value)} style={{
+                {tc.callTimes.map(({ label, range }, i) => (
+                  <button key={label} onClick={() => setCallTimeIdx(i)} style={{
                     flex:1, padding:'11px 8px', borderRadius:8, cursor:'pointer',
-                    background: callTime === value ? s.accentBg : s.surface,
-                    border:     callTime === value ? s.borderAcc : s.border,
-                    color:      callTime === value ? s.accent : s.muted,
-                    fontSize:13, fontWeight: callTime === value ? 700 : 400,
+                    background: callTimeIdx === i ? s.accentBg : s.surface,
+                    border:     callTimeIdx === i ? s.borderAcc : s.border,
+                    color:      callTimeIdx === i ? s.accent : s.muted,
+                    fontSize:13, fontWeight: callTimeIdx === i ? 700 : 400,
                     transition:'all .15s', textAlign:'center',
                   }}>
-                    <div style={{ fontWeight:700, marginBottom:2 }}>{value}</div>
+                    <div style={{ fontWeight:700, marginBottom:2 }}>{label}</div>
                     <div style={{ fontSize:11, opacity:0.75 }}>{range}</div>
                   </button>
                 ))}
@@ -741,14 +754,14 @@ export default function CommandePage() {
               <button onClick={() => setStep(1)} style={{
                 flex:'0 0 auto', padding:'14px 20px', borderRadius:10,
                 background:'transparent', border:s.border, color:s.muted, fontSize:14, cursor:'pointer',
-              }}>← Retour</button>
+              }}>{tc.back}</button>
               <button onClick={() => setStep(3)} disabled={!step2Valid} style={{
                 flex:1, padding:'14px', borderRadius:10,
                 background: step2Valid ? s.accent : 'rgba(255,255,255,.1)',
                 color:      step2Valid ? '#1E1B4B' : s.muted,
                 fontSize:15, fontWeight:700, border:'none',
                 cursor: step2Valid ? 'pointer' : 'not-allowed', transition:'all .15s',
-              }}>Vérifier ma commande →</button>
+              }}>{tc.s2.review}</button>
             </div>
           </div>
         )}
@@ -759,10 +772,10 @@ export default function CommandePage() {
         {step === 3 && (
           <div>
             <h1 style={{ fontSize:'clamp(22px,4vw,30px)', fontWeight:700, letterSpacing:-0.5, color:'#fff', margin:'0 0 6px' }}>
-              Récap de votre commande
+              {tc.s3.h1}
             </h1>
             <p style={{ fontSize:14, color:s.muted, margin:'0 0 28px', lineHeight:1.5 }}>
-              Vérifiez avant de payer — vous serez redirigé vers Stripe.
+              {tc.s3.sub}
             </p>
 
             <div style={{ background:s.surface, border:s.border, borderRadius:12, overflow:'hidden', marginBottom:20 }}>
@@ -770,7 +783,7 @@ export default function CommandePage() {
               {/* Vidéos */}
               <div style={{ padding:'16px 20px', borderBottom:s.border }}>
                 <div style={{ fontSize:12, fontWeight:700, letterSpacing:1, textTransform:'uppercase', color:s.muted, marginBottom:12 }}>
-                  Vidéos commandées — Voix {language}
+                  {tc.s3.videosHdr(voiceLabel)}
                 </div>
                 {cartItems.map((item, idx) => item.duration && (
                   <div key={item.id} style={{
@@ -780,11 +793,11 @@ export default function CommandePage() {
                   }}>
                     <div>
                       <div style={{ fontSize:14, fontWeight:700, color:'#fff' }}>
-                        Vidéo {item.duration} sec · {DUR_LABEL[item.duration]}{item.formats.length > 0 ? ` · ${item.formats.join(', ')}` : ''}
+                        {tc.s3.videoRow(item.duration, tc.durLabels[item.duration])}{item.formats.length > 0 ? ` · ${item.formats.join(', ')}` : ''}
                         {item.qty > 1 && <span style={{ color:s.accent }}> × {item.qty}</span>}
                       </div>
                       {item.wantAiModel && (
-                        <div style={{ fontSize:12, color:s.accent, marginTop:2 }}>+ Comédien IA sur mesure</div>
+                        <div style={{ fontSize:12, color:s.accent, marginTop:2 }}>{tc.s3.aiLine}</div>
                       )}
                     </div>
                     <div style={{ fontSize:15, fontWeight:700, color:s.accent, whiteSpace:'nowrap', marginLeft:16 }}>
@@ -793,31 +806,31 @@ export default function CommandePage() {
                   </div>
                 ))}
                 <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginTop:14, paddingTop:14, borderTop:'1px solid rgba(255,255,255,.08)' }}>
-                  <span style={{ fontSize:13, color:s.muted }}>{totalVideos} vidéo{totalVideos > 1 ? 's' : ''} · 10 allers-retours · MP4 sous 48h</span>
+                  <span style={{ fontSize:13, color:s.muted }}>{tc.s3.totalRow(totalVideos)}</span>
                   <span style={{ fontSize:22, fontWeight:800, color:'#fff' }}>{totalPrice} €</span>
                 </div>
               </div>
 
               {/* Brief */}
               <div style={{ padding:'16px 20px', borderBottom:s.border }}>
-                <div style={{ fontSize:12, fontWeight:700, letterSpacing:1, textTransform:'uppercase', color:s.muted, marginBottom:8 }}>Brief</div>
+                <div style={{ fontSize:12, fontWeight:700, letterSpacing:1, textTransform:'uppercase', color:s.muted, marginBottom:8 }}>{tc.s3.briefLabel}</div>
                 <p style={{ margin:0, fontSize:14, color:s.text, lineHeight:1.6, whiteSpace:'pre-line' }}>{brief}</p>
               </div>
 
               {/* Contact */}
               <div style={{ padding:'16px 20px', borderBottom: files.length > 0 ? s.border : 'none' }}>
-                <div style={{ fontSize:12, fontWeight:700, letterSpacing:1, textTransform:'uppercase', color:s.muted, marginBottom:8 }}>Contact</div>
+                <div style={{ fontSize:12, fontWeight:700, letterSpacing:1, textTransform:'uppercase', color:s.muted, marginBottom:8 }}>{tc.s3.contactLbl}</div>
                 <p style={{ margin:0, fontSize:14, color:s.text, lineHeight:1.7 }}>
                   {clientName}{clientCompany && <span style={{ color:s.muted }}> — {clientCompany}</span>}<br />
                   {clientEmail}{clientPhone && <><br />{clientPhone}</>}
-                  {(callDay || callTime) && <><br /><span style={{ color:s.muted }}>Créneau : {[callDay, callTime].filter(Boolean).join(' · ')}</span></>}
+                  {callSlotStr && <><br /><span style={{ color:s.muted }}>{tc.s3.slotLbl} {callSlotStr}</span></>}
                 </p>
               </div>
 
               {files.length > 0 && (
                 <div style={{ padding:'16px 20px' }}>
                   <div style={{ fontSize:12, fontWeight:700, letterSpacing:1, textTransform:'uppercase', color:s.muted, marginBottom:8 }}>
-                    Références ({files.length} fichier{files.length > 1 ? 's' : ''})
+                    {tc.s3.refsLbl(files.length)}
                   </div>
                   <p style={{ margin:0, fontSize:13, color:s.muted }}>{files.map(f => f.name).join(' · ')}</p>
                 </div>
@@ -830,7 +843,7 @@ export default function CommandePage() {
               borderRadius:10, padding:'14px 18px', marginBottom:24,
               fontSize:13, color:'rgba(255,255,255,.7)', lineHeight:1.6,
             }}>
-              🔒 Paiement sécurisé Stripe · Confirmation email immédiate · On vous rappelle sous 4 h ouvrées · 10 allers-retours inclus · Remboursement intégral si la direction créative ne convient pas
+              {tc.s3.assurance}
             </div>
 
             {error && (
@@ -844,7 +857,7 @@ export default function CommandePage() {
                 flex:'0 0 auto', padding:'14px 20px', borderRadius:10,
                 background:'transparent', border:s.border, color:s.muted, fontSize:14, cursor:'pointer',
                 opacity: submitting ? 0.5 : 1,
-              }}>← Retour</button>
+              }}>{tc.back}</button>
               <button onClick={handleSubmit} disabled={submitting} style={{
                 flex:1, padding:'16px', borderRadius:10,
                 background: submitting ? 'rgba(165,180,252,.4)' : s.accent,
@@ -852,13 +865,13 @@ export default function CommandePage() {
                 cursor: submitting ? 'wait' : 'pointer', transition:'all .15s', letterSpacing:-0.2,
               }}>
                 {submitting
-                  ? (uploading ? 'Upload des références…' : 'Redirection Stripe…')
-                  : `Payer ${totalPrice} € →`}
+                  ? (uploading ? tc.s3.uploading : tc.s3.redirecting)
+                  : tc.s3.pay(totalPrice)}
               </button>
             </div>
 
             <p style={{ margin:'16px 0 0', fontSize:12, color:'rgba(255,255,255,.35)', textAlign:'center' }}>
-              Vous serez redirigé vers Stripe. Aucune carte n'est stockée sur nos serveurs.
+              {tc.s3.stripeNote}
             </p>
           </div>
         )}
