@@ -69,7 +69,7 @@ body:has(.lv2) {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   background: transparent;
   pointer-events: none;
-  padding: 16px 24px 0;
+  padding: 20px 24px 0;
 }
 /* La pill elle-même */
 .lv2-nav-inner {
@@ -83,13 +83,18 @@ body:has(.lv2) {
   background: rgba(10,10,20,0.82);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255,255,255,0.10);
+  /* pas de border → plus de ligne visible sur mobile */
+  border: none;
   border-radius: 100px;
+  /* outline en substitut — ne crée pas de "ligne" pleine largeur */
+  outline: 1px solid rgba(255,255,255,0.10);
+  outline-offset: 0;
   box-shadow: 0 4px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.04) inset;
   transition: background 0.3s, box-shadow 0.3s;
 }
 .lv2-nav.scrolled .lv2-nav-inner {
   background: rgba(10,10,20,0.96);
+  outline-color: rgba(255,255,255,0.13);
   box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06) inset;
 }
 /* Logo */
@@ -772,7 +777,7 @@ body:has(.lv2) {
    RESPONSIVE — Tablet 1024px
    ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 1024px) {
-  .lv2-nav { padding: 12px 16px 0; }
+  .lv2-nav { padding: 16px 16px 0; }
   .lv2-nav-inner { padding: 8px 8px 8px 16px; }
   .lv2-nav-links { display: none; }
   .lv2-burger    { display: flex; }
@@ -801,7 +806,7 @@ body:has(.lv2) {
    RESPONSIVE — Mobile 768px
    ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  .lv2-nav { padding: 10px 12px 0; }
+  .lv2-nav { padding: 14px 12px 0; }
   /* pill mobile : padding vertical auto → hauteur naturelle */
   .lv2-nav-inner { padding: 6px 10px 6px 16px; }
   /* logo mobile : pas de séparateur, respire vers le burger */
