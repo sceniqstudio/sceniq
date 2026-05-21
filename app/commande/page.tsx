@@ -58,6 +58,7 @@ const LANGUAGES = [
   { code: 'es', flag: '🇪🇸', label: 'Espagnol' },
   { code: 'pt', flag: '🇧🇷', label: 'Portugais'},
   { code: 'id', flag: '🇮🇩', label: 'Indonésien'},
+  { code: 'zh', flag: '🇨🇳', label: 'Chinois'   },
 ]
 
 const ACCEPT_TYPES = 'image/jpeg,image/png,image/webp,image/gif,image/heic,audio/mpeg,audio/wav,audio/mp4,video/mp4,video/quicktime,video/webm'
