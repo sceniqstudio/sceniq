@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, type FormEvent } from 'react'
 import { ShowcaseClip } from '@/app/_components/ShowcaseClip'
 import { SHOWCASE_VIDEOS, HERO_SLUGS } from '@/lib/showcase'
+import { translations, type Lang } from '@/lib/i18n'
 
 // ── Portfolio — items depuis lib/showcase.ts ────────────────────────────────
 type PortfolioItem = { id: string; slug: string; ratio: number; label: string; grad: string; src?: string }
@@ -202,6 +203,19 @@ export default function HomePage() {
   const [portfolioRows, setPortfolioRows]   = useState<[PortfolioItem[], PortfolioItem[]]>([
     PORTFOLIO_ITEMS.slice(0, 11), PORTFOLIO_ITEMS.slice(11),
   ])
+  const [lang, setLang] = useState<Lang>('fr')
+  const t = translations[lang]
+
+  // Persist lang preference
+  useEffect(() => {
+    const saved = localStorage.getItem('sceniq-lang') as Lang | null
+    if (saved === 'en' || saved === 'fr') setLang(saved)
+  }, [])
+  const toggleLang = () => {
+    const next: Lang = lang === 'fr' ? 'en' : 'fr'
+    setLang(next)
+    localStorage.setItem('sceniq-lang', next)
+  }
 
   // ── Question form handler ────────────────────────────────────────────────
   const handleQuestionSubmit = (e: FormEvent) => {
@@ -338,32 +352,40 @@ export default function HomePage() {
       <nav className="lv2-nav" aria-label="Navigation principale">
         <div className="lv2-nav-inner">
           <a href="#" className="lv2-nav-logo" aria-label="ScenIQ — Accueil">
-            <img
-              src="/sceniq-logo-dark.svg"
-              alt="ScenIQ"
-              style={{ height: 44, width: 'auto', display: 'block' }}
-            />
+            <img src="/sceniq-logo-dark.svg" alt="ScenIQ" style={{ height: 44, width: 'auto', display: 'block' }} />
           </a>
           <ul className="lv2-nav-links">
-            <li><a href="#process">Comment ça marche</a></li>
-            <li><a href="#qualite">Le studio</a></li>
-            <li><a href="#modeles">Comédiens IA</a></li>
-            <li><a href="#tarifs">Tarifs</a></li>
-            <li><a href="#reels">Réalisations</a></li>
-            <li><a href="#faq">FAQ</a></li>
+            <li><a href="#process">{t.nav.process}</a></li>
+            <li><a href="#qualite">{t.nav.studio}</a></li>
+            <li><a href="#modeles">{t.nav.models}</a></li>
+            <li><a href="#tarifs">{t.nav.pricing}</a></li>
+            <li><a href="#reels">{t.nav.portfolio}</a></li>
+            <li><a href="#faq">{t.nav.faq}</a></li>
           </ul>
           <div className="lv2-nav-right">
+            <button
+              type="button"
+              onClick={toggleLang}
+              style={{
+                background: 'none', border: '1px solid rgba(255,255,255,0.18)',
+                borderRadius: 6, padding: '4px 10px',
+                color: 'rgba(255,255,255,0.6)', fontSize: 12, fontWeight: 700,
+                cursor: 'pointer', letterSpacing: '0.06em', fontFamily: 'inherit',
+              }}
+            >
+              {t.misc.langSwitch}
+            </button>
             <button type="button" onClick={() => { setQuestionOpen(true); setQuestionSent(false) }} className="lv2-btn lv2-btn-ghost lv2-btn-sm">
-              Une question ?
+              {t.nav.question}
             </button>
             <a href="/commande" className="lv2-btn lv2-btn-accent lv2-btn-sm">
-              Commander →
+              {t.nav.order}
             </a>
           </div>
           <button
             className={`lv2-burger${mobileMenuOpen ? ' open' : ''}`}
             onClick={() => setMobileMenuOpen((v) => !v)}
-            aria-label={mobileMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+            aria-label={mobileMenuOpen ? t.misc.burgerClose : t.misc.burgerOpen}
             aria-expanded={mobileMenuOpen}
           >
             <span /><span /><span />
@@ -378,23 +400,27 @@ export default function HomePage() {
           <div className="lv2-mob-panel">
             <div className="lv2-mob-header">
               <img src="/sceniq-logo-dark.svg" alt="ScenIQ" style={{ height: 36, width: 'auto' }} />
-              <button className="lv2-mob-close" onClick={() => setMobileMenuOpen(false)} aria-label="Fermer">×</button>
+              <button className="lv2-mob-close" onClick={() => setMobileMenuOpen(false)} aria-label={t.misc.mobileClose}>×</button>
             </div>
             <ul className="lv2-mob-links">
-              <li><a href="#process"  onClick={() => setMobileMenuOpen(false)}>Comment ça marche</a></li>
-              <li><a href="#qualite"  onClick={() => setMobileMenuOpen(false)}>Le studio</a></li>
-              <li><a href="#modeles"  onClick={() => setMobileMenuOpen(false)}>Comédiens IA</a></li>
-              <li><a href="#tarifs"   onClick={() => setMobileMenuOpen(false)}>Tarifs</a></li>
-              <li><a href="#reels"    onClick={() => setMobileMenuOpen(false)}>Réalisations</a></li>
-              <li><a href="#faq"      onClick={() => setMobileMenuOpen(false)}>FAQ</a></li>
+              <li><a href="#process"  onClick={() => setMobileMenuOpen(false)}>{t.nav.process}</a></li>
+              <li><a href="#qualite"  onClick={() => setMobileMenuOpen(false)}>{t.nav.studio}</a></li>
+              <li><a href="#modeles"  onClick={() => setMobileMenuOpen(false)}>{t.nav.models}</a></li>
+              <li><a href="#tarifs"   onClick={() => setMobileMenuOpen(false)}>{t.nav.pricing}</a></li>
+              <li><a href="#reels"    onClick={() => setMobileMenuOpen(false)}>{t.nav.portfolio}</a></li>
+              <li><a href="#faq"      onClick={() => setMobileMenuOpen(false)}>{t.nav.faq}</a></li>
             </ul>
             <div className="lv2-mob-cta">
-              <a
-                href="/commande"
-                className="lv2-btn lv2-btn-accent"
-                onClick={() => setMobileMenuOpen(false)}
+              <button
+                type="button"
+                onClick={toggleLang}
+                className="lv2-btn lv2-btn-ghost"
+                style={{ justifyContent: 'center', letterSpacing: '0.06em', fontSize: 13 }}
               >
-                Commander ma vidéo →
+                {lang === 'fr' ? '🇬🇧 English' : '🇫🇷 Français'}
+              </button>
+              <a href="/commande" className="lv2-btn lv2-btn-accent" onClick={() => setMobileMenuOpen(false)}>
+                {t.nav.orderMobile}
               </a>
               <button
                 type="button"
@@ -402,7 +428,7 @@ export default function HomePage() {
                 onClick={() => { setMobileMenuOpen(false); setQuestionOpen(true); setQuestionSent(false) }}
                 style={{ justifyContent: 'center' }}
               >
-                Une question ?
+                {t.nav.question}
               </button>
             </div>
           </div>
@@ -464,39 +490,28 @@ export default function HomePage() {
         <div className="lv2-hover" aria-hidden="true" />
         <div className="lv2-hcontent">
           <div className="lv2-badge">
-            <span className="lv2-badge-pill">Studio IA</span>
-            Vidéos courtes sur mesure — Shorts · Reels · Stories · Clips
+            <span className="lv2-badge-pill">{t.hero.badge}</span>
+            {t.hero.badgeSub}
           </div>
           <h1 className="lv2-h1">
-            Du brief à l&apos;écran.<br />
-            <em>48 heures.</em>
+            {t.hero.h1a}<br />
+            <em>{t.hero.h1b}</em>
           </h1>
-          <p className="lv2-sub">
-            Cinq agents IA forment une équipe créa complète. Vous écrivez le brief, ils livrent la pré-prod — script, storyboard, musique, visuels — sans réunion intermédiaire.
-          </p>
+          <p className="lv2-sub">{t.hero.sub}</p>
           <div className="lv2-ctas">
-            <a href="/commande" className="lv2-btn lv2-btn-accent lv2-btn-lg">
-              Commander ma vidéo →
-            </a>
-            <a href="#reels" className="lv2-btn lv2-btn-ghost lv2-btn-lg">
-              Voir les réalisations
-            </a>
+            <a href="/commande" className="lv2-btn lv2-btn-accent lv2-btn-lg">{t.hero.cta1}</a>
+            <a href="#reels" className="lv2-btn lv2-btn-ghost lv2-btn-lg">{t.hero.cta2}</a>
           </div>
-          <p className="lv2-footnote">À partir de 69 € · 5 à 15 secondes · 10 itérations incluses</p>
+          <p className="lv2-footnote">{t.hero.footnote}</p>
         </div>
       </section>
 
       {/* ── TRUST STRIP ──────────────────────────────────────────────────── */}
       <div className="lv2-trust">
         <div className="lv2-trust-inner">
-          <span className="lv2-trust-lbl">Pour</span>
+          <span className="lv2-trust-lbl">{t.trust.label}</span>
           <div className="lv2-trust-items">
-            <span className="lv2-trust-item">Agences pub</span>
-            <span className="lv2-trust-item">Startups</span>
-            <span className="lv2-trust-item">E-commerce</span>
-            <span className="lv2-trust-item">Créateurs</span>
-            <span className="lv2-trust-item">Particuliers</span>
-            <span className="lv2-trust-item">Brand managers</span>
+            {t.trust.items.map(item => <span key={item} className="lv2-trust-item">{item}</span>)}
           </div>
         </div>
       </div>
@@ -505,20 +520,12 @@ export default function HomePage() {
       <section className="lv2-s" id="process">
         <div className="lv2-si">
           <div className="rv" style={{ textAlign: 'center' }}>
-            <div className="lv2-label">Comment ça marche</div>
-            <h2>Du brief au MP4.<br />Cinq étapes.</h2>
-            <p className="lv2-s-sub" style={{ maxWidth: 480, margin: '16px auto 0' }}>
-              Vous écrivez deux lignes et vous payez. ScenIQ fait le reste — sans réunion, sans aller-retour interminable.
-            </p>
+            <div className="lv2-label">{t.process.label}</div>
+            <h2>{t.process.h2a}<br />{t.process.h2b}</h2>
+            <p className="lv2-s-sub" style={{ maxWidth: 480, margin: '16px auto 0' }}>{t.process.sub}</p>
           </div>
           <div className="lv2-process-grid rv">
-            {[
-              { n: '1', title: 'Brief', desc: 'Deux lignes sur votre marque et votre objectif. Ajoutez des références visuelles ou audio si vous en avez.' },
-              { n: '2', title: 'Commande', desc: 'Choisissez la durée. Paiement 100 % sécurisé par Stripe. Confirmation par email immédiate.' },
-              { n: '3', title: 'Appel', desc: 'On vous rappelle sous 4h ouvrées pour aligner la direction créative avant de lancer les agents.' },
-              { n: '4', title: 'Pré-prod', desc: 'Director, Scriptwriter, Storyboarder, Music et Visual travaillent en parallèle. Pré-prod livrée sans intermédiaire.' },
-              { n: '5', title: 'Livraison', desc: 'MP4 1080p envoyé par e-mail sous 48h. Pas d\'espace client, pas de compte. 10 itérations incluses.' },
-            ].map((step) => (
+            {t.process.steps.map((step) => (
               <div key={step.n} className="lv2-process-step">
                 <div className="lv2-process-num">{step.n}</div>
                 <div className="lv2-process-title">{step.title}</div>
@@ -540,19 +547,11 @@ export default function HomePage() {
           {/* Split 1 : agents IA */}
           <div className="lv2-split rv" style={{ marginBottom: 96 }}>
             <div>
-              <div className="lv2-label">Le studio</div>
-              <h2>Cinq agents IA.<br />Une équipe créa complète.</h2>
-              <p className="lv2-s-sub" style={{ marginTop: 16 }}>
-                Chaque agent est spécialisé. Ensemble, ils couvrent tout ce qu&apos;une équipe créa fait habituellement en plusieurs jours de réunions — sans que vous n&apos;ouvriez aucune interface.
-              </p>
+              <div className="lv2-label">{t.studio.label}</div>
+              <h2>{t.studio.h2a}<br />{t.studio.h2b}</h2>
+              <p className="lv2-s-sub" style={{ marginTop: 16 }}>{t.studio.sub}</p>
               <ul className="lv2-feat-list">
-                {[
-                  { name: 'Director', desc: 'direction créative, axe publicitaire, prise de position défendable' },
-                  { name: 'Scriptwriter', desc: 'script calibré à 2,2 mots/sec, voix-off structurée' },
-                  { name: 'Storyboarder', desc: 'découpage shot par shot, prompts multi-shot pour Seedance' },
-                  { name: 'Music', desc: 'direction musicale avec BPM précis et références licenciables réelles' },
-                  { name: 'Visual', desc: 'palette hex, typographie, ambiance lumière — spec exécutable directement' },
-                ].map((item) => (
+                {t.studio.agents.map((item) => (
                   <li key={item.name} className="lv2-feat-item">
                     <span className="lv2-feat-check">
                       <svg viewBox="0 0 12 12" fill="none" stroke="#7C5CFC" strokeWidth="2" width="10" height="10">
@@ -577,7 +576,7 @@ export default function HomePage() {
                   background: 'var(--surface)', border: '1px solid var(--bdr-md)',
                   position: 'relative', cursor: 'pointer', padding: 0,
                 }}
-                aria-label="Lire la vidéo volt"
+                aria-label={t.studio.videoAria}
               >
                 <video
                   autoPlay muted loop playsInline preload="metadata"
@@ -600,18 +599,11 @@ export default function HomePage() {
           {/* Split 2 : génération vidéo */}
           <div className="lv2-split lv2-split-reverse rv">
             <div>
-              <div className="lv2-label">Seedance 2.0 by ByteDance</div>
-              <h2>Génération vidéo.<br />Un prompt. Un clip livré.</h2>
-              <p className="lv2-s-sub" style={{ marginTop: 16 }}>
-                Le Storyboarder produit un prompt multi-shot unifié. Un seul appel Seedance 2.0 génère la vidéo déjà montée — cohérence visuelle garantie entre chaque plan, sans post-prod ni assemblage manuel.
-              </p>
+              <div className="lv2-label">{t.seedance.label}</div>
+              <h2>{t.seedance.h2a}<br />{t.seedance.h2b}</h2>
+              <p className="lv2-s-sub" style={{ marginTop: 16 }}>{t.seedance.sub}</p>
               <ul className="lv2-feat-list">
-                {[
-                  'Résolution 1080p native — qualité broadcast, pas du 720p upscalé',
-                  'Audio natif intégré — ambiance sonore et voix off générées dans le même rendu',
-                  'Multi-shot en un seul appel — 2 à 4 plans selon la durée, déjà montés',
-                  'Formats 9:16, 1:1 et 16:9 inclus — prêts pour Meta Ads, TikTok et YouTube',
-                ].map((desc) => (
+                {t.seedance.features.map((desc) => (
                   <li key={desc} className="lv2-feat-item">
                     <span className="lv2-feat-check">
                       <svg viewBox="0 0 12 12" fill="none" stroke="#7C5CFC" strokeWidth="2" width="10" height="10">
@@ -636,7 +628,7 @@ export default function HomePage() {
                   background: 'var(--surface)', border: '1px solid var(--bdr-md)',
                   position: 'relative', cursor: 'pointer', padding: 0,
                 }}
-                aria-label="Lire exemple 16:9 en grand format"
+                aria-label={t.seedance.aria169}
               >
                 <video
                   autoPlay muted loop playsInline preload="metadata"
@@ -677,7 +669,7 @@ export default function HomePage() {
                   boxShadow: '0 24px 64px rgba(0,0,0,0.55), 0 0 0 1px rgba(124,92,252,0.1)',
                   cursor: 'pointer', padding: 0,
                 }}
-                aria-label="Lire exemple 9:16 en grand format"
+                aria-label={t.seedance.aria916}
               >
                 <video
                   autoPlay muted loop playsInline preload="metadata"
@@ -700,7 +692,7 @@ export default function HomePage() {
                 fontSize: 11, color: 'var(--g6)', letterSpacing: '0.04em',
                 margin: 0,
               }}>
-                Clips générés via Seedance 2.0 depuis un brief de 2 lignes
+                {t.seedance.note}
               </p>
 
             </div>
@@ -713,22 +705,12 @@ export default function HomePage() {
       <section className="lv2-s" style={{ borderTop: '1px solid var(--bdr)', padding: '64px 0' }}>
         <div className="lv2-si">
           <div className="lv2-stats-row rv">
-            <div className="lv2-stat">
-              <div className="lv2-stat-num"><em>48h</em></div>
-              <div className="lv2-stat-label">Délai de livraison garanti</div>
-            </div>
-            <div className="lv2-stat">
-              <div className="lv2-stat-num">10<em>×</em></div>
-              <div className="lv2-stat-label">Itérations incluses</div>
-            </div>
-            <div className="lv2-stat">
-              <div className="lv2-stat-num">3<em>+</em></div>
-              <div className="lv2-stat-label">Formats livrés simultanément</div>
-            </div>
-            <div className="lv2-stat">
-              <div className="lv2-stat-num">5<em>↗</em></div>
-              <div className="lv2-stat-label">Agents IA en parallèle</div>
-            </div>
+            {t.stats.map((s) => (
+              <div key={s.num} className="lv2-stat">
+                <div className="lv2-stat-num"><em>{s.num}</em></div>
+                <div className="lv2-stat-label">{s.label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -740,18 +722,11 @@ export default function HomePage() {
 
             {/* Texte */}
             <div>
-              <div className="lv2-label">Comédiens IA</div>
-              <h2>Un comédien IA.<br />Créé pour votre marque.</h2>
-              <p className="lv2-s-sub" style={{ marginTop: 16 }}>
-                Un brief suffit. ScenIQ génère le comédien, l&apos;intègre au clip et vous livre la mention légale obligatoire. Rien d&apos;autre à gérer.
-              </p>
+              <div className="lv2-label">{t.models.label}</div>
+              <h2>{t.models.h2a}<br />{t.models.h2b}</h2>
+              <p className="lv2-s-sub" style={{ marginTop: 16 }}>{t.models.sub}</p>
               <ul className="lv2-feat-list">
-                {[
-                  { label: 'Pas de casting, pas de cachet', desc: 'aucun contrat modèle, aucun droit à l\'image à négocier' },
-                  { label: 'Pas de tarif agence',  desc: '800–3 000 € de casting en agence — 49 € ici, dans votre forfait' },
-                  { label: 'Disponible à volonté', desc: 'recadré, retravaillé ou remplacé à chaque itération' },
-                  { label: 'Mention légale fournie', desc: 'conforme EU AI Act + loi influenceurs FR — livrée par écrit avec le MP4' },
-                ].map((item) => (
+                {t.models.features.map((item) => (
                   <li key={item.label} className="lv2-feat-item">
                     <span className="lv2-feat-check">
                       <svg viewBox="0 0 12 12" fill="none" stroke="#7C5CFC" strokeWidth="2" width="10" height="10">
@@ -766,17 +741,11 @@ export default function HomePage() {
                 ))}
               </ul>
               <p style={{ marginTop: 16, fontSize: 12, color: 'var(--g6)', lineHeight: 1.65 }}>
-                Personnages entièrement fictifs — aucune ressemblance avec une personne réelle.
-                La mention «&nbsp;Image générée par IA&nbsp;» est obligatoire sur vos publications
-                (EU AI Act art.&nbsp;50 · loi FR 9 juin 2023). ScenIQ vous la fournit dans chaque livraison.
+                {t.models.disclaimer}
               </p>
               <div style={{ marginTop: 24, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-                <a href="#reels" className="lv2-btn lv2-btn-accent">
-                  Voir les clips avec comédiens IA →
-                </a>
-                <a href="/commande?modele=1" className="lv2-btn lv2-btn-ghost" style={{ fontSize: 14 }}>
-                  Ajouter l&apos;option · +49 €
-                </a>
+                <a href="#reels" className="lv2-btn lv2-btn-accent">{t.models.cta1}</a>
+                <a href="/commande?modele=1" className="lv2-btn lv2-btn-ghost" style={{ fontSize: 14 }}>{t.models.cta2}</a>
               </div>
             </div>
 
@@ -796,16 +765,16 @@ export default function HomePage() {
                   />
                   <div style={{ position: 'absolute', top: 10, left: 10, padding: '2px 8px', borderRadius: 4, background: 'rgba(7,7,15,0.82)', border: '1px solid rgba(255,255,255,0.1)', fontSize: 9, fontWeight: 700, letterSpacing: '0.09em', color: 'rgba(165,180,252,0.7)' }}>IA</div>
                   <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '48px 14px 14px', background: 'linear-gradient(to top,rgba(7,7,15,0.97),transparent)' }}>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(165,180,252,0.65)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Exemple de rendu</div>
-                    <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>Comédienne IA · style influenceuse</div>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(165,180,252,0.65)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{t.models.renderLabel}</div>
+                    <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>{t.models.kaelysType}</div>
                   </div>
                 </div>
 
                 {/* Marcus + Sofia empilés */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10, height: '100%' }}>
                   {[
-                    { slug: 'modele-1', name: 'Marcus', type: 'Tech · Urbain' },
-                    { slug: 'modele-2', name: 'Sofia',  type: 'Business' },
+                    { slug: 'modele-1', name: 'Marcus', type: t.models.modelTypes[0] },
+                    { slug: 'modele-2', name: 'Sofia',  type: t.models.modelTypes[1] },
                   ].map((m) => (
                     <div key={m.slug} style={{
                       flex: 1, borderRadius: 14, overflow: 'hidden', position: 'relative',
@@ -817,7 +786,7 @@ export default function HomePage() {
                       />
                       <div style={{ position: 'absolute', top: 8, left: 8, padding: '2px 7px', borderRadius: 4, background: 'rgba(7,7,15,0.82)', border: '1px solid rgba(255,255,255,0.1)', fontSize: 9, fontWeight: 700, letterSpacing: '0.09em', color: 'rgba(255,255,255,0.45)' }}>IA</div>
                       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '36px 12px 12px', background: 'linear-gradient(to top,rgba(7,7,15,0.97),transparent)' }}>
-                        <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Exemple de rendu</div>
+                        <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{t.models.renderLabel}</div>
                         <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.28)', marginTop: 1 }}>{m.type}</div>
                       </div>
                     </div>
@@ -832,9 +801,13 @@ export default function HomePage() {
                 background: 'rgba(124,92,252,0.04)',
                 display: 'flex', alignItems: 'center', gap: 10,
               }}>
-                <span style={{ fontSize: 16, flexShrink: 0 }}>💡</span>
+                <span style={{ fontSize: 16, flexShrink: 0 }}>{t.models.noteIcon}</span>
                 <p style={{ fontSize: 12, color: 'var(--g6)', lineHeight: 1.5, margin: 0 }}>
-                  Ces visuels sont des <strong style={{ color: 'var(--g4)' }}>exemples de rendu</strong> — votre comédien IA est généré sur mesure d&apos;après votre description (âge, style, ambiance, tenue).
+                  {t.models.note.split(t.models.noteHighlight).map((part, i, arr) =>
+                    i < arr.length - 1
+                      ? <span key={i}>{part}<strong style={{ color: 'var(--g4)' }}>{t.models.noteHighlight}</strong></span>
+                      : <span key={i}>{part}</span>
+                  )}
                 </p>
               </div>
             </div>
@@ -847,17 +820,21 @@ export default function HomePage() {
       <section className="lv2-s alt" id="tarifs">
         <div className="lv2-si">
           <div className="rv" style={{ textAlign: 'center' }}>
-            <div className="lv2-label">Tarifs</div>
-            <h2>Prix fixe. Sans surprise.</h2>
+            <div className="lv2-label">{t.pricing.label}</div>
+            <h2>{t.pricing.h2}</h2>
             <p className="lv2-s-sub" style={{ maxWidth: 520, margin: '16px auto 0' }}>
-              Choisissez la durée. Chaque forfait inclut <strong style={{ color: 'var(--white)' }}>la production complète</strong> — script, storyboard, musique et montage final MP4 1080p. Livraison sous 48h.
+              {t.pricing.sub.split(t.pricing.subHighlight).map((part, i, arr) =>
+                i < arr.length - 1
+                  ? <span key={i}>{part}<strong style={{ color: 'var(--white)' }}>{t.pricing.subHighlight}</strong></span>
+                  : <span key={i}>{part}</span>
+              )}
             </p>
           </div>
 
           {/* ── Langues inline ── */}
           <div className="rv" style={{ textAlign: 'center', marginTop: 16 }}>
             <p style={{ fontSize: 13, color: 'var(--g6)' }}>
-              Lip sync · voix off ou dialogue · sous-titres · 🇫🇷 🇺🇸 🇯🇵 🇪🇸 🇧🇷 🇮🇩 🇨🇳
+              {t.pricing.langLine}
             </p>
           </div>
 
@@ -869,14 +846,14 @@ export default function HomePage() {
               className={`lv2-model-toggle${pricingModel ? ' active' : ''}`}
             >
               <div className="lv2-model-toggle-left">
-                <div className="lv2-model-toggle-icon">{pricingModel ? '🎭' : '🎭'}</div>
+                <div className="lv2-model-toggle-icon">🎭</div>
                 <div>
-                  <div className="lv2-model-toggle-title">Ajouter un comédien IA</div>
-                  <div className="lv2-model-toggle-desc">Personnage généré sur mesure d'après votre description</div>
+                  <div className="lv2-model-toggle-title">{t.pricing.toggleTitle}</div>
+                  <div className="lv2-model-toggle-desc">{t.pricing.toggleDesc}</div>
                 </div>
               </div>
               <div className="lv2-model-toggle-right">
-                <span className="lv2-model-toggle-price">+49 €</span>
+                <span className="lv2-model-toggle-price">{t.pricing.togglePrice}</span>
                 <div className={`lv2-model-toggle-switch${pricingModel ? ' on' : ''}`}>
                   <div className="lv2-model-toggle-thumb" />
                 </div>
@@ -884,23 +861,17 @@ export default function HomePage() {
             </button>
             {pricingModel && (
               <p style={{ fontSize: 12, color: 'var(--g6)', textAlign: 'center', marginTop: 10 }}>
-                ✓ Mention légale &quot;Image générée par IA&quot; fournie · conforme EU AI Act
+                {t.pricing.toggleNote}
               </p>
             )}
           </div>
 
           <div className="lv2-prices rv">
-            {[
-              { dur: '5 sec',  fmt: 'Format court',     price: 69,  shots: 2, voix: false, fmts: '9:16 · 1:1',         maxFmts: 2, featured: false },
-              { dur: '8 sec',  fmt: 'Format reel',      price: 89,  shots: 3, voix: false, fmts: '9:16 · 1:1',         maxFmts: 2, featured: false },
-              { dur: '10 sec', fmt: 'Format pub',       price: 109, shots: 3, voix: true,  fmts: '9:16 · 1:1 · 16:9', maxFmts: 3, featured: true  },
-              { dur: '12 sec', fmt: 'Format narration', price: 129, shots: 4, voix: true,  fmts: '9:16 · 1:1 · 16:9', maxFmts: 3, featured: false },
-              { dur: '15 sec', fmt: 'Format histoire',  price: 159, shots: 4, voix: true,  fmts: '9:16 · 1:1 · 16:9', maxFmts: 3, featured: false },
-            ].map((p) => {
+            {t.pricing.plans.map((p) => {
               const total = p.price + (pricingModel ? 49 : 0)
               return (
                 <div key={p.dur} className={`lv2-price-card${p.featured ? ' featured' : ''}`}>
-                  {p.featured && <div className="lv2-price-badge">⭐ Populaire</div>}
+                  {p.featured && <div className="lv2-price-badge">{t.pricing.badge}</div>}
                   <div className="lv2-price-dur">{p.dur}</div>
                   <div style={{ fontSize: 12, color: 'var(--g6)', fontWeight: 500, marginTop: -10, marginBottom: 10 }}>
                     {p.fmt}
@@ -910,25 +881,25 @@ export default function HomePage() {
                     <sup>€</sup>{total}
                     {pricingModel && (
                       <span style={{ fontSize: 11, fontWeight: 500, color: 'var(--accent)', marginLeft: 6, verticalAlign: 'middle' }}>
-                        comédien inclus
+                        {t.pricing.perks.modelIncluded}
                       </span>
                     )}
                   </div>
                   <ul className="lv2-price-perks">
-                    <li className="lv2-price-perk">{p.shots} shots · {p.maxFmts} formats au choix <span style={{ color:'var(--g6)', fontWeight:400 }}>{p.fmts}</span></li>
-                    <li className="lv2-price-perk">Script IA + storyboard complet</li>
-                    <li className="lv2-price-perk">Musique de fond + bruitages</li>
-                    <li className="lv2-price-perk">Lip sync · voix off ou dialogue <span style={{ color: 'var(--g6)', fontWeight: 400 }}>🇫🇷 🇺🇸 🇯🇵 🇪🇸 🇧🇷 🇮🇩 🇨🇳</span></li>
-                    <li className="lv2-price-perk">Sous-titres inclus</li>
-                    {p.voix && <li className="lv2-price-perk">Voix-off au montage</li>}
-                    {pricingModel && <li className="lv2-price-perk" style={{ color: 'var(--accent)' }}>Comédien IA sur mesure</li>}
+                    <li className="lv2-price-perk">{t.pricing.perks.shots(p.shots, p.maxFmts, p.fmts)} <span style={{ color:'var(--g6)', fontWeight:400 }}>{p.fmts}</span></li>
+                    <li className="lv2-price-perk">{t.pricing.perks.script}</li>
+                    <li className="lv2-price-perk">{t.pricing.perks.music}</li>
+                    <li className="lv2-price-perk">{t.pricing.perks.lipsync} <span style={{ color: 'var(--g6)', fontWeight: 400 }}>🇫🇷 🇺🇸 🇯🇵 🇪🇸 🇧🇷 🇮🇩 🇨🇳</span></li>
+                    <li className="lv2-price-perk">{t.pricing.perks.subs}</li>
+                    {p.voix && <li className="lv2-price-perk">{t.pricing.perks.voix}</li>}
+                    {pricingModel && <li className="lv2-price-perk" style={{ color: 'var(--accent)' }}>{t.pricing.perks.model}</li>}
                   </ul>
                   <a
                     href={`/commande?duree=${parseInt(p.dur)}${pricingModel ? '&modele=1' : ''}`}
                     className={`lv2-btn${p.featured ? ' lv2-btn-accent' : ' lv2-btn-ghost'}`}
                     style={{ marginTop: 8, width: '100%', justifyContent: 'center' }}
                   >
-                    {p.featured ? 'Commander →' : 'Commander'}
+                    {p.featured ? t.pricing.orderFeatured : t.pricing.orderDefault}
                   </a>
                 </div>
               )
@@ -936,7 +907,7 @@ export default function HomePage() {
           </div>
 
           <p className="rv" style={{ textAlign: 'center', marginTop: 24, fontSize: 13, color: 'var(--g6)' }}>
-            MP4 livré par e-mail · Paiement sécurisé Stripe
+            {t.pricing.footer}
           </p>
         </div>
       </section>
@@ -945,10 +916,10 @@ export default function HomePage() {
       <section id="reels" style={{ background: '#0D0D1A', padding: '80px 0 72px', overflow: 'hidden' }}>
         <div className="lv2-si">
           <div className="rv" style={{ marginBottom: 40 }}>
-            <div className="lv2-label">Réalisations</div>
-            <h2>Créé avec ScenIQ <span style={{ color: 'var(--g4)', fontWeight: 400 }}>+</span> Seedance 2.0</h2>
+            <div className="lv2-label">{t.portfolio.label}</div>
+            <h2>{t.portfolio.h2a} <span style={{ color: 'var(--g4)', fontWeight: 400 }}>+</span> {t.portfolio.h2b}</h2>
             <p style={{ color: 'var(--g4)', fontSize: 17, marginTop: 10, maxWidth: 460 }}>
-              Produit 3D, action, lifestyle, animation, B2B. Tout ce qu&apos;une agence produit — généré en 48h.
+              {t.portfolio.sub}
             </p>
           </div>
         </div>
@@ -956,7 +927,7 @@ export default function HomePage() {
         <div className="portfolio-rows-container">
           <div className="portfolio-scroll-hint" aria-hidden="true">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7 }}><path d="M18 8L22 12L18 16"/><path d="M6 8L2 12L6 16"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
-            Glisser ou swiper
+            {t.portfolio.hint}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div className="portfolio-row-wrap">
@@ -969,7 +940,7 @@ export default function HomePage() {
         </div>
 
         <p style={{ textAlign: 'center', marginTop: 20, fontSize: 11, color: 'var(--g6)', letterSpacing: '0.06em' }}>
-          ✦ Vidéos générées via Seedance 2.0 · formats 9:16 · 1:1 · 16:9
+          {t.portfolio.footer}
         </p>
       </section>
 
@@ -977,48 +948,25 @@ export default function HomePage() {
       <section className="lv2-s">
         <div className="lv2-si">
           <div className="rv" style={{ textAlign: 'center' }}>
-            <div className="lv2-label">Témoignages</div>
-            <h2>Ce que disent<br />les marques.</h2>
+            <div className="lv2-label">{t.testimonials.label}</div>
+            <h2>{t.testimonials.h2a}<br />{t.testimonials.h2b}</h2>
           </div>
           <div className="lv2-testimonials rv">
-            {[
-              {
-                init: 'M', name: 'Marie D.', role: 'Responsable marketing · Marque A',
-                text: (
-                  <>"<em>On a reçu notre reel en 36h.</em> Le brief faisait 3 lignes. Le résultat était exactement ce qu&apos;on voulait — on a juste ajusté le texte sur une itération."</>
-                ),
-              },
-              {
-                init: 'T', name: 'Thomas L.', role: 'Fondateur · Startup SaaS',
-                text: (
-                  <>"Je pensais qu&apos;il fallait un budget agence pour avoir du contenu vidéo de qualité. <em>ScenIQ a changé ça.</em> 109€ pour une pub 10s prête pour Meta Ads."</>
-                ),
-              },
-              {
-                init: 'S', name: 'Sophie R.', role: 'CMO · E-commerce mode',
-                text: (
-                  <>"<em>Le process est redoutablement simple.</em> Brief, paiement, appel, livraison. On commande maintenant chaque lancement produit."</>
-                ),
-              },
-              {
-                init: 'A', name: 'Alexis M.', role: 'Directeur créatif · Agence digitale',
-                text: (
-                  <>"La qualité visuelle m&apos;a surpris — on était sceptique sur l&apos;IA pour la vidéo. <em>Ce n&apos;est plus le sujet.</em> Le résultat parle de lui-même."</>
-                ),
-              },
-            ].map((t) => (
-              <div key={t.name} className="lv2-testimonial">
+            {t.testimonials.items.map((item) => (
+              <div key={item.name} className="lv2-testimonial">
                 <div className="lv2-test-stars">
                   {['★','★','★','★','★'].map((s, i) => (
                     <span key={i} className="lv2-test-star">{s}</span>
                   ))}
                 </div>
-                <p className="lv2-test-text">{t.text}</p>
+                <p className="lv2-test-text">
+                  {item.pre}<em>{item.em}</em>{item.post}
+                </p>
                 <div className="lv2-test-author">
-                  <div className="lv2-test-avatar">{t.init}</div>
+                  <div className="lv2-test-avatar">{item.init}</div>
                   <div>
-                    <div className="lv2-test-name">{t.name}</div>
-                    <div className="lv2-test-role">{t.role}</div>
+                    <div className="lv2-test-name">{item.name}</div>
+                    <div className="lv2-test-role">{item.role}</div>
                   </div>
                 </div>
               </div>
@@ -1031,38 +979,17 @@ export default function HomePage() {
       <section className="lv2-s alt" id="faq">
         <div className="lv2-si">
           <div className="rv" style={{ textAlign: 'center' }}>
-            <div className="lv2-label">FAQ</div>
-            <h2>Questions fréquentes.</h2>
+            <div className="lv2-label">{t.faq.label}</div>
+            <h2>{t.faq.h2}</h2>
             <p className="lv2-s-sub" style={{ maxWidth: 480, margin: '16px auto 0' }}>
-              Tout ce qu&apos;il faut savoir avant de commander.
+              {t.faq.sub}
             </p>
           </div>
 
           <div className="lv2-faq-grid rv">
             {/* Colonne gauche */}
             <div className="lv2-faq-col">
-              {[
-                {
-                  q: 'Comment se déroule le processus exactement ?',
-                  a: 'Vous commandez en ligne et remplissez un brief en 2 lignes. On vous rappelle sous 4h ouvrées pour aligner la direction créative. Les 5 agents IA génèrent la pré-prod en parallèle. La vidéo finale vous est envoyée par e-mail sous 48h.',
-                },
-                {
-                  q: "Qu'est-ce qui est livré exactement ?",
-                  a: "Un fichier MP4 1080p envoyé directement par e-mail. Pas d'espace client, pas de compte à créer. Les formats 9:16, 1:1 et 16:9 sont inclus selon la durée choisie — prêts pour Meta Ads, TikTok, YouTube et Instagram.",
-                },
-                {
-                  q: 'Combien de temps pour recevoir ma vidéo ?',
-                  a: "48h après validation de la direction créative lors de l'appel. Le délai court à partir de cet appel, pas du paiement. En pratique, la plupart des livraisons se font en moins de 48h.",
-                },
-                {
-                  q: 'Puis-je fournir des références visuelles ou musicales ?',
-                  a: "Oui, c'est même recommandé. Lors de la commande vous pouvez uploader des images, vidéos ou fichiers audio. Plus vos références sont précises, plus la cohérence visuelle de la vidéo est forte.",
-                },
-                {
-                  q: 'Dois-je créer un compte ?',
-                  a: "Non. Vous commandez, vous payez, vous recevez votre MP4 par e-mail. Aucun compte, aucun espace client. Un outil self-service est prévu pour 2027.",
-                },
-              ].map((item) => (
+              {t.faq.left.map((item) => (
                 <div key={item.q} className="fi">
                   <button className="fq">
                     {item.q}
@@ -1075,36 +1002,7 @@ export default function HomePage() {
 
             {/* Colonne droite */}
             <div className="lv2-faq-col">
-              {[
-                {
-                  q: "Puis-je inclure un modèle ou une influenceuse IA dans ma vidéo ?",
-                  a: "Oui — c'est une option à +49 € sur votre forfait. Vous décrivez le profil (âge, style, ambiance), ScenIQ génère le personnage IA sur mesure. Tous les personnages sont entièrement fictifs. Conformément au EU AI Act et à la loi française sur les influenceurs (juin 2023), une mention 'Image générée par IA' est obligatoire sur vos publications. ScenIQ vous fournit cette mention dans chaque livraison. Vous restez responsable de l'afficher sur vos supports.",
-                },
-                {
-                  q: "Pourquoi Seedance 2.0 et pas Runway, Veo 3 ou Sora ?",
-                  a: "Seedance 2.0 est le moteur vidéo de ByteDance — la même entreprise que TikTok, donc optimisé pour les formats courts et les cuts dynamiques. Trois avantages concrets : (1) rendu 1080p natif avec audio intégré dans le même appel, là où les autres facturent son et image séparément. (2) architecture multi-shot en un seul prompt — la cohérence visuelle entre les plans est meilleure qu'en assemblant des clips séparés. (3) vitesse de rendu : un clip 10s est généré en moins de 3 minutes. Runway Gen-4 et Veo 3 produisent de bons résultats, mais sont plus lents, plus chers à l'usage, et moins optimisés pour le format pub court.",
-                },
-                {
-                  q: "Que se passe-t-il si le résultat ne me convient pas ?",
-                  a: "10 itérations sont incluses dans chaque commande. Si après 10 allers-retours nous n'arrivons pas à un résultat satisfaisant, vous êtes intégralement remboursé. C'est rare — ça ne nous est pas encore arrivé.",
-                },
-                {
-                  q: 'Quelle durée choisir pour ma publicité ?',
-                  a: "5–8s pour des accroches Reels/Stories sans narration. 10s pour une pub Meta classique avec voix-off courte. 12–15s pour un format avec storytelling ou démonstration produit. En cas de doute, le 10s est le plus polyvalent.",
-                },
-                {
-                  q: "Comment se passe l'appel de direction créative ?",
-                  a: "Un appel téléphonique de 15–20 minutes maximum. On valide avec vous l'axe créatif, la tonalité et les éventuelles contraintes de marque avant de lancer la génération. Pas de visio obligatoire, pas d'outil tiers.",
-                },
-                {
-                  q: 'La vidéo peut-elle inclure une voix-off ?',
-                  a: "Oui, à partir du format 10s. Le Scriptwriter calibre le script à 2,2 mots par seconde. Pour les voix-off françaises, une couche dédiée est ajoutée au montage final, sans surcoût.",
-                },
-                {
-                  q: 'Quel mode de paiement est accepté ?',
-                  a: "Paiement 100 % à la commande via Stripe (CB, Apple Pay, Google Pay). Pas d'acompte, pas de paiement différé. Une facture est générée automatiquement après le paiement.",
-                },
-              ].map((item) => (
+              {t.faq.right.map((item) => (
                 <div key={item.q} className="fi">
                   <button className="fq">
                     {item.q}
@@ -1122,26 +1020,26 @@ export default function HomePage() {
       <section className="lv2-final-cta">
         <div className="lv2-si">
           <div className="lv2-final-cta-inner">
-            <div className="lv2-label" style={{ margin: '0 auto 20px' }}>Prêt à commencer ?</div>
-            <h2>Votre prochain clip vidéo.<br />Deux lignes. 48 heures.</h2>
+            <div className="lv2-label" style={{ margin: '0 auto 20px' }}>{t.cta.label}</div>
+            <h2>{t.cta.h2a}<br />{t.cta.h2b}</h2>
             <p className="lv2-final-cta-sub">
-              Un brief, un paiement, un appel. Pré-prod livrée sans réunion intermédiaire.
+              {t.cta.sub}
             </p>
             <div className="lv2-final-cta-btns">
               <a href="/commande" className="lv2-btn lv2-btn-accent lv2-btn-lg">
-                Commander ma vidéo →
+                {t.cta.btn1}
               </a>
               <button
                 type="button"
                 onClick={() => { setQuestionOpen(true); setQuestionSent(false) }}
                 className="lv2-btn lv2-btn-ghost lv2-btn-lg"
               >
-                Une question ?
+                {t.cta.btn2}
               </button>
             </div>
             <p style={{ marginTop: 20, fontSize: 13, color: 'var(--g6)' }}>
-              Vous recevez votre MP4 par e-mail. Pas de compte, pas d&apos;espace client.
-              Questions&nbsp;:{' '}
+              {t.cta.note}
+              {' '}Questions&nbsp;:{' '}
               <a href="mailto:support@sceniq.studio" style={{ color: 'var(--accent)' }}>
                 support@sceniq.studio
               </a>
@@ -1156,41 +1054,41 @@ export default function HomePage() {
           <div className="lv2-footer-brand">
             <img src="/sceniq-logo-dark.svg" alt="ScenIQ" style={{ height: 34, width: 'auto' }} />
             <p className="lv2-footer-desc">
-              Agence IA de production vidéo publicitaire. Cinq agents spécialisés — Director, Scriptwriter, Storyboarder, Music, Visual — livrent la pré-prod en 48h.
+              {t.footer.desc}
             </p>
           </div>
           <div>
-            <div className="lv2-footer-col-title">Service</div>
+            <div className="lv2-footer-col-title">{t.footer.colService}</div>
             <ul className="lv2-footer-links">
-              <li><a href="#process">Comment ça marche</a></li>
-              <li><a href="#modeles">Comédiens IA</a></li>
-              <li><a href="#tarifs">Tarifs</a></li>
-              <li><a href="#reels">Réalisations</a></li>
-              <li><a href="/commande">Commander</a></li>
+              <li><a href="#process">{t.footer.links.process}</a></li>
+              <li><a href="#modeles">{t.footer.links.models}</a></li>
+              <li><a href="#tarifs">{t.footer.links.pricing}</a></li>
+              <li><a href="#reels">{t.footer.links.portfolio}</a></li>
+              <li><a href="/commande">{t.footer.links.order}</a></li>
             </ul>
           </div>
           <div>
-            <div className="lv2-footer-col-title">Formats</div>
+            <div className="lv2-footer-col-title">{t.footer.colFormats}</div>
             <ul className="lv2-footer-links">
-              <li><a href="#tarifs">Pub 5 secondes — 69 €</a></li>
-              <li><a href="#tarifs">Reel 8 secondes — 89 €</a></li>
-              <li><a href="#tarifs">Clip 10 secondes — 109 €</a></li>
-              <li><a href="#tarifs">Narration 12–15s</a></li>
+              <li><a href="#tarifs">{t.footer.links.f5}</a></li>
+              <li><a href="#tarifs">{t.footer.links.f8}</a></li>
+              <li><a href="#tarifs">{t.footer.links.f10}</a></li>
+              <li><a href="#tarifs">{t.footer.links.f12}</a></li>
             </ul>
           </div>
           <div>
-            <div className="lv2-footer-col-title">Contact</div>
+            <div className="lv2-footer-col-title">{t.footer.colContact}</div>
             <ul className="lv2-footer-links">
               <li><a href="mailto:support@sceniq.studio">support@sceniq.studio</a></li>
               <li><a href="tel:+33756808831">📞 07 56 80 88 31</a></li>
-              <li><a href="#">Mentions légales</a></li>
-              <li><a href="#">Confidentialité</a></li>
+              <li><a href="#">{t.footer.links.legal}</a></li>
+              <li><a href="#">{t.footer.links.privacy}</a></li>
             </ul>
           </div>
         </div>
         <div className="lv2-footer-bottom">
-          <span>© 2026 ScenIQ · Tous droits réservés</span>
-          <span>Outil self-service prévu pour 2027</span>
+          <span>{t.footer.bottom1}</span>
+          <span>{t.footer.bottom2}</span>
         </div>
       </footer>
 
@@ -1219,7 +1117,7 @@ export default function HomePage() {
             <button
               type="button"
               onClick={() => setQuestionOpen(false)}
-              aria-label="Fermer"
+              aria-label={t.modal.closeAria}
               style={{
                 position: 'absolute', top: 16, right: 16,
                 background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
@@ -1234,13 +1132,12 @@ export default function HomePage() {
                 <div style={{
                   fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase',
                   color: '#7C5CFC', marginBottom: 10,
-                }}>Avant de commander</div>
+                }}>{t.modal.preLabel}</div>
                 <h3 style={{ fontSize: 22, fontWeight: 800, color: '#fff', marginBottom: 8, lineHeight: 1.2 }}>
-                  Une question&nbsp;?
+                  {t.modal.h3}
                 </h3>
                 <p style={{ fontSize: 14, color: '#94A3B8', lineHeight: 1.6, marginBottom: 16 }}>
-                  Pas encore prêt(e) à commander ? Posez-moi votre question directement —
-                  vous parlez à une vraie personne, pas à un bot.
+                  {t.modal.sub}
                 </p>
                 <a
                   href="tel:+33756808831"
@@ -1252,16 +1149,16 @@ export default function HomePage() {
                     textDecoration: 'none', marginBottom: 20,
                   }}
                 >
-                  📞 07 56 80 88 31 — appel direct
+                  {t.modal.phone}
                 </a>
                 <form onSubmit={handleQuestionSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                   <div style={{ display: 'flex', gap: 12 }}>
                     <div style={{ flex: 1 }}>
                       <label style={{ fontSize: 12, fontWeight: 600, color: '#94A3B8', display: 'block', marginBottom: 6 }}>
-                        Prénom
+                        {t.modal.labelName}
                       </label>
                       <input
-                        type="text" required placeholder="Marie"
+                        type="text" required placeholder={t.modal.placeName}
                         value={qForm.name}
                         onChange={(e) => setQForm((f) => ({ ...f, name: e.target.value }))}
                         style={{
@@ -1289,7 +1186,7 @@ export default function HomePage() {
                   </div>
                   <div>
                     <label style={{ fontSize: 12, fontWeight: 600, color: '#94A3B8', display: 'block', marginBottom: 6 }}>
-                      Téléphone <span style={{ fontWeight: 400, color: '#475569' }}>(optionnel)</span>
+                      {lang === 'fr' ? 'Téléphone' : 'Phone'} <span style={{ fontWeight: 400, color: '#475569' }}>{lang === 'fr' ? '(optionnel)' : '(optional)'}</span>
                     </label>
                     <input
                       type="tel" placeholder="+33 6 00 00 00 00"
@@ -1304,11 +1201,11 @@ export default function HomePage() {
                   </div>
                   <div>
                     <label style={{ fontSize: 12, fontWeight: 600, color: '#94A3B8', display: 'block', marginBottom: 6 }}>
-                      Votre question
+                      {t.modal.labelMsg}
                     </label>
                     <textarea
                       required rows={4}
-                      placeholder="Ex : Est-ce que vous pouvez faire une vidéo pour un lancement produit avec plusieurs personnages ?"
+                      placeholder={t.modal.placeMsg}
                       value={qForm.message}
                       onChange={(e) => setQForm((f) => ({ ...f, message: e.target.value }))}
                       style={{
@@ -1326,10 +1223,10 @@ export default function HomePage() {
                       fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', transition: 'background .15s',
                     }}
                   >
-                    Envoyer ma question →
+                    {t.modal.submit}
                   </button>
                   <p style={{ fontSize: 12, color: '#475569', textAlign: 'center' }}>
-                    Réponse sous 4 h ouvrées · Aucun engagement
+                    {lang === 'fr' ? 'Réponse sous 4 h ouvrées · Aucun engagement' : 'Reply within 4 business hours · No commitment'}
                   </p>
                 </form>
               </>
@@ -1337,10 +1234,10 @@ export default function HomePage() {
               <div style={{ textAlign: 'center', padding: '20px 0' }}>
                 <div style={{ fontSize: 48, marginBottom: 16 }}>✅</div>
                 <h3 style={{ fontSize: 22, fontWeight: 800, color: '#fff', marginBottom: 10 }}>
-                  Message envoyé !
+                  {t.modal.sentTitle}
                 </h3>
                 <p style={{ fontSize: 15, color: '#94A3B8', lineHeight: 1.6 }}>
-                  Je reviens vers vous sous 4 h ouvrées, {qForm.name || 'à très vite'}&nbsp;!
+                  {t.modal.sentSub}
                 </p>
                 <button
                   type="button"
@@ -1351,7 +1248,7 @@ export default function HomePage() {
                     color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
                   }}
                 >
-                  Fermer
+                  {t.modal.sentClose}
                 </button>
               </div>
             )}
