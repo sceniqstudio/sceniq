@@ -23,7 +23,7 @@ const PORTFOLIO_ITEMS: PortfolioItem[] = SHOWCASE_VIDEOS.map((v, i) => ({
 
 const SHOWCASE_SLUGS = HERO_SLUGS
 
-// ── PortfolioRow — infinite scroll + drag souris/touch ─────────────────────
+// ── PortfolioRow — infinite scroll + drag souris/touch iOS fluide ───────────
 function PortfolioRow({
   items, direction, rowHeight = 190, gap = 12, speed = 0.45, onCardClick,
 }: {
@@ -31,10 +31,13 @@ function PortfolioRow({
   rowHeight?: number; gap?: number; speed?: number
   onCardClick?: (slug: string) => void
 }) {
-  const trackRef  = useRef<HTMLDivElement>(null)
-  const posRef    = useRef(0)
-  const animRef   = useRef<number>()
-  const drag      = useRef({ active: false, startX: 0, startPos: 0, didDrag: false })
+  const trackRef    = useRef<HTMLDivElement>(null)
+  const posRef      = useRef(0)
+  const animRef     = useRef<number>()
+  const drag        = useRef({ active: false, startX: 0, startY: 0, startPos: 0, didDrag: false, locked: false })
+  const momentumRef = useRef(0)
+  const lastXRef    = useRef(0)
+  const lastTRef    = useRef(0)
 
   useEffect(() => {
     const track = trackRef.current
@@ -46,10 +49,14 @@ function PortfolioRow({
       if (!drag.current.active) {
         const total = getTotal()
         if (total > 0) {
-          posRef.current = mod(
-            posRef.current + (direction === 'left' ? speed : -speed),
-            total
-          )
+          // momentum décelération après swipe
+          if (Math.abs(momentumRef.current) > 0.3) {
+            posRef.current = mod(posRef.current + momentumRef.current, total)
+            momentumRef.current *= 0.92
+          } else {
+            momentumRef.current = 0
+            posRef.current = mod(posRef.current + (direction === 'left' ? speed : -speed), total)
+          }
           track.style.transform = `translateX(${-posRef.current}px)`
         }
       }
@@ -57,32 +64,67 @@ function PortfolioRow({
     }
     animRef.current = requestAnimationFrame(tick)
 
-    const startDrag = (x: number) => {
-      drag.current = { active: true, startX: x, startPos: posRef.current, didDrag: false }
+    // ── Souris ──
+    const onMouseDown = (e: MouseEvent) => {
+      drag.current = { active: true, startX: e.clientX, startY: 0, startPos: posRef.current, didDrag: false, locked: true }
+      momentumRef.current = 0
+      track.style.cursor = 'grabbing'
     }
-    const moveDrag = (x: number) => {
+    const onMouseMove = (e: MouseEvent) => {
       if (!drag.current.active) return
-      const delta = drag.current.startX - x
+      const delta = drag.current.startX - e.clientX
       if (Math.abs(delta) > 4) drag.current.didDrag = true
-      const total = getTotal()
-      posRef.current = mod(drag.current.startPos + delta, total)
+      posRef.current = mod(drag.current.startPos + delta, getTotal())
       track.style.transform = `translateX(${-posRef.current}px)`
     }
-    const endDrag = () => { drag.current.active = false }
+    const onMouseUp = () => { drag.current.active = false; track.style.cursor = 'grab' }
 
-    const onMouseDown  = (e: MouseEvent)  => { startDrag(e.clientX); track.style.cursor = 'grabbing' }
-    const onMouseMove  = (e: MouseEvent)  => moveDrag(e.clientX)
-    const onMouseUp    = ()               => { endDrag(); track.style.cursor = 'grab' }
-    const onTouchStart = (e: TouchEvent)  => startDrag(e.touches[0].clientX)
-    const onTouchMove  = (e: TouchEvent)  => moveDrag(e.touches[0].clientX)
-    const onTouchEnd   = ()               => endDrag()
+    // ── Touch iOS — détection direction + momentum ──
+    const onTouchStart = (e: TouchEvent) => {
+      const t = e.touches[0]
+      drag.current = { active: true, startX: t.clientX, startY: t.clientY, startPos: posRef.current, didDrag: false, locked: false }
+      momentumRef.current = 0
+      lastXRef.current = t.clientX
+      lastTRef.current = Date.now()
+    }
+    const onTouchMove = (e: TouchEvent) => {
+      if (!drag.current.active) return
+      const t = e.touches[0]
+      const dx = Math.abs(t.clientX - drag.current.startX)
+      const dy = Math.abs(t.clientY - drag.current.startY)
+
+      // Verrouillage direction au premier mouvement significatif
+      if (!drag.current.locked) {
+        if (dx < 3 && dy < 3) return
+        drag.current.locked = true
+        // Si mouvement vertical dominant → on laisse le scroll page
+        if (dy > dx) { drag.current.active = false; return }
+      }
+
+      // Mouvement horizontal confirmé → on bloque le scroll page
+      e.preventDefault()
+      if (dx > 6) drag.current.didDrag = true
+
+      // Calcul vélocité pour momentum
+      const now = Date.now()
+      const dt = now - lastTRef.current
+      if (dt > 0) momentumRef.current = (lastXRef.current - t.clientX) / dt * 16
+      lastXRef.current = t.clientX
+      lastTRef.current = now
+
+      const delta = drag.current.startX - t.clientX
+      posRef.current = mod(drag.current.startPos + delta, getTotal())
+      track.style.transform = `translateX(${-posRef.current}px)`
+    }
+    const onTouchEnd = () => { drag.current.active = false }
 
     track.addEventListener('mousedown', onMouseDown)
     window.addEventListener('mousemove', onMouseMove)
     window.addEventListener('mouseup', onMouseUp)
+    // touchstart sur track, touchmove sur track (non-passive pour preventDefault)
     track.addEventListener('touchstart', onTouchStart, { passive: true })
-    window.addEventListener('touchmove', onTouchMove, { passive: false })
-    window.addEventListener('touchend', onTouchEnd)
+    track.addEventListener('touchmove', onTouchMove, { passive: false })
+    track.addEventListener('touchend', onTouchEnd)
 
     return () => {
       if (animRef.current) cancelAnimationFrame(animRef.current)
@@ -90,15 +132,15 @@ function PortfolioRow({
       window.removeEventListener('mousemove', onMouseMove)
       window.removeEventListener('mouseup', onMouseUp)
       track.removeEventListener('touchstart', onTouchStart)
-      window.removeEventListener('touchmove', onTouchMove)
-      window.removeEventListener('touchend', onTouchEnd)
+      track.removeEventListener('touchmove', onTouchMove)
+      track.removeEventListener('touchend', onTouchEnd)
     }
   }, [direction, speed])
 
   const doubled = [...items, ...items]
 
   return (
-    <div>
+    <div style={{ touchAction: 'pan-y', overflow: 'hidden' }}>
       <div
         ref={trackRef}
         style={{ display: 'flex', alignItems: 'flex-start', gap, width: 'max-content', willChange: 'transform', userSelect: 'none' }}
@@ -538,7 +580,7 @@ export default function HomePage() {
                 aria-label="Lire la vidéo volt"
               >
                 <video
-                  autoPlay muted loop playsInline preload="none"
+                  autoPlay muted loop playsInline preload="metadata"
                   style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }}
                 >
                   <source src="/showcase/volt.mp4" type="video/mp4" />
@@ -597,7 +639,7 @@ export default function HomePage() {
                 aria-label="Lire exemple 16:9 en grand format"
               >
                 <video
-                  autoPlay muted loop playsInline preload="none"
+                  autoPlay muted loop playsInline preload="metadata"
                   style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', pointerEvents:'none' }}
                 >
                   <source src="/showcase/exemple19.mp4" type="video/mp4" />
@@ -638,7 +680,7 @@ export default function HomePage() {
                 aria-label="Lire exemple 9:16 en grand format"
               >
                 <video
-                  autoPlay muted loop playsInline preload="none"
+                  autoPlay muted loop playsInline preload="metadata"
                   style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', pointerEvents:'none' }}
                 >
                   <source src="/showcase/exemple18.mp4" type="video/mp4" />
