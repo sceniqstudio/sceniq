@@ -67,7 +67,11 @@ body:has(.lv2) {
    la pill flotte au-dessus du hero (style Luma / Linear) */
 .lv2-nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  /* reset global nav{} de globals.css */
+  height: auto;
   background: transparent;
+  backdrop-filter: none;
+  border-bottom: none !important;
   pointer-events: none;
   padding: 20px 24px 0;
 }
