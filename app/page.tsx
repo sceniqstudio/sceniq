@@ -198,6 +198,7 @@ export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [questionOpen, setQuestionOpen]     = useState(false)
   const [questionSent, setQuestionSent]     = useState(false)
+  const [questionLoading, setQuestionLoading] = useState(false)
   const [qForm, setQForm]                   = useState({ name: '', email: '', phone: '', message: '' })
   const [pricingModel, setPricingModel]     = useState(false)
   const [portfolioRows, setPortfolioRows]   = useState<[PortfolioItem[], PortfolioItem[]]>([
@@ -218,14 +219,33 @@ export default function HomePage() {
   }
 
   // ── Question form handler ────────────────────────────────────────────────
-  const handleQuestionSubmit = (e: FormEvent) => {
+  const handleQuestionSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    const subject = encodeURIComponent(`Question ScenIQ — ${qForm.name}`)
-    const body = encodeURIComponent(
-      `Prénom : ${qForm.name}\nEmail : ${qForm.email}${qForm.phone ? `\nTéléphone : ${qForm.phone}` : ''}\n\nQuestion :\n${qForm.message}`
-    )
-    window.open(`mailto:support@sceniq.studio?subject=${subject}&body=${body}`, '_blank')
-    setQuestionSent(true)
+    setQuestionLoading(true)
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name:    qForm.name,
+          email:   qForm.email,
+          phone:   qForm.phone || null,
+          message: qForm.message,
+        }),
+      })
+      if (!res.ok) throw new Error('Erreur serveur')
+      setQuestionSent(true)
+    } catch {
+      // Fallback mailto si l'API échoue
+      const subject = encodeURIComponent(`Question ScenIQ — ${qForm.name}`)
+      const body = encodeURIComponent(
+        `Prénom : ${qForm.name}\nEmail : ${qForm.email}${qForm.phone ? `\nTéléphone : ${qForm.phone}` : ''}\n\nQuestion :\n${qForm.message}`
+      )
+      window.open(`mailto:support@sceniq.studio?subject=${subject}&body=${body}`, '_blank')
+      setQuestionSent(true)
+    } finally {
+      setQuestionLoading(false)
+    }
   }
 
   // ── ESC + body scroll lock ──────────────────────────────────────────────
@@ -1219,13 +1239,17 @@ export default function HomePage() {
                   </div>
                   <button
                     type="submit"
+                    disabled={questionLoading}
                     style={{
                       padding: '13px 24px', borderRadius: 999,
-                      background: '#7C5CFC', border: 'none', color: '#fff',
-                      fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', transition: 'background .15s',
+                      background: questionLoading ? 'rgba(124,92,252,0.5)' : '#7C5CFC',
+                      border: 'none', color: '#fff',
+                      fontSize: 15, fontWeight: 600,
+                      cursor: questionLoading ? 'not-allowed' : 'pointer',
+                      fontFamily: 'inherit', transition: 'background .15s',
                     }}
                   >
-                    {t.modal.submit}
+                    {questionLoading ? '…' : t.modal.submit}
                   </button>
                   <p style={{ fontSize: 12, color: '#475569', textAlign: 'center' }}>
                     {lang === 'fr' ? 'Réponse sous 4 h ouvrées · Aucun engagement' : 'Reply within 4 business hours · No commitment'}
