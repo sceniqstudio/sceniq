@@ -380,7 +380,6 @@ export default function HomePage() {
             <li><a href="#modeles">{t.nav.models}</a></li>
             <li><a href="#tarifs">{t.nav.pricing}</a></li>
             <li><a href="#reels">{t.nav.portfolio}</a></li>
-            <li><a href="#faq">{t.nav.faq}</a></li>
           </ul>
           <div className="lv2-nav-right">
             <button type="button" onClick={() => { setQuestionOpen(true); setQuestionSent(false) }} className="lv2-btn lv2-btn-ghost lv2-btn-sm">
@@ -430,7 +429,6 @@ export default function HomePage() {
               <li><a href="#modeles"  onClick={() => setMobileMenuOpen(false)}>{t.nav.models}</a></li>
               <li><a href="#tarifs"   onClick={() => setMobileMenuOpen(false)}>{t.nav.pricing}</a></li>
               <li><a href="#reels"    onClick={() => setMobileMenuOpen(false)}>{t.nav.portfolio}</a></li>
-              <li><a href="#faq"      onClick={() => setMobileMenuOpen(false)}>{t.nav.faq}</a></li>
             </ul>
             <div className="lv2-mob-cta">
               <button

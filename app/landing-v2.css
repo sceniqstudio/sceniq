@@ -83,19 +83,15 @@ body:has(.lv2) {
   background: rgba(10,10,20,0.82);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  /* pas de border → plus de ligne visible sur mobile */
   border: none;
   border-radius: 100px;
-  /* outline en substitut — ne crée pas de "ligne" pleine largeur */
-  outline: 1px solid rgba(255,255,255,0.10);
-  outline-offset: 0;
-  box-shadow: 0 4px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.04) inset;
+  /* inset shadow = contour subtil sans aucune "ligne" visible en bas */
+  box-shadow: 0 4px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.09) inset;
   transition: background 0.3s, box-shadow 0.3s;
 }
 .lv2-nav.scrolled .lv2-nav-inner {
   background: rgba(10,10,20,0.96);
-  outline-color: rgba(255,255,255,0.13);
-  box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06) inset;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.11) inset;
 }
 /* Logo */
 .lv2-nav-logo {
