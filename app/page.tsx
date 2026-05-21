@@ -2,37 +2,26 @@
 
 import { useEffect, useState, useRef, type FormEvent } from 'react'
 import { ShowcaseClip } from '@/app/_components/ShowcaseClip'
+import { SHOWCASE_VIDEOS, HERO_SLUGS } from '@/lib/showcase'
 
-const SHOWCASE_SLUGS = [
-  'exemple1', 'exemple2', 'exemple3', 'exemple4', 'exemple5', 'exemple6',
-  'exemple7', 'exemple8', 'exemple9', 'exemple10', 'exemple11', 'exemple12',
-  'exemple13', 'exemple14', 'exemple15', 'exemple16', 'exemple17',
-  'exemple18', 'exemple19', 'exemple20', 'exemple21', 'exemple22',
-] as const
-
-// ── Portfolio — items avec vraies vidéos ────────────────────────────────────
+// ── Portfolio — items depuis lib/showcase.ts ────────────────────────────────
 type PortfolioItem = { id: string; slug: string; ratio: number; label: string; grad: string; src?: string }
 
-// Portrait ~9:16 (414×720 pour e1-18, 720×1280 pour e20-21) | Paysage 16:9 (e19)
-const PORTRAIT_R  = 414 / 720
-const PORTRAIT_R2 = 720 / 1280  // exemple20, exemple21
-const LANDSCAPE_R = 16 / 9
-
-const PORTFOLIO_ITEMS: PortfolioItem[] = [
-  // exemple1-18 complets
-  ...[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18].map((n) => ({
-    id:    `e${String(n).padStart(2, '0')}`,
-    slug:  `exemple${n}`,
-    ratio: PORTRAIT_R,
-    label: '9:16',
-    grad:  'linear-gradient(135deg,#0a0a14,#1a0a3c)',
-    src:   `/showcase/exemple${n}.mp4`,
-  })),
-  { id: 'e19', slug: 'exemple19', ratio: LANDSCAPE_R, label: '16:9', grad: 'linear-gradient(135deg,#0f0c29,#302b63)', src: '/showcase/exemple19.mp4' },
-  { id: 'e20', slug: 'exemple20', ratio: PORTRAIT_R2, label: '9:16', grad: 'linear-gradient(135deg,#0a0a14,#1a0a3c)', src: '/showcase/exemple20.mp4' },
-  { id: 'e21', slug: 'exemple21', ratio: PORTRAIT_R2, label: '9:16', grad: 'linear-gradient(135deg,#0f0c29,#302b63)', src: '/showcase/exemple21.mp4' },
-  { id: 'e22', slug: 'exemple22', ratio: PORTRAIT_R2, label: '9:16', grad: 'linear-gradient(135deg,#0a0a14,#1a0a3c)', src: '/showcase/exemple22.mp4' },
+const GRADS = [
+  'linear-gradient(135deg,#0a0a14,#1a0a3c)',
+  'linear-gradient(135deg,#0f0c29,#302b63)',
 ]
+
+const PORTFOLIO_ITEMS: PortfolioItem[] = SHOWCASE_VIDEOS.map((v, i) => ({
+  id:    `e${String(i + 1).padStart(2, '0')}`,
+  slug:  v.slug,
+  ratio: v.ratio,
+  label: v.ratio > 1 ? '16:9' : '9:16',
+  grad:  GRADS[i % 2],
+  src:   `/showcase/${v.slug}.mp4`,
+}))
+
+const SHOWCASE_SLUGS = HERO_SLUGS
 
 // ── PortfolioRow — infinite scroll + drag souris/touch ─────────────────────
 function PortfolioRow({
@@ -132,7 +121,6 @@ function PortfolioRow({
               {item.src ? (
                 <video
                   src={item.src}
-                  poster={`/showcase/${item.slug}.jpg`}
                   autoPlay muted loop playsInline preload="none"
                   style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
                 />
@@ -549,18 +537,8 @@ export default function HomePage() {
                 }}
                 aria-label="Lire la vidéo volt"
               >
-                {/* Poster mobile (position absolute pour overlay correct) */}
-                <img
-                  src="/showcase/volt.jpg"
-                  alt="Aperçu vidéo studio"
-                  className="studio-poster-mobile"
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-                {/* Vidéo autoplay desktop uniquement */}
                 <video
-                  autoPlay muted loop playsInline preload="metadata"
-                  poster="/showcase/volt.jpg"
-                  className="studio-video-desktop"
+                  autoPlay muted loop playsInline preload="none"
                   style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }}
                 >
                   <source src="/showcase/volt.mp4" type="video/mp4" />
@@ -618,13 +596,8 @@ export default function HomePage() {
                 }}
                 aria-label="Lire exemple 16:9 en grand format"
               >
-                <img src="/showcase/exemple19.jpg" alt="" aria-hidden="true"
-                  className="studio-poster-mobile"
-                  style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover' }} />
                 <video
-                  autoPlay muted loop playsInline preload="metadata"
-                  poster="/showcase/exemple19.jpg"
-                  className="studio-video-desktop"
+                  autoPlay muted loop playsInline preload="none"
                   style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', pointerEvents:'none' }}
                 >
                   <source src="/showcase/exemple19.mp4" type="video/mp4" />
@@ -664,13 +637,8 @@ export default function HomePage() {
                 }}
                 aria-label="Lire exemple 9:16 en grand format"
               >
-                <img src="/showcase/exemple18.jpg" alt="" aria-hidden="true"
-                  className="studio-poster-mobile"
-                  style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover' }} />
                 <video
-                  autoPlay muted loop playsInline preload="metadata"
-                  poster="/showcase/exemple18.jpg"
-                  className="studio-video-desktop"
+                  autoPlay muted loop playsInline preload="none"
                   style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', pointerEvents:'none' }}
                 >
                   <source src="/showcase/exemple18.mp4" type="video/mp4" />

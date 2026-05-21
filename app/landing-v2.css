@@ -1213,11 +1213,3 @@ button:hover .play-overlay { opacity: 1 !important; }
   .lv2-model-toggle-right { align-self: flex-end; }
 }
 
-/* ── Section Le studio — poster mobile / vidéo desktop ──────────────────── */
-.studio-poster-mobile { display: none; }
-.studio-video-desktop { display: block; }
-
-@media (max-width: 768px) {
-  .studio-poster-mobile { display: block; }
-  .studio-video-desktop { display: none; }
-}
