@@ -30,6 +30,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             </Link>
           </li>
           <li>
+            <Link href="/dashboard/studio">
+              <span className="app-nav-ico">🎬</span>
+              Studio
+            </Link>
+          </li>
+          <li>
             <Link href="/dashboard/brands">
               <span className="app-nav-ico">🏷️</span>
               Marques

@@ -21,17 +21,17 @@ export default function LegalHeader() {
       <div style={{
         maxWidth:       '1160px',
         margin:         '0 auto',
-        padding:        '0 24px',
-        height:         '68px',
+        padding:        '0 32px',
+        height:         '80px',
         display:        'flex',
         alignItems:     'center',
         justifyContent: 'space-between',
         gap:            '16px',
       }}>
         {/* Logo */}
-        <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '14px' }}>
           {/* Mark toupie */}
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg width="44" height="44" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect width="32" height="32" rx="8" fill="url(#lg)"/>
             <path d="M16 4 C16 12 20 16 28 16 C20 16 16 20 16 28 C16 20 12 16 4 16 C12 16 16 12 16 4 Z" fill="white"/>
             <defs>
@@ -42,10 +42,10 @@ export default function LegalHeader() {
             </defs>
           </svg>
           <span style={{
-            fontSize:      '17px',
-            fontWeight:    700,
+            fontSize:      '22px',
+            fontWeight:    800,
             color:         '#fff',
-            letterSpacing: '-0.4px',
+            letterSpacing: '-0.6px',
           }}>
             ScenIQ
           </span>
@@ -57,19 +57,20 @@ export default function LegalHeader() {
           style={{
             display:        'flex',
             alignItems:     'center',
-            gap:            '6px',
-            background:     'rgba(255,255,255,0.07)',
-            border:         '1px solid rgba(255,255,255,0.12)',
-            borderRadius:   '8px',
-            padding:        '7px 14px',
-            color:          'rgba(255,255,255,0.8)',
-            fontSize:       '13px',
-            fontWeight:     500,
+            gap:            '8px',
+            background:     'rgba(255,255,255,0.08)',
+            border:         '1px solid rgba(255,255,255,0.15)',
+            borderRadius:   '10px',
+            padding:        '12px 22px',
+            color:          'rgba(255,255,255,0.9)',
+            fontSize:       '15px',
+            fontWeight:     600,
             cursor:         'pointer',
             transition:     'background 0.15s',
+            letterSpacing:  '-0.2px',
           }}
-          onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.12)')}
-          onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.07)')}
+          onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.14)')}
+          onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.08)')}
         >
           ← Retour
         </button>
