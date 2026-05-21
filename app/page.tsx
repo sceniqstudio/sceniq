@@ -363,6 +363,12 @@ export default function HomePage() {
             <li><a href="#faq">{t.nav.faq}</a></li>
           </ul>
           <div className="lv2-nav-right">
+            <button type="button" onClick={() => { setQuestionOpen(true); setQuestionSent(false) }} className="lv2-btn lv2-btn-ghost lv2-btn-sm">
+              {t.nav.question}
+            </button>
+            <a href="/commande" className="lv2-btn lv2-btn-accent lv2-btn-sm">
+              {t.nav.order}
+            </a>
             <button
               type="button"
               onClick={toggleLang}
@@ -375,12 +381,6 @@ export default function HomePage() {
             >
               {t.misc.langSwitch}
             </button>
-            <button type="button" onClick={() => { setQuestionOpen(true); setQuestionSent(false) }} className="lv2-btn lv2-btn-ghost lv2-btn-sm">
-              {t.nav.question}
-            </button>
-            <a href="/commande" className="lv2-btn lv2-btn-accent lv2-btn-sm">
-              {t.nav.order}
-            </a>
           </div>
           <button
             className={`lv2-burger${mobileMenuOpen ? ' open' : ''}`}
