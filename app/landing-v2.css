@@ -36,7 +36,8 @@ body:has(.lv2) {
   color: var(--white);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  /* overflow-clip ne crée pas de scroll-container → sticky nav fonctionne */
+  overflow-x: clip;
 }
 .lv2 a          { color: inherit; text-decoration: none; }
 .lv2 img        { display: block; max-width: 100%; }
@@ -62,13 +63,13 @@ body:has(.lv2) {
 .lv2-btn-xl     { padding: 20px 48px; font-size: 17px; }
 
 /* ── NAV — Floating pill 2026 ─────────────────────────────── */
-/* Wrapper positionné, transparent, juste pour le sticky */
+/* position:fixed → ne prend aucun espace dans le flux
+   la pill flotte au-dessus du hero (style Luma / Linear) */
 .lv2-nav {
-  position: sticky; top: 0; z-index: 100;
-  /* pas de background ici — sur la pill */
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   background: transparent;
-  pointer-events: none; /* laisse passer les clics vers le contenu sous-jacent */
-  padding: 16px 24px 0;  /* espace autour de la pill */
+  pointer-events: none;
+  padding: 16px 24px 0;
 }
 /* La pill elle-même */
 .lv2-nav-inner {
@@ -76,8 +77,8 @@ body:has(.lv2) {
   width: fit-content;
   max-width: calc(100vw - 48px);
   margin: 0 auto;
-  height: 60px;
-  padding: 0 8px 0 20px;
+  /* hauteur via padding vertical — le CTA ne peut plus "sortir" */
+  padding: 8px 8px 8px 20px;
   display: flex; align-items: center; gap: 0;
   background: rgba(10,10,20,0.82);
   backdrop-filter: blur(24px);
@@ -255,7 +256,8 @@ body:has(.lv2) {
 .lv2-hcontent {
   position: relative; z-index: 2;
   max-width: var(--max); margin: 0 auto;
-  padding: 80px 24px 72px;
+  /* top: pill(72px) + nav-padding(16px) + breathing(16px) = 104px */
+  padding: 104px 24px 72px;
   display: flex; flex-direction: column; align-items: center; text-align: center;
 }
 .lv2-badge {
@@ -771,7 +773,7 @@ body:has(.lv2) {
    ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 1024px) {
   .lv2-nav { padding: 12px 16px 0; }
-  .lv2-nav-inner { padding: 0 6px 0 16px; }
+  .lv2-nav-inner { padding: 8px 8px 8px 16px; }
   .lv2-nav-links { display: none; }
   .lv2-burger    { display: flex; }
   .lv2-nav-right .lv2-btn-ghost { display: none; }
@@ -800,7 +802,14 @@ body:has(.lv2) {
    ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
   .lv2-nav { padding: 10px 12px 0; }
-  .lv2-nav-inner { height: 54px; padding: 0 6px 0 14px; }
+  /* pill mobile : padding vertical auto → hauteur naturelle */
+  .lv2-nav-inner { padding: 6px 10px 6px 16px; }
+  /* logo mobile : pas de séparateur, respire vers le burger */
+  .lv2-nav-logo {
+    padding-right: 0;
+    border-right: none;
+    margin-right: auto; /* pousse le burger à droite */
+  }
   .lv2-nav-right { display: none; }
   .lv2-burger    { display: flex; }
 
@@ -808,7 +817,7 @@ body:has(.lv2) {
   .lv2-hbg-right { display: none; }
   .lv2-hbg-center { flex: 2; }
   .lv2-hbg-left { flex: 3; }
-  .lv2-hcontent { padding: 64px 20px 52px; }
+  .lv2-hcontent { padding: 90px 20px 52px; }
   /* Hero overlay renforcé mobile — gradient central opaque pour lisibilité */
   .lv2-hover {
     background:

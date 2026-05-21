@@ -386,7 +386,7 @@ export default function HomePage() {
             <button type="button" onClick={() => { setQuestionOpen(true); setQuestionSent(false) }} className="lv2-btn lv2-btn-ghost lv2-btn-sm">
               {t.nav.question}
             </button>
-            <a href="/commande" className="lv2-btn lv2-btn-accent" style={{ borderRadius: '100px', padding: '11px 22px', fontSize: '14px', fontWeight: 700 }}>
+            <a href="/commande" className="lv2-btn lv2-btn-accent lv2-btn-sm" style={{ borderRadius: '100px', fontWeight: 700 }}>
               {t.nav.order}
             </a>
             <button
