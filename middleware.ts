@@ -6,8 +6,11 @@ const isPublicRoute = createRouteMatcher([
   '/sign-in(.*)',
   '/sign-up(.*)',
   '/commande(.*)',        // Checkout public — pas d'auth requise
+  '/mentions-legales',   // Pages légales publiques
+  '/confidentialite',    // Pages légales publiques
   '/api/orders(.*)',     // API checkout public
   '/api/upload(.*)',     // Upload refs public
+  '/api/contact(.*)',    // Formulaire contact public
   '/api/webhooks/(.*)',  // Stripe webhooks — pas d'auth Clerk
   '/sandbox(.*)',        // Sandbox de test agents — pas d'auth
 ])

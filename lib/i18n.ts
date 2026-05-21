@@ -167,10 +167,10 @@ export const translations = {
       h2a:   'Ce que disent',
       h2b:   'les marques.',
       items: [
-        { init: 'M', name: 'Marie D.',  role: 'Responsable marketing · Marque A',    em: 'On a reçu notre reel en 36h.', pre: '"', post: ' Le brief faisait 3 lignes. Le résultat était exactement ce qu\'on voulait — on a juste ajusté le texte sur une itération."' },
-        { init: 'T', name: 'Thomas L.', role: 'Fondateur · Startup SaaS',            em: 'ScenIQ a changé ça.', pre: '"Je pensais qu\'il fallait un budget agence pour avoir du contenu vidéo de qualité. ', post: ' 109€ pour une pub 10s prête pour Meta Ads."' },
-        { init: 'S', name: 'Sophie R.', role: 'CMO · E-commerce mode',               em: 'Le process est redoutablement simple.', pre: '"', post: ' Brief, paiement, appel, livraison. On commande maintenant chaque lancement produit."' },
-        { init: 'A', name: 'Alexis M.', role: 'Directeur créatif · Agence digitale', em: 'Ce n\'est plus le sujet.', pre: '"La qualité visuelle m\'a surpris — on était sceptique sur l\'IA pour la vidéo. ', post: ' Le résultat parle de lui-même."' },
+        { init: 'M', color: '#7C5CFC', name: 'Marie D.',  role: 'Responsable marketing · Bloom Studio', verified: true,  em: 'Reçu en 36h, exactement ce qu\'on voulait.', pre: '"Brief en 3 lignes. ', post: ' Une itération sur le texte, c\'était réglé. On refait."' },
+        { init: 'T', color: '#059669', name: 'Thomas L.', role: 'Fondateur · Kōda',                      verified: true,  em: '109€ pour une pub 10s prête pour Meta Ads.', pre: '"Je croyais qu\'il fallait un budget agence. ', post: ' Meilleur CPM qu\'on ait eu ce trimestre."' },
+        { init: 'S', color: '#D97706', name: 'Sophie R.', role: 'CMO · Maison Velours',                  verified: true,  em: 'Brief, paiement, call créa, livraison.', pre: '"Quatre étapes, zéro friction. ', post: ' On intègre ça dans chaque lancement produit."' },
+        { init: 'A', color: '#DC2626', name: 'Alexis M.', role: 'Directeur créatif · Studio Arkhe',      verified: false, em: 'La question n\'est plus là.', pre: '"On était sceptiques sur l\'IA pour la vidéo. ', post: ' Le client a demandé une deuxième vidéo avant même la livraison."' },
       ],
     },
 
@@ -488,10 +488,10 @@ export const translations = {
       h2a:   'What brands',
       h2b:   'are saying.',
       items: [
-        { init: 'M', name: 'Marie D.',  role: 'Marketing Manager · Brand A',      em: 'We received our reel in 36 hours.',     pre: '"', post: ' The brief was 3 lines. The result was exactly what we wanted — we just tweaked the text in one revision."' },
-        { init: 'T', name: 'Thomas L.', role: 'Founder · SaaS Startup',           em: 'ScenIQ changed that.',                  pre: '"I thought you needed an agency budget to get quality video content. ', post: ' €109 for a 10-second ad, ready for Meta Ads."' },
-        { init: 'S', name: 'Sophie R.', role: 'CMO · Fashion E-commerce',         em: 'The process is brutally simple.',        pre: '"', post: ' Brief, payment, call, delivery. We order one for every product launch now."' },
-        { init: 'A', name: 'Alexis M.', role: 'Creative Director · Digital Agency',em: 'It\'s not a question anymore.',         pre: '"The visual quality surprised me — we were skeptical about AI for video. ', post: ' The work speaks for itself."' },
+        { init: 'M', color: '#7C5CFC', name: 'Marie D.',  role: 'Marketing Manager · Bloom Studio',    verified: true,  em: 'Delivered in 36h, exactly what we wanted.', pre: '"Three-line brief. ', post: ' One text revision and it was done. We\'re ordering again."' },
+        { init: 'T', color: '#059669', name: 'Thomas L.', role: 'Founder · Kōda',                      verified: true,  em: '€109 for a 10-second ad ready for Meta Ads.', pre: '"I thought you needed an agency budget. ', post: ' Best CPM we\'ve had this quarter."' },
+        { init: 'S', color: '#D97706', name: 'Sophie R.', role: 'CMO · Maison Velours',                verified: true,  em: 'Brief, payment, creative call, delivery.', pre: '"Four steps, zero friction. ', post: ' We\'re integrating this into every product launch."' },
+        { init: 'A', color: '#DC2626', name: 'Alexis M.', role: 'Creative Director · Studio Arkhe',    verified: false, em: 'The question is no longer relevant.', pre: '"We were skeptical about AI for video. ', post: ' The client asked for a second video before the first one even landed."' },
       ],
     },
 

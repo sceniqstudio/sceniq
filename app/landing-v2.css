@@ -696,6 +696,11 @@ body:has(.lv2) {
 }
 .lv2-test-name { font-size: 14px; font-weight: 600; }
 .lv2-test-role { font-size: 12px; color: var(--g6); }
+.lv2-test-verified {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; color: #4ADE80; margin-top: 3px;
+  font-weight: 500; letter-spacing: 0.2px;
+}
 
 /* ── FAQ 2-COL GRID ──────────────────────────────────────────── */
 .lv2-faq-grid {

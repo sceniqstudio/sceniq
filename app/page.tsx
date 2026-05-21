@@ -985,10 +985,13 @@ export default function HomePage() {
                   {item.pre}<em>{item.em}</em>{item.post}
                 </p>
                 <div className="lv2-test-author">
-                  <div className="lv2-test-avatar">{item.init}</div>
+                  <div className="lv2-test-avatar" style={{ background: item.color, border: 'none' }}>{item.init}</div>
                   <div>
                     <div className="lv2-test-name">{item.name}</div>
                     <div className="lv2-test-role">{item.role}</div>
+                    {item.verified && (
+                      <div className="lv2-test-verified">✓ Commande vérifiée</div>
+                    )}
                   </div>
                 </div>
               </div>
