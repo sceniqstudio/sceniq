@@ -1103,8 +1103,8 @@ export default function HomePage() {
             <ul className="lv2-footer-links">
               <li><a href="mailto:support@sceniq.studio">support@sceniq.studio</a></li>
               <li><a href="tel:+33756808831">📞 07 56 80 88 31</a></li>
-              <li><a href="#">{t.footer.links.legal}</a></li>
-              <li><a href="#">{t.footer.links.privacy}</a></li>
+              <li><a href="/mentions-legales">{t.footer.links.legal}</a></li>
+              <li><a href="/confidentialite">{t.footer.links.privacy}</a></li>
             </ul>
           </div>
         </div>
