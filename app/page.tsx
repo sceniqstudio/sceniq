@@ -383,20 +383,22 @@ export default function HomePage() {
             <li><a href="#faq">{t.nav.faq}</a></li>
           </ul>
           <div className="lv2-nav-right">
-            <button type="button" onClick={() => { setQuestionOpen(true); setQuestionSent(false) }} className="lv2-btn lv2-btn-ghost">
+            <button type="button" onClick={() => { setQuestionOpen(true); setQuestionSent(false) }} className="lv2-btn lv2-btn-ghost lv2-btn-sm">
               {t.nav.question}
             </button>
-            <a href="/commande" className="lv2-btn lv2-btn-accent lv2-btn-lg">
+            <a href="/commande" className="lv2-btn lv2-btn-accent" style={{ borderRadius: '100px', padding: '11px 22px', fontSize: '14px', fontWeight: 700 }}>
               {t.nav.order}
             </a>
             <button
               type="button"
               onClick={toggleLang}
               style={{
-                background: 'none', border: '1px solid rgba(255,255,255,0.18)',
-                borderRadius: 6, padding: '4px 10px',
-                color: 'rgba(255,255,255,0.6)', fontSize: 12, fontWeight: 700,
-                cursor: 'pointer', letterSpacing: '0.06em', fontFamily: 'inherit',
+                background: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(255,255,255,0.12)',
+                borderRadius: '100px', padding: '6px 12px',
+                color: 'rgba(255,255,255,0.55)', fontSize: 12, fontWeight: 700,
+                cursor: 'pointer', letterSpacing: '0.08em', fontFamily: 'inherit',
+                marginRight: '4px',
               }}
             >
               {t.misc.langSwitch}
