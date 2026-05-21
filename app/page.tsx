@@ -372,7 +372,7 @@ export default function HomePage() {
       <nav className="lv2-nav" aria-label="Navigation principale">
         <div className="lv2-nav-inner">
           <a href="#" className="lv2-nav-logo" aria-label="ScenIQ — Accueil">
-            <img src="/sceniq-logo-dark.svg" alt="ScenIQ" style={{ height: 44, width: 'auto', display: 'block' }} />
+            <img src="/sceniq-logo-dark.svg" alt="ScenIQ" style={{ height: 56, width: 'auto', display: 'block' }} />
           </a>
           <ul className="lv2-nav-links">
             <li><a href="#process">{t.nav.process}</a></li>
@@ -383,10 +383,10 @@ export default function HomePage() {
             <li><a href="#faq">{t.nav.faq}</a></li>
           </ul>
           <div className="lv2-nav-right">
-            <button type="button" onClick={() => { setQuestionOpen(true); setQuestionSent(false) }} className="lv2-btn lv2-btn-ghost lv2-btn-sm">
+            <button type="button" onClick={() => { setQuestionOpen(true); setQuestionSent(false) }} className="lv2-btn lv2-btn-ghost">
               {t.nav.question}
             </button>
-            <a href="/commande" className="lv2-btn lv2-btn-accent lv2-btn-sm">
+            <a href="/commande" className="lv2-btn lv2-btn-accent lv2-btn-lg">
               {t.nav.order}
             </a>
             <button
