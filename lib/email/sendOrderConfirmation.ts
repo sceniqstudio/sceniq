@@ -2,21 +2,34 @@
 // Email envoyé au CLIENT après paiement Stripe confirmé
 
 import { getTransporter, SMTP_FROM } from './smtp'
-import type { OrderFormat } from '@/lib/supabase/types'
 import { formatPrice } from '@/lib/orders/index'
+import type { CartItemJson } from '@/lib/supabase/types'
 
 interface ConfirmationParams {
-  orderId:    string
-  clientName: string
-  clientEmail: string
-  format:     OrderFormat
-  duration:   number
-  priceHt:    number
-  brief:      string
+  orderId:       string
+  clientName:    string
+  clientEmail:   string
+  priceHt:       number
+  brief:         string
+  cartItems:     CartItemJson[]
+  voiceLanguage?: string | null
+}
+
+function renderCartRows(items: CartItemJson[]): string {
+  return items.map((it, i) => {
+    const label = `Vidéo ${i + 1} — ${it.duration}s · ${it.formats.join(', ')}`
+    const qty   = it.qty > 1 ? ` × ${it.qty}` : ''
+    const ai    = it.want_ai_model ? ' + comédien IA' : ''
+    return `
+      <tr>
+        <td style="padding:8px 0;font-size:14px;color:rgba(255,255,255,.6);border-bottom:1px solid rgba(255,255,255,.06)">${label}${ai}${qty}</td>
+      </tr>`
+  }).join('')
 }
 
 export async function sendOrderConfirmation(params: ConfirmationParams): Promise<void> {
-  const { orderId, clientName, clientEmail, format, duration, priceHt, brief } = params
+  const { orderId, clientName, clientEmail, priceHt, brief, cartItems, voiceLanguage } = params
+  const totalVideos = cartItems.reduce((s, i) => s + i.qty, 0)
 
   const html = `
 <!DOCTYPE html>
@@ -39,22 +52,20 @@ export async function sendOrderConfirmation(params: ConfirmationParams): Promise
     </p>
 
     <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:24px;margin-bottom:32px">
-      <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.5)">Récap commande</p>
+      <p style="margin:0 0 12px;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.5)">Récap commande</p>
       <table style="width:100%;border-collapse:collapse">
         <tr>
           <td style="padding:8px 0;font-size:14px;color:rgba(255,255,255,.6);border-bottom:1px solid rgba(255,255,255,.06)">Référence</td>
           <td style="padding:8px 0;font-size:14px;color:#fff;text-align:right;border-bottom:1px solid rgba(255,255,255,.06);font-family:monospace">${orderId.slice(0, 8).toUpperCase()}</td>
         </tr>
+        ${renderCartRows(cartItems)}
+        ${voiceLanguage ? `
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:rgba(255,255,255,.6);border-bottom:1px solid rgba(255,255,255,.06)">Format</td>
-          <td style="padding:8px 0;font-size:14px;color:#fff;text-align:right;border-bottom:1px solid rgba(255,255,255,.06)">${format}</td>
-        </tr>
+          <td style="padding:8px 0;font-size:14px;color:rgba(255,255,255,.6);border-bottom:1px solid rgba(255,255,255,.06)">Langue voix</td>
+          <td style="padding:8px 0;font-size:14px;color:#fff;text-align:right;border-bottom:1px solid rgba(255,255,255,.06)">${voiceLanguage}</td>
+        </tr>` : ''}
         <tr>
-          <td style="padding:8px 0;font-size:14px;color:rgba(255,255,255,.6);border-bottom:1px solid rgba(255,255,255,.06)">Durée</td>
-          <td style="padding:8px 0;font-size:14px;color:#fff;text-align:right;border-bottom:1px solid rgba(255,255,255,.06)">${duration} secondes</td>
-        </tr>
-        <tr>
-          <td style="padding:8px 0;font-size:14px;color:rgba(255,255,255,.6)">Montant</td>
+          <td style="padding:8px 0;font-size:14px;color:rgba(255,255,255,.6)">Total (${totalVideos} vidéo${totalVideos > 1 ? 's' : ''})</td>
           <td style="padding:8px 0;font-size:16px;font-weight:700;color:#A5B4FC;text-align:right">${formatPrice(priceHt)}</td>
         </tr>
       </table>
@@ -69,8 +80,8 @@ export async function sendOrderConfirmation(params: ConfirmationParams): Promise
       <p style="font-size:14px;color:rgba(255,255,255,.6);line-height:1.6;margin:0">
         <strong style="color:#fff">Ce qui se passe ensuite :</strong><br>
         1. Je vous rappelle sous 4 h ouvrées pour valider le brief et les références<br>
-        2. Je prépare la préprod avec mes 5 agents IA (concept, storyboard, ambiance, prompt)<br>
-        3. Vous validez (10 itérations incluses)<br>
+        2. Je prépare la préprod avec mes agents IA (concept, storyboard, ambiance, prompt)<br>
+        3. Vous validez (révisions incluses)<br>
         4. Livraison du MP4 final sous 48 h après validation
       </p>
     </div>
@@ -90,10 +101,13 @@ export async function sendOrderConfirmation(params: ConfirmationParams): Promise
 </html>
 `
 
+  const totalVideos2 = cartItems.reduce((s, i) => s + i.qty, 0)
+  const subject = `Votre commande ScenIQ est confirmée — ${totalVideos2} vidéo${totalVideos2 > 1 ? 's' : ''} · ${formatPrice(priceHt)}`
+
   await getTransporter().sendMail({
     from: `"Pascal — ScenIQ" <${SMTP_FROM()}>`,
-    to: clientEmail,
-    subject: `Votre commande ScenIQ est confirmée — ${format} · ${duration}s`,
+    to:   clientEmail,
+    subject,
     html,
   })
 }

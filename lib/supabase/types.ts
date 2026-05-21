@@ -31,6 +31,14 @@ export type OrderStatus = 'pending_payment' | 'paid' | 'cancelled' | 'refunded'
 export type OrderFormat = '21:9' | '16:9' | '4:3' | '1:1' | '3:4' | '9:16'
 export type OrderDuration = 5 | 8 | 10 | 12 | 15
 
+export type CartItemJson = {
+  duration:      OrderDuration
+  formats:       OrderFormat[]
+  qty:           number
+  want_ai_model: boolean
+  ai_model_desc: string | null
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -271,6 +279,8 @@ export interface Database {
           client_company:       string | null
           preferred_call_slot:  string | null
           ref_paths:            string[]
+          cart_items:           CartItemJson[]
+          voice_language:       string | null
           stripe_session_id:    string | null
           stripe_payment_intent: string | null
           created_at:           string
@@ -289,6 +299,8 @@ export interface Database {
           client_company?:       string | null
           preferred_call_slot?:  string | null
           ref_paths?:            string[]
+          cart_items?:           CartItemJson[]
+          voice_language?:       string | null
           stripe_session_id?:    string | null
           stripe_payment_intent?: string | null
           created_at?:           string

@@ -1,34 +1,48 @@
 // lib/email/sendOrderNotification.ts
-// Email envoyé à PASCAL après paiement Stripe confirmé — toutes les infos pour rappeler le client
+// Email envoyé à PASCAL après paiement Stripe confirmé
 
 import { getTransporter, SMTP_FROM, PASCAL_EMAIL } from './smtp'
-import type { OrderFormat } from '@/lib/supabase/types'
-import { formatPrice } from '@/lib/orders/index'
+import { formatPrice, cartSummaryLine } from '@/lib/orders/index'
+import type { CartItemJson } from '@/lib/supabase/types'
 
 interface NotificationParams {
-  orderId:           string
-  clientName:        string
-  clientEmail:       string
-  clientPhone?:      string | null
-  clientCompany?:    string | null
+  orderId:            string
+  clientName:         string
+  clientEmail:        string
+  clientPhone?:       string | null
+  clientCompany?:     string | null
   preferredCallSlot?: string | null
-  format:            OrderFormat
-  duration:          number
-  priceHt:           number
-  brief:             string
-  refPaths:          string[]
-  stripeSessionId:   string
+  priceHt:            number
+  brief:              string
+  cartItems:          CartItemJson[]
+  voiceLanguage?:     string | null
+  refPaths:           string[]
+  stripeSessionId:    string
+}
+
+function renderCartDetail(items: CartItemJson[]): string {
+  return items.map((it, i) => {
+    const ai  = it.want_ai_model ? ` + comédien IA${it.ai_model_desc ? ` (${it.ai_model_desc.slice(0, 60)}…)` : ''}` : ''
+    const qty = it.qty > 1 ? ` × ${it.qty}` : ''
+    return `<tr>
+      <td style="padding:5px 0;font-size:13px;color:rgba(255,255,255,.5)">Vidéo ${i + 1}</td>
+      <td style="padding:5px 0;font-size:13px;color:#fff;text-align:right">${it.duration}s · ${it.formats.join(', ')}${ai}${qty}</td>
+    </tr>`
+  }).join('')
 }
 
 export async function sendOrderNotification(params: NotificationParams): Promise<void> {
   const {
     orderId, clientName, clientEmail, clientPhone, clientCompany,
-    preferredCallSlot, format, duration, priceHt, brief,
-    refPaths, stripeSessionId,
+    preferredCallSlot, priceHt, brief,
+    cartItems, voiceLanguage, refPaths, stripeSessionId,
   } = params
 
+  const totalVideos = cartItems.reduce((s, i) => s + i.qty, 0)
+  const summary = cartSummaryLine(cartItems)
+
   const refList = refPaths.length > 0
-    ? refPaths.map((p, i) => `<li style="margin-bottom:4px"><code style="background:rgba(0,0,0,.3);padding:2px 6px;border-radius:3px;font-size:12px">${p}</code></li>`).join('')
+    ? refPaths.map(p => `<li style="margin-bottom:4px"><code style="background:rgba(0,0,0,.3);padding:2px 6px;border-radius:3px;font-size:12px">${p}</code></li>`).join('')
     : '<li style="color:rgba(255,255,255,.5);font-size:14px">Aucun fichier de référence uploadé</li>'
 
   const html = `
@@ -45,11 +59,14 @@ export async function sendOrderNotification(params: NotificationParams): Promise
     <h1 style="font-size:24px;font-weight:700;color:#fff;margin:0 0 8px;letter-spacing:-0.5px">
       ${clientName}${clientCompany ? ` — ${clientCompany}` : ''} a commandé
     </h1>
-    <p style="font-size:18px;font-weight:700;color:#A5B4FC;margin:0 0 32px">
-      ${format} · ${duration}s · ${formatPrice(priceHt)}
+    <p style="font-size:16px;font-weight:700;color:#A5B4FC;margin:0 0 6px">
+      ${summary}
+    </p>
+    <p style="font-size:20px;font-weight:800;color:#4ade80;margin:0 0 32px">
+      ${formatPrice(priceHt)} · ${totalVideos} vidéo${totalVideos > 1 ? 's' : ''}${voiceLanguage ? ` · Voix ${voiceLanguage}` : ''}
     </p>
 
-    <!-- Coordonnées -->
+    <!-- À appeler -->
     <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:24px;margin-bottom:20px">
       <p style="margin:0 0 12px;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.5)">📞 À appeler maintenant</p>
       <table style="width:100%;border-collapse:collapse">
@@ -70,7 +87,7 @@ export async function sendOrderNotification(params: NotificationParams): Promise
           <td style="padding:6px 0;font-size:18px;font-weight:700;color:#fff">${clientPhone}</td>
         </tr>` : ''}
         ${preferredCallSlot ? `<tr>
-          <td style="padding:6px 0;font-size:13px;color:rgba(255,255,255,.5)">Créneau préféré</td>
+          <td style="padding:6px 0;font-size:13px;color:rgba(255,255,255,.5)">Créneau</td>
           <td style="padding:6px 0;font-size:14px;color:#fff">${preferredCallSlot}</td>
         </tr>` : ''}
       </table>
@@ -82,25 +99,18 @@ export async function sendOrderNotification(params: NotificationParams): Promise
       <p style="margin:0;font-size:14px;color:rgba(255,255,255,.9);line-height:1.6;white-space:pre-line">${brief}</p>
     </div>
 
-    <!-- Commande -->
+    <!-- Détail commande -->
     <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:20px;margin-bottom:20px">
       <p style="margin:0 0 12px;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.5)">Détails commande</p>
       <table style="width:100%;border-collapse:collapse">
+        ${renderCartDetail(cartItems)}
         <tr>
-          <td style="padding:5px 0;font-size:13px;color:rgba(255,255,255,.5)">Référence</td>
+          <td style="padding:8px 0 5px;font-size:13px;color:rgba(255,255,255,.5);border-top:1px solid rgba(255,255,255,.06)">Total encaissé</td>
+          <td style="padding:8px 0 5px;font-size:16px;font-weight:700;color:#4ade80;text-align:right;border-top:1px solid rgba(255,255,255,.06)">${formatPrice(priceHt)}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 0;font-size:12px;color:rgba(255,255,255,.3)">Référence</td>
           <td style="padding:5px 0;font-size:13px;color:#fff;text-align:right;font-family:monospace">${orderId.slice(0, 8).toUpperCase()}</td>
-        </tr>
-        <tr>
-          <td style="padding:5px 0;font-size:13px;color:rgba(255,255,255,.5)">Format</td>
-          <td style="padding:5px 0;font-size:13px;color:#fff;text-align:right">${format}</td>
-        </tr>
-        <tr>
-          <td style="padding:5px 0;font-size:13px;color:rgba(255,255,255,.5)">Durée</td>
-          <td style="padding:5px 0;font-size:13px;color:#fff;text-align:right">${duration}s</td>
-        </tr>
-        <tr>
-          <td style="padding:5px 0;font-size:13px;color:rgba(255,255,255,.5)">Montant encaissé</td>
-          <td style="padding:5px 0;font-size:16px;font-weight:700;color:#4ade80;text-align:right">${formatPrice(priceHt)}</td>
         </tr>
         <tr>
           <td style="padding:5px 0;font-size:12px;color:rgba(255,255,255,.3)">Stripe session</td>
@@ -115,7 +125,7 @@ export async function sendOrderNotification(params: NotificationParams): Promise
       <ul style="margin:0;padding:0 0 0 4px;list-style:none">
         ${refList}
       </ul>
-      ${refPaths.length > 0 ? '<p style="margin:10px 0 0;font-size:12px;color:rgba(255,255,255,.4)">→ Récupérer via signed URLs depuis le dashboard admin ou Supabase Storage (bucket client-uploads)</p>' : ''}
+      ${refPaths.length > 0 ? '<p style="margin:10px 0 0;font-size:12px;color:rgba(255,255,255,.4)">→ Récupérer via signed URLs depuis Supabase Storage (bucket client-uploads)</p>' : ''}
     </div>
 
     <p style="font-size:12px;color:rgba(255,255,255,.3);margin:0">
@@ -127,10 +137,11 @@ export async function sendOrderNotification(params: NotificationParams): Promise
 </html>
 `
 
+  const totalVideos2 = cartItems.reduce((s, i) => s + i.qty, 0)
   await getTransporter().sendMail({
-    from: `"ScenIQ Système" <${SMTP_FROM()}>`,
-    to: PASCAL_EMAIL(),
-    subject: `🚀 [ScenIQ] Nouvelle commande — ${clientName} · ${format} ${duration}s · ${formatPrice(priceHt)}`,
+    from:    `"ScenIQ Système" <${SMTP_FROM()}>`,
+    to:      PASCAL_EMAIL(),
+    subject: `🚀 [ScenIQ] Nouvelle commande — ${clientName} · ${totalVideos2} vidéo${totalVideos2 > 1 ? 's' : ''} · ${formatPrice(priceHt)}`,
     html,
   })
 }

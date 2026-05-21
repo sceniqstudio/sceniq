@@ -1,8 +1,8 @@
 // app/api/webhooks/stripe-checkout/route.ts
 // Webhook Stripe — checkout.session.completed
 //
-// Ce webhook est SÉPARÉ du webhook subscriptions existant (/api/webhooks/stripe).
-// Il utilise son propre secret : STRIPE_CHECKOUT_WEBHOOK_SECRET
+// Ce webhook est SÉPARÉ du webhook subscriptions (/api/webhooks/stripe).
+// Secret dédié : STRIPE_CHECKOUT_WEBHOOK_SECRET
 //
 // Actions :
 //   1. Marque l'order "paid" + stocke stripe_payment_intent
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
 
   // ── Vérifier la signature Stripe ─────────────────────────────────────────
-  const body = await req.text()
+  const body      = await req.text()
   const signature = req.headers.get('stripe-signature')
 
   if (!signature) {
@@ -54,7 +54,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   // ── Traiter checkout.session.completed ───────────────────────────────────
   if (event.type !== 'checkout.session.completed') {
-    // Événement non pertinent — acquitter sans erreur
     return NextResponse.json({ received: true })
   }
 
@@ -83,7 +82,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   if (updateError || !order) {
     console.error('[stripe-checkout webhook] Erreur update order:', updateError, '| orderId:', orderId)
-    // Retourner 500 pour que Stripe réessaie
     return NextResponse.json({ error: 'Erreur mise à jour order' }, { status: 500 })
   }
 
@@ -92,13 +90,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   try {
     await sendOrderConfirmation({
-      orderId:     order.id,
-      clientName:  order.client_name,
-      clientEmail: order.client_email,
-      format:      order.format,
-      duration:    order.duration,
-      priceHt:     order.price_ht,
-      brief:       order.brief,
+      orderId:       order.id,
+      clientName:    order.client_name,
+      clientEmail:   order.client_email,
+      priceHt:       order.price_ht,
+      brief:         order.brief,
+      cartItems:     order.cart_items ?? [],
+      voiceLanguage: order.voice_language,
     })
   } catch (err) {
     console.error('[stripe-checkout webhook] Erreur email client:', err)
@@ -113,10 +111,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       clientPhone:       order.client_phone,
       clientCompany:     order.client_company,
       preferredCallSlot: order.preferred_call_slot,
-      format:            order.format,
-      duration:          order.duration,
       priceHt:           order.price_ht,
       brief:             order.brief,
+      cartItems:         order.cart_items ?? [],
+      voiceLanguage:     order.voice_language,
       refPaths:          order.ref_paths ?? [],
       stripeSessionId:   session.id,
     })
@@ -126,8 +124,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
 
   if (emailErrors.length > 0) {
-    // Order bien marquée paid — on loggue l'erreur email mais on retourne 200
-    // pour éviter que Stripe réessaie inutilement (l'order est déjà paid)
     console.warn('[stripe-checkout webhook] Emails partiellement en échec:', emailErrors)
   }
 

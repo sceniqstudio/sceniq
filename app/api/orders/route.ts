@@ -1,14 +1,21 @@
 // app/api/orders/route.ts
-// POST — Crée une commande en BDD + génère une Stripe Checkout Session
+// POST — Crée une commande multi-vidéos en BDD + génère une Stripe Checkout Session
 //
-// Body JSON attendu : OrderInput (voir lib/orders/index.ts)
+// Body JSON attendu : MultiCartOrderInput (voir lib/orders/index.ts)
 // Retourne : { checkoutUrl: string, orderId: string }
 
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
-import { validateOrderInput, priceForDuration } from '@/lib/orders/index'
-import type { Database } from '@/lib/supabase/types'
+import {
+  validateMultiCartInput,
+  computeCartTotal,
+  cartSummaryLine,
+  priceForDuration,
+} from '@/lib/orders/index'
+import type { Database, OrderFormat, CartItemJson } from '@/lib/supabase/types'
+
+const AI_MODEL_ADDON_CENTS = 4900
 
 function getStripe(): Stripe {
   const key = process.env.STRIPE_SECRET_KEY
@@ -31,7 +38,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: 'Corps de requête invalide (JSON attendu)' }, { status: 400 })
     }
 
-    const validation = validateOrderInput(body)
+    const validation = validateMultiCartInput(body)
     if (!validation.success) {
       return NextResponse.json(
         { error: 'Données invalides', details: validation.error.flatten() },
@@ -40,12 +47,18 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     }
 
     const {
-      format, duration, brief,
+      language, cart_items, brief,
       client_name, client_email, client_phone, client_company,
       preferred_call_slot, ref_paths,
     } = validation.data
 
-    const priceHt = priceForDuration(duration)
+    // ── Calcul du total en centimes ──────────────────────────────────────────
+    const totalCents = computeCartTotal(cart_items)
+
+    // Pour les colonnes legacy (format/duration) : premier item du panier
+    const firstItem  = cart_items[0]
+    const firstFormat = firstItem.formats[0] as OrderFormat
+    const firstDuration = firstItem.duration
 
     // ── Créer l'order en BDD (status: pending_payment) ───────────────────────
     const supabase = getSupabaseAdmin()
@@ -53,9 +66,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       .from('orders')
       .insert({
         status:              'pending_payment',
-        format,
-        duration,
-        price_ht:            priceHt,
+        format:              firstFormat,
+        duration:            firstDuration,
+        price_ht:            totalCents,
         brief,
         client_name,
         client_email,
@@ -63,6 +76,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         client_company:      client_company || null,
         preferred_call_slot: preferred_call_slot || null,
         ref_paths,
+        cart_items:          cart_items as CartItemJson[],
+        voice_language:      language || null,
       })
       .select('id')
       .single()
@@ -76,29 +91,52 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const stripe = getStripe()
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://sceniq-ashen.vercel.app'
 
-    const priceLabel = `Vidéo IA ${duration}s · ${format} · 10 itérations incluses · Livraison sous 48h`
+    // Un line_item Stripe par vidéo × quantité × options
+    const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = []
+
+    for (const item of cart_items) {
+      const basePrice = priceForDuration(item.duration)
+      const formatsStr = item.formats.join(' · ')
+      const desc = `Vidéo IA ${item.duration}s · ${formatsStr} · Livraison sous 48h`
+
+      lineItems.push({
+        price_data: {
+          currency:    'eur',
+          unit_amount: basePrice,
+          product_data: {
+            name:        `ScenIQ — Vidéo ${item.duration}s`,
+            description: desc,
+          },
+        },
+        quantity: item.qty,
+      })
+
+      if (item.want_ai_model) {
+        lineItems.push({
+          price_data: {
+            currency:    'eur',
+            unit_amount: AI_MODEL_ADDON_CENTS,
+            product_data: {
+              name:        'Comédien IA sur mesure',
+              description: item.ai_model_desc || 'Comédien IA généré pour la vidéo',
+            },
+          },
+          quantity: item.qty,
+        })
+      }
+    }
 
     const session = await stripe.checkout.sessions.create({
       mode:                 'payment',
       payment_method_types: ['card'],
-      line_items: [{
-        price_data: {
-          currency:     'eur',
-          unit_amount:  priceHt, // en centimes
-          product_data: {
-            name:        `ScenIQ — Vidéo ${duration}s (${format})`,
-            description: priceLabel,
-          },
-        },
-        quantity: 1,
-      }],
-      customer_email: client_email,
-      client_reference_id: order.id,
+      line_items:           lineItems,
+      customer_email:       client_email,
+      client_reference_id:  order.id,
       metadata: {
         order_id:     order.id,
-        duration:     String(duration),
-        format,
+        cart_summary: cartSummaryLine(cart_items).slice(0, 500),
         client_name,
+        voice_language: language ?? '',
       },
       success_url: `${appUrl}/commande/success?session_id={CHECKOUT_SESSION_ID}&order_id=${order.id}`,
       cancel_url:  `${appUrl}/commande?cancelled=1`,
