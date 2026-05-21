@@ -16,7 +16,7 @@ const PORTFOLIO_ITEMS: PortfolioItem[] = SHOWCASE_VIDEOS.map((v, i) => ({
   id:    `e${String(i + 1).padStart(2, '0')}`,
   slug:  v.slug,
   ratio: v.ratio,
-  label: v.ratio > 1 ? '16:9' : '9:16',
+  label: v.ratio > 1 ? '16:9' : v.ratio > 0.7 ? '3:4' : '9:16',
   grad:  GRADS[i % 2],
   src:   `/showcase/${v.slug}.mp4`,
 }))
@@ -384,7 +384,7 @@ export default function HomePage() {
               >
                 {[...COL_SLUGS[c], ...COL_SLUGS[c]].map((slug, i) => (
                   <div key={`${slug}-${c}-${i}`} className="lv2-hcard">
-                    <video autoPlay muted loop playsInline preload="none" poster={`/showcase/${slug}.jpg`}>
+                    <video autoPlay muted loop playsInline preload="none">
                       <source src={`/showcase/${slug}.mp4`} type="video/mp4" />
                     </video>
                   </div>
@@ -409,7 +409,7 @@ export default function HomePage() {
               >
                 {[...COL_SLUGS[c], ...COL_SLUGS[c]].map((slug, i) => (
                   <div key={`${slug}-${c}-${i}`} className="lv2-hcard">
-                    <video autoPlay muted loop playsInline preload="none" poster={`/showcase/${slug}.jpg`}>
+                    <video autoPlay muted loop playsInline preload="none">
                       <source src={`/showcase/${slug}.mp4`} type="video/mp4" />
                     </video>
                   </div>

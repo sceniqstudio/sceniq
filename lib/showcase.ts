@@ -41,9 +41,9 @@ export const SHOWCASE_VIDEOS: ShowcaseVideo[] = [
   { slug: 'exemple20', ratio: 720/1280 },
   { slug: 'exemple21', ratio: 720/1280 },
   { slug: 'exemple22', ratio: 720/1280 },
-  { slug: 'exemple23', ratio: 414/720  },
-  { slug: 'exemple24', ratio: 414/720  },
-  { slug: 'exemple25', ratio: 414/720  },
+  { slug: 'exemple23', ratio: 1280/720  },  // ← 16:9 paysage
+  { slug: 'exemple24', ratio: 834/1112  }, // ← 3:4 portrait
+  { slug: 'exemple25', ratio: 834/1112  }, // ← 3:4 portrait
 ]
 
 // ── Slugs pour le hero (colonnes animées) ─────────────────────────────────
