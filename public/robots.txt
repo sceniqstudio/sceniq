@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /sign-in/
+Disallow: /sign-up/
+Disallow: /sandbox/
+
+# Sitemap
+Sitemap: https://sceniq-ashen.vercel.app/sitemap.xml
+
+# AI crawlers — autorisés pour indexation GEO
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Googlebot
+Allow: /
