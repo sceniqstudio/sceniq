@@ -1,5 +1,9 @@
 // middleware.ts — racine du projet
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+import { NextResponse } from 'next/server'
+
+// ── Whitelist admin ───────────────────────────────────────────────────────────
+const ADMIN_EMAIL = 'uxdesignparis@gmail.com'
 
 const isPublicRoute = createRouteMatcher([
   '/',
@@ -15,9 +19,22 @@ const isPublicRoute = createRouteMatcher([
   '/sandbox(.*)',        // Sandbox de test agents — pas d'auth
 ])
 
+const isDashboardRoute = createRouteMatcher(['/dashboard(.*)'])
+
 export default clerkMiddleware((auth, req) => {
-  if (!isPublicRoute(req)) {
-    auth().protect()
+  if (isPublicRoute(req)) return
+
+  // Protège toutes les routes privées
+  auth().protect()
+
+  // Whitelist stricte pour le dashboard — Pascal uniquement
+  if (isDashboardRoute(req)) {
+    const email = auth().sessionClaims?.email as string | undefined
+    if (email !== ADMIN_EMAIL) {
+      const url = req.nextUrl.clone()
+      url.pathname = '/'
+      return NextResponse.redirect(url)
+    }
   }
 })
 
