@@ -660,12 +660,17 @@ body:has(.lv2) {
   background: var(--bdr); border: 1px solid var(--bdr);
   border-radius: 20px; overflow: hidden; margin-top: 0;
 }
-.lv2-stat { background: #0F0F1C; padding: 40px 32px; text-align: center; }
+.lv2-stat {
+  background: #0F0F1C; padding: 40px 28px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
 .lv2-stat-num {
-  font-size: 48px; font-weight: 800; letter-spacing: -0.04em; margin-bottom: 6px;
+  font-size: 48px; font-weight: 800; letter-spacing: -0.04em; line-height: 1;
 }
 .lv2-stat-num em { font-style: normal; color: var(--accent); }
-.lv2-stat-label { font-size: 14px; color: var(--g4); }
+.lv2-stat-divider { width: 28px; height: 1px; background: rgba(139,124,248,0.25); margin: 2px 0; }
+.lv2-stat-label { font-size: 14px; font-weight: 600; color: var(--g3); }
+.lv2-stat-sub { font-size: 11.5px; color: var(--g5); line-height: 1.45; }
 
 /* ── TESTIMONIALS 2×2 ────────────────────────────────────────── */
 .lv2-testimonials {

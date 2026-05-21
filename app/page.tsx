@@ -708,7 +708,9 @@ export default function HomePage() {
             {t.stats.map((s) => (
               <div key={s.num} className="lv2-stat">
                 <div className="lv2-stat-num"><em>{s.num}</em></div>
+                <div className="lv2-stat-divider" />
                 <div className="lv2-stat-label">{s.label}</div>
+                <div className="lv2-stat-sub">{s.sub}</div>
               </div>
             ))}
           </div>
