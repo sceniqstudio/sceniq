@@ -51,20 +51,19 @@ export async function submitStudioJob(input: {
     })
   }
 
-  // En mode r2v (reference-to-video), seul 1080p est garanti supporté
-  // sur tous les modèles Seedance — on force 1080p dès qu'il y a des refs
-  const hasRefs    = (input.imageUrls ?? []).length > 0
-  const resolution = hasRefs ? '1080p' : input.resolution
+  // En mode r2v (reference-to-video), le paramètre `resolution` n'est pas
+  // supporté par Seedance Fast — on l'omet entièrement quand il y a des refs
+  const hasRefs = (input.imageUrls ?? []).length > 0
 
-  const body = {
+  const body: Record<string, unknown> = {
     model:          model,
     content,
     generate_audio: true,
-    resolution,
     ratio:          input.ratio,
     duration:       input.duration,
     watermark:      false,
   }
+  if (!hasRefs) body.resolution = input.resolution
 
   try {
     const res = await fetch(`${BASE_URL}/contents/generations/tasks`, {
