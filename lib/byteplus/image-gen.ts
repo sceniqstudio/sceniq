@@ -4,7 +4,7 @@
 // Compatible Vercel Hobby (pas de polling serveur-side long)
 
 const BASE_URL    = process.env.BYTEPLUS_BASE_URL ?? 'https://ark.ap-southeast.bytepluses.com/api/v3'
-const IMAGE_MODEL = 'dreamina-image-5-0-lite'
+const IMAGE_MODEL = 'seedream-5-0-260128'
 
 // Ratio → taille image Dreamina
 const RATIO_TO_SIZE: Record<string, string> = {
