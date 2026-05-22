@@ -146,3 +146,19 @@ describe('validateBrief()', () => {
     expect(result.errors).toContain('invalid_format')
   })
 })
+
+// ── idealShots() ─────────────────────────────────────────────────────────────
+import { idealShots, secondsPerShot } from '@/lib/utils/scenes'
+
+describe('idealShots()', () => {
+  it('5s → 2 shots', () => expect(idealShots(5)).toBe(2))
+  it('8s → 3 shots', () => expect(idealShots(8)).toBe(3))
+  it('10s → 3 shots', () => expect(idealShots(10)).toBe(3))
+  it('12s → 4 shots', () => expect(idealShots(12)).toBe(4))
+  it('15s → 4 shots', () => expect(idealShots(15)).toBe(4))
+})
+
+describe('secondsPerShot()', () => {
+  it('5s / 2 shots = 2.5s', () => expect(secondsPerShot(5)).toBe(2.5))
+  it('10s / 3 shots = 3.3s', () => expect(secondsPerShot(10)).toBe(3.3))
+})

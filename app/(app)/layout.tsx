@@ -1,11 +1,20 @@
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
+import { currentUser } from '@clerk/nextjs/server'
 import { ToastProvider } from '@/app/(app)/_components/Toast'
 import { StudioModeWatcher } from '@/app/(app)/_components/StudioModeWatcher'
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
-  // Mocks — en attente du wiring Clerk + Supabase
-  const creditsBalance = 47
-  const userInitials = 'PE'
+// V1 agence services — accès dashboard restreint à ces emails uniquement
+const ADMIN_EMAILS = ['uxdesignparis@gmail.com', 'support@sceniq.studio']
+
+export default async function AppLayout({ children }: { children: React.ReactNode }) {
+  // Vérification whitelist email — renvoie vers / si non autorisé
+  const user = await currentUser()
+  if (!user) redirect('/sign-in')
+  const userEmail = user.emailAddresses[0]?.emailAddress ?? ''
+  if (!ADMIN_EMAILS.includes(userEmail)) redirect('/?unauthorized=1')
+
+  const userInitials = (user.firstName?.[0] ?? '') + (user.lastName?.[0] ?? '') || 'PE'
 
   return (
     <ToastProvider>
@@ -35,12 +44,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               Studio
             </Link>
           </li>
-          <li>
+          {/* Marques — masqué V1 agence services, réactivé en V2 self-service */}
+          {/* <li>
             <Link href="/dashboard/brands">
               <span className="app-nav-ico">🏷️</span>
               Marques
             </Link>
-          </li>
+          </li> */}
         </ul>
 
         <div className="app-nav-section">Compte</div>

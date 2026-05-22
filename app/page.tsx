@@ -349,10 +349,33 @@ export default function HomePage() {
       })
     }, { rootMargin: '200px 0px', threshold: 0 })
 
-    // Observer toutes les vidéos hors hero
-    document.querySelectorAll('video:not(.lv2-hero video):not(#modal-video)').forEach(v => {
+    // Observer toutes les vidéos hors hero et hors studio (studio a son propre observer)
+    document.querySelectorAll('video:not(.lv2-hero video):not(#modal-video):not(#studio-video)').forEach(v => {
       videoObs.observe(v)
     })
+
+    // ── Autoplay dédié pour la vidéo studio ──────────────────────────────────
+    // Le selecteur global pause les vidéos hors viewport — la vidéo studio
+    // est exclue pour que autoPlay muted agisse nativement (pas de pause forcée).
+    // On force un play() explicite quand la section entre dans le viewport.
+    const studioVid = document.getElementById('studio-video') as HTMLVideoElement | null
+    if (studioVid) {
+      const studioObs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            studioVid.play().catch(() => {})
+          }
+        })
+      }, { rootMargin: '300px 0px', threshold: 0 })
+      studioObs.observe(studioVid)
+      return () => {
+        obs.disconnect()
+        videoObs.disconnect()
+        studioObs.disconnect()
+        fqHandlers.forEach(({ btn, handler }) => btn.removeEventListener('click', handler))
+        anchorHandlers.forEach(({ a, handler }) => a.removeEventListener('click', handler))
+      }
+    }
 
     return () => {
       obs.disconnect()
@@ -599,7 +622,8 @@ export default function HomePage() {
                 aria-label={t.studio.videoAria}
               >
                 <video
-                  autoPlay muted loop playsInline preload="metadata"
+                  id="studio-video"
+                  autoPlay muted loop playsInline preload="auto"
                   style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }}
                 >
                   <source src="/showcase/volt.mp4" type="video/mp4" />

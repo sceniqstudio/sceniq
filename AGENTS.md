@@ -133,8 +133,15 @@ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
 # Claude API
 ANTHROPIC_API_KEY=
 
-# fal.ai
+# BytePlus ModelArk (provider principal Seedance + Dreamina Image)
+BYTEPLUS_API_KEY=              # ark-02e1... (console ModelArk BytePlus)
+BYTEPLUS_BASE_URL=             # optionnel, défaut https://ark.ap-southeast.bytepluses.com/api/v3
+
+# fal.ai (fallback silencieux Seedance)
 FAL_KEY=
+
+# Studio admin (dashboard Pascal)
+ADMIN_SECRET=                  # secret partagé header x-admin-secret (toutes routes /api/studio/*)
 
 # App
 NEXT_PUBLIC_APP_URL=

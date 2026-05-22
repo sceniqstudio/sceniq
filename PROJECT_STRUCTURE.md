@@ -26,7 +26,8 @@ sceniq/
 │   ├── dashboard/
 │   │   ├── layout.tsx
 │   │   ├── page.tsx                   ← Liste projets
-│   │   └── brands/page.tsx            ← Brand Memory
+│   │   ├── brands/page.tsx            ← Brand Memory
+│   │   └── studio/page.tsx            ← Studio admin (Image IA + Vidéo IA + Pré-prod)
 │   ├── project/
 │   │   └── [id]/
 │   │       ├── brief/page.tsx
@@ -43,8 +44,19 @@ sceniq/
 │       │   └── [projectId]/route.ts   ← POST → appels Claude agents
 │       ├── generation/
 │       │   └── [sceneId]/route.ts     ← POST → fal.ai Seedance
-│       └── credits/
-│           └── route.ts               ← GET credits utilisateur
+│       ├── credits/
+│       │   └── route.ts               ← GET credits utilisateur
+│       └── studio/
+│           ├── generate-preprod/
+│           │   └── route.ts           ← POST → Claude 6 blocs pré-prod (admin)
+│           ├── generate-images/
+│           │   └── route.ts           ← POST → Dreamina Image 5.0 Lite, n=1×N parallèle (admin)
+│           ├── submit/
+│           │   └── route.ts           ← POST → Seedance Fast, async submit (admin)
+│           ├── status/
+│           │   └── route.ts           ← GET → poll status job vidéo (admin)
+│           └── debug/
+│               └── route.ts           ← GET → test BytePlus brut sans logique (admin)
 │
 ├── lib/
 │   ├── supabase/
@@ -59,9 +71,13 @@ sceniq/
 │   │       ├── music-supervisor.ts    ← MUSIC_SUPERVISOR_SYSTEM
 │   │       ├── visual-director.ts     ← VISUAL_DIRECTOR_SYSTEM
 │   │       └── index.ts               ← runAllAgents() orchestrateur
+│   ├── byteplus/
+│   │   ├── seedance.ts                ← generateClipByteplus() — async, polling backoff
+│   │   ├── image-gen.ts               ← (legacy) helpers image BytePlus
+│   │   └── studio.ts                  ← submitStudioJob() + checkStudioJob() — Studio admin
 │   ├── fal/
 │   │   ├── client.ts                  ← fal.ai SDK wrapper
-│   │   ├── seedance.ts                ← generateClip()
+│   │   ├── seedance.ts                ← generateClip() — fallback silencieux
 │   │   └── types.ts
 │   ├── stripe/
 │   │   ├── client.ts

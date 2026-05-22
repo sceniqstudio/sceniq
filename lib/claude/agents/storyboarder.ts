@@ -1,7 +1,7 @@
 // lib/claude/agents/storyboarder.ts
 
 import Anthropic from '@anthropic-ai/sdk'
-import { idealScenes, secondsPerScene } from '@/lib/utils/scenes'
+import { idealScenes, secondsPerScene, idealShots, secondsPerShot } from '@/lib/utils/scenes'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -19,22 +19,23 @@ export type AssetRef = {
 /**
  * Construit le prompt système du storyboarder en injectant le nombre exact
  * de scènes attendues, la durée moyenne par scène, et optionnellement les
- * assets Brand Memory disponibles pour que chaque prompt Seedance les référence.
+ * assets Brand Memory disponibles.
  *
- * V1.5 : si `assets` est fourni et non vide, une section "ASSETS BRAND MEMORY DISPONIBLES"
- * est injectée. Le storyboarder doit alors mentionner explicitement chaque asset pertinent
- * dans ses prompts Seedance (ex: "the brand logo appears at bottom-right corner").
- * Cela améliore la cohérence visuelle scène à scène en donnant à Seedance des ancres nommées.
+ * V1 agence services : le storyboarder produit désormais aussi un PROMPT_FINAL_UNIFIE
+ * multi-shot (séparateur ||) pour le 1 seul appel API BytePlus.
  *
  * Le prompt est calibré pour Seedance 2.0 reference-to-video (et text-to-video en fallback).
- * Voir memory `seedance-model-choice` pour la stratégie complète.
  */
 export function buildStoryboarderPrompt(
   sceneCount: number,
   avgSec: number,
   assets?: AssetRef[],
+  shotCount?: number,
+  avgSecPerShot?: number,
 ): string {
   const activeAssets = (assets ?? []).filter(Boolean)
+  const shots        = shotCount ?? sceneCount
+  const secPerShot   = avgSecPerShot ?? avgSec
 
   // Section Brand Memory — injectée uniquement si assets fournis
   const assetSection =
@@ -45,14 +46,15 @@ ${activeAssets.map((a, i) => `[${String(i + 1).padStart(2, '0')}] ${a.type} · $
       : ''
 
   return `Tu es un storyboarder professionnel spécialisé en génération vidéo IA (Seedance 2.0 Pro).
-À partir du brief, tu produis EXACTEMENT ${sceneCount} scènes numérotées.
+À partir du brief, tu produis EXACTEMENT ${sceneCount} scènes numérotées pour l'affichage client, puis un PROMPT_FINAL_UNIFIE multi-shot pour le pipeline de génération.
 Chaque scène dure entre 4 et 15 secondes — vise environ ${avgSec} secondes par scène.
 ${assetSection}
 PRINCIPE CLÉ DES PROMPTS SEEDANCE
 Le prompt Seedance (en anglais) doit décrire l'ACTION, le MOUVEMENT et l'ÉVOLUTION TEMPORELLE de la scène — PAS son apparence statique. Le look (palette, ambiance, style, mood) est déjà porté par les images de référence Brand Memory et par le brief général ; ne le re-décris pas.
 
-LONGUEUR CIBLE — 60 à 100 mots par prompt Seedance
-Règle officielle ByteDance : au-delà de 100 mots, la qualité se dégrade (informations dispersées, éléments ignorés). En dessous de 60, le modèle improvise trop. Vise dense et précis.
+LONGUEUR CIBLE — 60 à 100 mots par prompt Seedance (individuel) · 15-25 mots par shot unifié
+Règle officielle ByteDance : au-delà de 100 mots/prompt, la qualité se dégrade. En dessous de 60, le modèle improvise trop.
+Pour le PROMPT_FINAL_UNIFIE (multi-shot), chaque shot doit être plus dense (15-25 mots max par shot) car tout est concaténé.
 
 LA LUMIÈRE EST L'ÉLÉMENT #1 DE QUALITÉ (pro tip officiel ByteDance)
 Si tu ne devais ajouter qu'une chose à un prompt, ce serait la description de lumière. "A person walking" vs "A person walking in soft golden hour lighting" — la différence est massive. Chaque prompt Seedance DOIT contenir au moins une description de lumière.
@@ -103,7 +105,25 @@ La Description FR est un résumé court (1 phrase, français naturel) destiné �
 FORMAT STRICT pour chaque scène :
 SCÈNE N [Xs] — Titre court en français
 Prompt Seedance: [prompt anglais, 60-100 mots, 1 caméra + action sujet + lumière + évolution]
-Description FR: [1 phrase courte, résumé client]`
+Description FR: [1 phrase courte, résumé client]
+
+──────────────────────────────────────────────────────────────────
+PROMPT_FINAL_UNIFIE (format multi-shot BytePlus)
+──────────────────────────────────────────────────────────────────
+Après les ${sceneCount} scènes, produis un bloc PROMPT_FINAL_UNIFIE contenant exactement ${shots} shots séparés par " || ".
+Ce prompt sera envoyé tel quel à l'API BytePlus Seedance pour générer la vidéo complète en 1 seul appel.
+Durée totale = ${shots} shots × ~${secPerShot}s chacun.
+
+Format du bloc :
+PROMPT_FINAL_UNIFIE
+[shot 1, 15-25 mots, action+lumière+caméra] || [shot 2, 15-25 mots] || ... || [shot ${shots}, 15-25 mots]
+
+Règles du PROMPT_FINAL_UNIFIE :
+- Exactement ${shots} shots séparés par " || " (espaces obligatoires autour des ||)
+- Chaque shot = 15-25 mots maximum (le multi-shot doit rester lisible globalement)
+- Chaque shot synthétise l'essentiel du prompt individuel : 1 caméra + 1 action + 1 lumière
+- Maintenir la cohérence narrative et visuelle entre les shots
+- Pas de numérotation, pas de "Shot 1 :", juste le texte brut séparé par ||`
 }
 
 export interface ParsedScene {
@@ -145,27 +165,43 @@ export function parseScenes(text: string): ParsedScene[] {
 }
 
 /**
+ * Extrait le PROMPT_FINAL_UNIFIE du texte brut du storyboarder.
+ * Retourne null si le bloc n'est pas trouvé.
+ */
+export function parseUnifiedPrompt(text: string): string | null {
+  const match = text.match(/PROMPT_FINAL_UNIFIE\s*\n([\s\S]+?)(?:\n\n|$)/i)
+  if (!match) return null
+  return match[1].trim()
+}
+
+/**
  * Lance le storyboarder pour un brief donné.
  * Le nombre de scènes est dérivé automatiquement de la durée totale.
- *
- * V1.5 : `assets` permet de passer les refs Brand Memory pour que le storyboarder
- * les cite dans ses prompts Seedance — améliore la cohérence visuelle inter-scènes.
+ * Produit aussi un PROMPT_FINAL_UNIFIE multi-shot pour le pipeline BytePlus V1.
  */
 export async function runStoryboarder(
   brief:       string,
   durationSec: number = 30,
   assets?:     AssetRef[],
 ) {
-  const sceneCount = idealScenes(durationSec)
-  const avgSec     = secondsPerScene(durationSec)
-  const system     = buildStoryboarderPrompt(sceneCount, avgSec, assets)
+  // Architecture multi-shot V1 : on utilise idealShots pour le prompt unifié
+  // et idealScenes pour l'affichage client (blocs storyboard UI)
+  const sceneCount  = idealScenes(durationSec)
+  const avgSec      = secondsPerScene(durationSec)
+  const shotCount   = idealShots(durationSec)
+  const secPerShot  = secondsPerShot(durationSec)
+
+  const system = buildStoryboarderPrompt(sceneCount, avgSec, assets, shotCount, secPerShot)
 
   const res = await client.messages.create({
     model:      'claude-sonnet-4-5',
-    max_tokens: 1500,
+    max_tokens: 2000,  // +500 pour le PROMPT_FINAL_UNIFIE
     system,
     messages:   [{ role: 'user', content: `Brief : ${brief}` }],
   })
-  const content = res.content[0].type === 'text' ? res.content[0].text : ''
-  return { content, scenes: parseScenes(content), error: null }
+  const content       = res.content[0].type === 'text' ? res.content[0].text : ''
+  const scenes        = parseScenes(content)
+  const unifiedPrompt = parseUnifiedPrompt(content)
+
+  return { content, scenes, unifiedPrompt, error: null }
 }

@@ -39,3 +39,30 @@ export function sceneDurationLabel(durationSec: number): string {
   const max = Math.min(15, Math.ceil(avg))
   return min === max ? `${min}s` : `${min}-${max}s`
 }
+
+// ── Architecture multi-shot (V1 agence services) ─────────────────────────────
+// Dans le nouveau pipeline, 1 seul appel API BytePlus génère la vidéo complète
+// via un prompt unifié multi-shot. Le nombre de shots est adaptatif selon la durée.
+//
+// | Durée | Shots |
+// |-------|-------|
+// | 5s    | 2     |
+// | 8-10s | 3     |
+// | 12-15s| 4     |
+
+/**
+ * Retourne le nombre de shots pour le prompt unifié multi-shot BytePlus.
+ * Utilisé par le Storyboarder et la route /api/generation/[projectId]/unified.
+ */
+export function idealShots(durationSec: number): number {
+  if (durationSec <= 5)  return 2
+  if (durationSec <= 10) return 3
+  return 4 // 12-15s
+}
+
+/**
+ * Durée approximative par shot en secondes (pour le Storyboarder).
+ */
+export function secondsPerShot(durationSec: number): number {
+  return Math.round((durationSec / idealShots(durationSec)) * 10) / 10
+}

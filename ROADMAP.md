@@ -76,14 +76,14 @@ dégressif sur mesure.
 
 ### Ce qui reste à construire (V1, ordre de priorité)
 
-**1. Page `/commande` (checkout) — gros chantier (3-4 h)**
-- [ ] Migration BDD : table `orders` (id, status, format, duration, price, brief, client_name, email, phone, company, preferred_call_slot, stripe_session_id, created_at)
-- [ ] Bucket Supabase `client-uploads` privé (signed URLs 24h) — pour les refs uploadées
-- [ ] Page `/commande` multi-step (configuration → brief + upload refs → coordonnées + créneau → Stripe Checkout)
-- [ ] Route `/api/orders` POST → crée order + génère Stripe Checkout session → retourne URL
-- [ ] Webhook Stripe `checkout.session.completed` → marque order payée + déclenche emails
-- [ ] Email notification → client (confirmation) + Pascal (nouvelle commande) via SMTP IONOS `support@sceniq.studio`
-- [ ] Page `/commande/success` (post-paiement)
+**1. Page `/commande` (checkout) — ✅ code complet (22 mai 2026)**
+- [x] Migration BDD : table `orders` — `supabase/migrations/20260518000000_orders.sql` + `20260521000000_orders_multicart.sql` *(supabase db push à faire par Pascal)*
+- [x] Bucket Supabase `client-uploads` privé — `supabase/migrations/20260522000000_storage_client_uploads.sql` *(supabase db push à faire par Pascal)*
+- [x] Page `/commande` multi-step (configuration → brief + upload refs → coordonnées + créneau → Stripe Checkout)
+- [x] Route `/api/orders` POST → crée order + génère Stripe Checkout session → retourne URL
+- [x] Webhook Stripe `checkout.session.completed` → marque order payée + déclenche emails (`app/api/webhooks/stripe-checkout/`)
+- [x] Email notification → client (confirmation) + Pascal (nouvelle commande) via SMTP (`lib/email/` — SMTP credentials à ajouter sur Vercel)
+- [x] Page `/commande/success` (post-paiement)
 
 **2. Dashboard projet refondu (admin only) — gros chantier (3-4 h)**
 - [ ] Whitelist Clerk email (`uxdesignparis@gmail.com` + `support@sceniq.studio`) — bloquer signup public
@@ -92,9 +92,11 @@ dégressif sur mesure.
 - [ ] Backend : refactor route generation → 1 seul appel API BytePlus avec prompt unifié multi-shot → 1 vidéo finale (au lieu de N appels par scène)
 - [ ] `idealShots()` adaptatif : 5s=2 shots, 8-10s=3 shots, 12-15s=4 shots
 
-**3. Setup tech à finaliser (Pascal)**
+**3. Setup tech à finaliser (Pascal — actions manuelles)**
 - [ ] Créer une clé Stripe `sceniq-prod` sur dashboard.stripe.com → ajouter `STRIPE_SECRET_KEY` + `STRIPE_PUBLISHABLE_KEY` sur Vercel
-- [ ] Récupérer credentials SMTP IONOS `support@sceniq.studio` (host, port, user, pass) → ajouter sur Vercel
+- [ ] Enregistrer webhooks Stripe : `https://sceniq.studio/api/webhooks/stripe` (subscriptions) + `https://sceniq.studio/api/webhooks/stripe-checkout` (checkout.session.completed) → ajouter `STRIPE_WEBHOOK_SECRET` + `STRIPE_CHECKOUT_WEBHOOK_SECRET` sur Vercel
+- [ ] Récupérer credentials SMTP IONOS `support@sceniq.studio` (host, port, user, pass) → ajouter `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` / `SMTP_FROM` sur Vercel
+- [ ] Appliquer les 2 migrations en attente : `supabase db push` (orders table + client-uploads bucket)
 - [ ] Remplacer logo SVG par PNG dans Brand Memory existante (le SVG cassait la génération Seedance — filtre code OK mais préfère PNG)
 
 ### Ce qui est volontairement absent de la V1
@@ -104,7 +106,7 @@ dégressif sur mesure.
 - ❌ Rate limiting API
 - ❌ Job queue Seedance (timeout Vercel acceptable avec 1 appel API multi-shot)
 - ❌ Sentry monitoring
-- ⚠️ Domaine sceniq.app (acheté IONOS, DNS à pointer Vercel) — voir SWITCH_PROD.md
+- ✅ Domaine `sceniq.studio` configuré IONOS (A `@` → `216.198.79.1`, CNAME `www` → `cname.vercel-dns.com`) — en prod sur `sceniq-ashen.vercel.app` depuis le 22 mai 2026
 - ⚠️ Clerk Production keys (encore en dev keys avec limites strictes)
 - ⚠️ Lip-sync FR précis (Seedance ne le supporte pas officiellement — fausse promesse retirée du marketing, vrai pipeline OmniHuman en V1.5)
 

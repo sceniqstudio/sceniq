@@ -71,14 +71,15 @@ Stack :
 
 ---
 
-## Production (16-17 mai 2026)
+## Production (22 mai 2026)
 
-- **URL provisoire** : https://sceniq-ashen.vercel.app
+- **URL production** : https://sceniq.studio (DNS configuré IONOS 22/05 — propagation en cours, ~1h)
+- **URL Vercel** : https://sceniq-ashen.vercel.app (opérationnelle, même déploiement)
 - **Repo GitHub** : https://github.com/sceniqstudio/sceniq (public, sur Hobby pour permettre Vercel deploy)
 - **Vercel** : projet "sceniq" dans org "sceniq-s-projects" (Hobby tier)
-- **Domaine final** : sceniq.app chez IONOS (DNS à configurer V1.5 — voir `SWITCH_PROD.md`)
+- **Domaine** : sceniq.studio chez IONOS — A `@` → `216.198.79.1`, CNAME `www` → `cname.vercel-dns.com` ✅
 - **Supabase** : projet "sceniq" (ref `lawmjbyhqmuxalxqraxz`), eu-west-1, password BDD `fDefSMk3KKyfD29D`
-- **Bucket Storage** : `brand-assets` (public, pour servir les URLs à Seedance). Bucket `client-uploads` (privé) à créer pour la page `/commande` checkout.
+- **Bucket Storage** : `brand-assets` (public, pour servir les URLs à Seedance). Bucket `client-uploads` (privé) — migration SQL créée, `supabase db push` à appliquer.
 - **BytePlus** : compte `designbyeak93` (Account ID 3002740570), région Asia Pacific Singapore. Root AK/SK créés (Production+Preview Vercel) pour OmniHuman / Vision AI signature V4.
 
 ## ⚠️ PIVOT MAJEUR — 17 mai 2026
@@ -180,6 +181,7 @@ app/(auth)/sign-up/[[...sign-up]]/page.tsx          ✓ Idem fix loop
 app/(app)/dashboard/page.tsx                        ✓ GET /api/projects (vraies données)
 app/(app)/dashboard/brands/page.tsx                 ✓ Liste marques (Brand Memory)
 app/(app)/dashboard/brands/[id]/page.tsx            ✓ Édition + upload logo + 9 images de ref
+app/(app)/dashboard/studio/page.tsx                 ✓ Studio admin — Pré-prod IA (6 blocs) + Image IA + Vidéo IA
 app/(app)/project/[id]/brief/page.tsx               ✓ Marques dynamiques + inline create + POST /api/projects
 app/(app)/project/[id]/production/page.tsx         ✓ Auto-trigger POST /api/production + GET state
 app/(app)/project/[id]/generate/page.tsx           ✓ Génération scène par scène via /api/generation/[sceneId]
@@ -374,6 +376,26 @@ Seedance 2.0 supporte officiellement EN/JP/ES/PT/ID — **pas le français expli
 Pour les voix off françaises de qualité, le vrai pipeline = **OmniHuman 1.5 + audio fourni** (V1.5,
 voir ROADMAP). En attendant, Pascal ajoute manuellement une voix off au montage final (sans surcoût
 pour le client) — note honnête affichée dans la section "Pourquoi Seedance 2.0".
+
+### Studio admin — Architecture BytePlus (validée 2026-05-22)
+
+**Module Studio** = outil admin-only (ADMIN_SECRET, pas Clerk) pour que Pascal génère images et vidéos directement, indépendamment du pipeline client.
+
+**Image IA — Dreamina Image 5.0 Lite (`seedream-5-0-260128`)**
+- Endpoint `/api/v3/images/generations` — **réponse synchrone** (comme DALL-E 3), retourne `{ data: [{ url }] }` directement
+- Stratégie : N appels parallèles n=1 via `Promise.allSettled` → retour direct `{ images: string[] }`, sans polling
+- Évite le timeout Vercel 10s (≤ 4 appels × ~3s chacun)
+- Taille minimum : ≥ 3 686 400 pixels — toutes les résolutions dans `RATIO_TO_SIZE` respectent ce seuil
+- Upload refs → Supabase Storage bucket `brand-assets` → URL publique → passée à BytePlus
+- Auth : `x-admin-secret` header requis (ADMIN_SECRET env var)
+
+**Vidéo IA — Seedance 2.0 Fast (`dreamina-seedance-2-0-fast-260128`)**
+- Endpoint `/api/v3/contents/generations/tasks` — async, polling via `checkStudioJob()`
+- **r2v (reference-to-video) : paramètre `resolution` NON supporté par Seedance Fast** → omis entièrement quand des refs sont présentes
+- Anti-deepfake BytePlus : les images contenant des personnes réelles sont rejetées (`InputImageSensitiveContentDetected.PrivacyInformation`) — solution : utiliser des refs sans personnes
+- `lib/byteplus/studio.ts` : split submit/checkStatus pour éviter timeout Vercel du polling long
+
+**Debug endpoint** : `/api/studio/debug` (GET, admin) — test BytePlus brut sans logique métier, retourne réponse raw.
 
 ### Seedance 2.0 — Architecture dual-provider (validée 2026-05-15)
 
