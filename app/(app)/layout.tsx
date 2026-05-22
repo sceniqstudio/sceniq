@@ -89,11 +89,6 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             <span className="app-page-title">ScenIQ Studio</span>
           </div>
           <div className="app-topbar-r">
-            <Link href="/dashboard/billing" className="app-credits">
-              <span className="app-credits-dot"></span>
-              <span className="app-credits-num">{creditsBalance}</span>
-              crédits
-            </Link>
             <div className="app-avatar" title="Pascal Ekloui">
               {userInitials}
             </div>
