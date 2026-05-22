@@ -3,7 +3,7 @@
 // Répond : { status, images?, error? }
 
 import { NextRequest, NextResponse } from 'next/server'
-import { checkImageJob }             from '@/lib/fal/image-gen'
+import { checkImageJob }             from '@/lib/byteplus/image-gen'
 
 export async function GET(
   req: NextRequest,

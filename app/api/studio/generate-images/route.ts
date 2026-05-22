@@ -9,7 +9,7 @@
 
 import { NextRequest, NextResponse }  from 'next/server'
 import { createClient }               from '@supabase/supabase-js'
-import { submitImageJob }             from '@/lib/fal/image-gen'
+import { submitImageJob }             from '@/lib/byteplus/image-gen'
 
 function supabaseAdmin() {
   return createClient(
