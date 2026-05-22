@@ -1,5 +1,6 @@
 // app/api/studio/submit/route.ts
 // POST — Soumet une tâche de génération vidéo BytePlus Seedance
+// Retourne immédiatement { jobId } — le client poll /api/studio/status/[jobId]
 // Body (multipart/form-data) :
 //   prompt      string     requis
 //   duration    string     '4'|'5'|'8'|'10'|'12'|'15'
@@ -12,8 +13,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient }              from '@supabase/supabase-js'
 import { submitStudioJob }           from '@/lib/byteplus/studio'
 
-const ADMIN_EMAIL = 'uxdesignparis@gmail.com'
-
 // Supabase admin client (service role — accès storage)
 function supabaseAdmin() {
   return createClient(
@@ -24,8 +23,6 @@ function supabaseAdmin() {
 }
 
 export async function POST(req: NextRequest) {
-  // ── Auth simple — vérifie le header custom envoyé par le client ──
-  // (Clerk auth côté API route nécessite le SDK — on utilise un secret admin simple)
   const adminSecret = req.headers.get('x-admin-secret')
   if (adminSecret !== process.env.ADMIN_SECRET) {
     return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
@@ -48,16 +45,19 @@ export async function POST(req: NextRequest) {
 
     if (!prompt) return NextResponse.json({ error: 'Prompt requis' }, { status: 400 })
 
-    // ── Upload toutes les images de ref → Supabase Storage ──
-    const refs = form.getAll('refs') as File[]
+    // ── Upload toutes les images de ref → Supabase Storage (en parallèle) ──
+    const refs      = form.getAll('refs') as File[]
     const validRefs = refs.filter(f => f instanceof File && f.size > 0).slice(0, 9)
 
-    if (validRefs.length > 0) {
-      const supabase = supabaseAdmin()
-      const ts       = Date.now()
+    if (validRefs.length === 0) {
+      return NextResponse.json({ error: 'Au moins une image de référence est requise' }, { status: 400 })
+    }
 
-      for (let i = 0; i < validRefs.length; i++) {
-        const img  = validRefs[i]
+    const supabase = supabaseAdmin()
+    const ts       = Date.now()
+
+    const uploadResults = await Promise.all(
+      validRefs.map(async (img, i) => {
         const ext  = img.name.split('.').pop() ?? 'jpg'
         const path = `studio/${ts}-${i}.${ext}`
         const buf  = Buffer.from(await img.arrayBuffer())
@@ -66,12 +66,14 @@ export async function POST(req: NextRequest) {
           .from('brand-assets')
           .upload(path, buf, { contentType: img.type, upsert: false })
 
-        if (upErr) return NextResponse.json({ error: `Upload image ${i + 1} : ${upErr.message}` }, { status: 500 })
+        if (upErr) throw new Error(`Upload image ${i + 1}: ${upErr.message}`)
 
         const { data: urlData } = supabase.storage.from('brand-assets').getPublicUrl(path)
-        if (urlData?.publicUrl) imageUrls.push(urlData.publicUrl)
-      }
-    }
+        return urlData?.publicUrl ?? null
+      }),
+    )
+
+    imageUrls = uploadResults.filter((u): u is string => u !== null)
   } catch (e) {
     return NextResponse.json({ error: `Parsing requête : ${(e as Error).message}` }, { status: 400 })
   }

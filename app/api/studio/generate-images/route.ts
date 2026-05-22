@@ -1,14 +1,15 @@
 // app/api/studio/generate-images/route.ts
-// POST — Génère des images via Dreamina Image 5.0 Lite (BytePlus ModelArk)
+// POST — Soumet une tâche de génération image Dreamina Image 5.0 Lite (BytePlus)
+// Retourne immédiatement { jobId } — le client poll /api/studio/image-status/[jobId]
 // Body (multipart/form-data) :
 //   prompt      string     requis
 //   ratio       string     '16:9'|'9:16'|'1:1'|'4:3'|'3:4'|'21:9'
-//   refs        File[]     images de référence (clé répétée, 1-9)
+//   refs        File[]     images de référence (clé répétée, 1-9), obligatoires
 //   numImages   string     '1'|'2'|'3'|'4' — défaut '4'
 
-import { NextRequest, NextResponse }      from 'next/server'
-import { createClient }                   from '@supabase/supabase-js'
-import { generateImagesSync }             from '@/lib/byteplus/image-gen'
+import { NextRequest, NextResponse }  from 'next/server'
+import { createClient }               from '@supabase/supabase-js'
+import { submitImageJob }             from '@/lib/fal/image-gen'
 
 function supabaseAdmin() {
   return createClient(
@@ -31,22 +32,25 @@ export async function POST(req: NextRequest) {
 
   try {
     const form = await req.formData()
-    prompt     = (form.get('prompt')     as string ?? '').trim()
-    ratio      = (form.get('ratio')      as string ?? '1:1')
+    prompt     = (form.get('prompt')    as string ?? '').trim()
+    ratio      = (form.get('ratio')     as string ?? '1:1')
     numImages  = Math.min(parseInt(form.get('numImages') as string ?? '4', 10), 4) || 4
 
     if (!prompt) return NextResponse.json({ error: 'Prompt requis' }, { status: 400 })
 
-    // ── Upload refs → Supabase Storage ──
+    // ── Upload refs → Supabase Storage (en parallèle) ──
     const refs      = form.getAll('refs') as File[]
     const validRefs = refs.filter(f => f instanceof File && f.size > 0).slice(0, 9)
 
-    if (validRefs.length > 0) {
-      const supabase = supabaseAdmin()
-      const ts       = Date.now()
+    if (validRefs.length === 0) {
+      return NextResponse.json({ error: 'Au moins une image de référence est requise' }, { status: 400 })
+    }
 
-      for (let i = 0; i < validRefs.length; i++) {
-        const img  = validRefs[i]
+    const supabase = supabaseAdmin()
+    const ts       = Date.now()
+
+    const uploadResults = await Promise.all(
+      validRefs.map(async (img, i) => {
         const ext  = img.name.split('.').pop() ?? 'jpg'
         const path = `studio/img-${ts}-${i}.${ext}`
         const buf  = Buffer.from(await img.arrayBuffer())
@@ -55,19 +59,21 @@ export async function POST(req: NextRequest) {
           .from('brand-assets')
           .upload(path, buf, { contentType: img.type, upsert: false })
 
-        if (upErr) return NextResponse.json({ error: `Upload ref ${i + 1} : ${upErr.message}` }, { status: 500 })
+        if (upErr) throw new Error(`Upload image ${i + 1}: ${upErr.message}`)
 
         const { data: urlData } = supabase.storage.from('brand-assets').getPublicUrl(path)
-        if (urlData?.publicUrl) imageUrls.push(urlData.publicUrl)
-      }
-    }
+        return urlData?.publicUrl ?? null
+      }),
+    )
+
+    imageUrls = uploadResults.filter((u): u is string => u !== null)
   } catch (e) {
     return NextResponse.json({ error: `Parsing requête : ${(e as Error).message}` }, { status: 400 })
   }
 
-  // ── Générer via Dreamina Image 5.0 Lite ──
-  const result = await generateImagesSync({ prompt, ratio, imageUrls, numImages })
-  if (result.error) return NextResponse.json({ error: result.error }, { status: 500 })
+  // ── Soumettre la tâche BytePlus (non-bloquant) ──
+  const result = await submitImageJob({ prompt, ratio, imageUrls, numImages })
+  if (result.error) return NextResponse.json({ error: result.error }, { status: 502 })
 
-  return NextResponse.json({ images: result.images })
+  return NextResponse.json({ jobId: result.jobId })
 }

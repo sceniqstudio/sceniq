@@ -10,7 +10,7 @@ const VIDEO_MODELS = {
   fast:     'dreamina-seedance-2-0-fast-260128',  // À confirmer avec BytePlus console
 } as const
 
-export type StudioJobStatus = 'pending' | 'processing' | 'succeeded' | 'failed' | 'expired' | 'cancelled'
+export type StudioJobStatus = 'pending' | 'processing' | 'succeeded' | 'completed' | 'failed' | 'expired' | 'cancelled'
 
 export interface SubmitResult {
   jobId: string
@@ -97,7 +97,7 @@ export async function checkStudioJob(jobId: string): Promise<StatusResult> {
 
     const status = (data.status ?? 'pending') as StudioJobStatus
 
-    if (status === 'succeeded' || status === 'completed' as unknown) {
+    if (status === 'succeeded' || status === 'completed') {
       const videoUrl: string | null =
         data.content?.video_url ?? data.video_url ?? data.output?.video_url ?? data.result?.video_url ?? null
       return { status: 'succeeded', videoUrl, error: videoUrl ? null : 'URL vidéo absente de la réponse' }

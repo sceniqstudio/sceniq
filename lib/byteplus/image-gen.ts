@@ -1,13 +1,12 @@
 // lib/byteplus/image-gen.ts
 // Dreamina Image 5.0 Lite via BytePlus ModelArk
-// Génère N images depuis prompt + références visuelles
-// Mode synchrone : submit → poll jusqu'à done (max 45s)
+// Pattern async : submit → jobId → poll via checkImageJob()
+// Compatible Vercel Hobby (pas de polling serveur-side long)
 
 const BASE_URL    = process.env.BYTEPLUS_BASE_URL ?? 'https://ark.ap-southeast.bytepluses.com/api/v3'
-const IMAGE_MODEL = 'dreamina-image-5-0-lite'   // À vérifier dans BytePlus console si erreur 404
+const IMAGE_MODEL = 'dreamina-image-5-0-lite'
 
 // Ratio → taille image Dreamina
-// Refs : https://www.byteplus.com/en/docs/modelark/vision
 const RATIO_TO_SIZE: Record<string, string> = {
   '16:9': 'landscape_16_9',
   '9:16': 'portrait_9_16',
@@ -17,20 +16,31 @@ const RATIO_TO_SIZE: Record<string, string> = {
   '1:1':  'square',
 }
 
-export async function generateImagesSync(input: {
+export interface ImageSubmitResult {
+  jobId: string
+  error:  string | null
+}
+
+export interface ImageStatusResult {
+  status:   'pending' | 'processing' | 'succeeded' | 'failed' | 'expired' | 'cancelled'
+  images:   string[]
+  error:    string | null
+}
+
+// ── Submit (retourne immédiatement un jobId) ─────────────────────────────────
+export async function submitImageJob(input: {
   prompt:     string
-  ratio:      string       // '16:9' | '9:16' | '1:1' | '4:3' | '3:4' | '21:9'
-  imageUrls?: string[]     // références visuelles (max 9)
-  numImages?: number       // 1-4, défaut 4
-}): Promise<{ images: string[]; error: string | null }> {
+  ratio:      string
+  imageUrls?: string[]
+  numImages?: number
+}): Promise<ImageSubmitResult> {
   const apiKey = process.env.BYTEPLUS_API_KEY
-  if (!apiKey) return { images: [], error: 'BYTEPLUS_API_KEY manquant' }
+  if (!apiKey) return { jobId: '', error: 'BYTEPLUS_API_KEY manquant' }
 
   const image_size = RATIO_TO_SIZE[input.ratio] ?? 'square'
   const num_images = Math.min(input.numImages ?? 4, 4)
   const urls       = (input.imageUrls ?? []).slice(0, 9)
 
-  // ── Build content array ──
   const content: Record<string, unknown>[] = [
     { type: 'text', text: input.prompt },
   ]
@@ -38,8 +48,6 @@ export async function generateImagesSync(input: {
     content.push({ type: 'image_url', image_url: { url }, role: 'reference_image' })
   }
 
-  // ── Submit task ──
-  let jobId: string
   try {
     const res = await fetch(`${BASE_URL}/contents/generations/tasks`, {
       method:  'POST',
@@ -54,43 +62,52 @@ export async function generateImagesSync(input: {
     })
 
     const data = await res.json().catch(() => ({}))
-    if (!res.ok) return { images: [], error: `BytePlus image submit ${res.status}: ${JSON.stringify(data)}` }
+    if (!res.ok) return { jobId: '', error: `BytePlus image submit ${res.status}: ${JSON.stringify(data)}` }
 
-    jobId = data.id ?? data.task_id ?? data.job_id ?? ''
-    if (!jobId) return { images: [], error: 'Pas de job_id dans la réponse BytePlus image' }
+    const jobId = data.id ?? data.task_id ?? data.job_id ?? ''
+    if (!jobId) return { jobId: '', error: 'Pas de job_id dans la réponse BytePlus image' }
+
+    return { jobId, error: null }
   } catch (e) {
-    return { images: [], error: (e as Error).message }
+    return { jobId: '', error: (e as Error).message }
   }
+}
 
-  // ── Poll jusqu'à done (max 45s, step 3s) ──
-  const maxAttempts = 15
-  for (let i = 0; i < maxAttempts; i++) {
-    await new Promise(r => setTimeout(r, 3000))
-    try {
-      const res  = await fetch(`${BASE_URL}/contents/generations/tasks/${jobId}`, {
-        headers: { 'Authorization': `Bearer ${apiKey}` },
-      })
-      if (res.status === 429) continue   // rate limit → retry
+// ── Check status (un seul appel, pas de boucle) ───────────────────────────────
+export async function checkImageJob(jobId: string): Promise<ImageStatusResult> {
+  const apiKey = process.env.BYTEPLUS_API_KEY
+  if (!apiKey) return { status: 'failed', images: [], error: 'BYTEPLUS_API_KEY manquant' }
 
-      const data   = await res.json().catch(() => ({}))
-      const status = data.status ?? 'pending'
+  try {
+    const res = await fetch(`${BASE_URL}/contents/generations/tasks/${jobId}`, {
+      headers: { 'Authorization': `Bearer ${apiKey}` },
+    })
 
-      if (status === 'succeeded' || status === 'completed') {
-        // Dreamina image : content.images[].url ou images[].url
-        const imgs: string[] =
-          data.content?.images?.map((img: { url: string }) => img.url) ??
-          data.images?.map((img: { url: string } | string) => typeof img === 'string' ? img : img.url) ??
-          []
-        if (imgs.length === 0) return { images: [], error: 'Aucune URL image dans la réponse BytePlus' }
-        return { images: imgs, error: null }
+    if (res.status === 429) return { status: 'processing', images: [], error: null }
+
+    const data   = await res.json().catch(() => ({}))
+    if (!res.ok)  return { status: 'failed', images: [], error: `BytePlus image poll ${res.status}: ${JSON.stringify(data)}` }
+
+    const status = data.status ?? 'pending'
+
+    if (status === 'succeeded' || status === 'completed') {
+      const imgs: string[] =
+        data.content?.images?.map((img: { url: string }) => img.url) ??
+        data.images?.map((img: { url: string } | string) => typeof img === 'string' ? img : img.url) ??
+        []
+      if (imgs.length === 0) {
+        return { status: 'failed', images: [], error: 'Aucune URL image dans la réponse BytePlus' }
       }
+      return { status: 'succeeded', images: imgs, error: null }
+    }
 
-      if (['failed', 'expired', 'cancelled'].includes(status)) {
-        return { images: [], error: `Tâche image ${status}: ${JSON.stringify(data.error ?? {})}` }
-      }
-      // pending / processing → on continue
-    } catch { /* réseau transitoire → on continue */ }
+    if (['failed', 'expired', 'cancelled'].includes(status)) {
+      return { status, images: [], error: `Tâche image ${status}: ${JSON.stringify(data.error ?? {})}` }
+    }
+
+    // pending / processing
+    return { status: status as ImageStatusResult['status'], images: [], error: null }
+  } catch {
+    return { status: 'processing', images: [], error: null } // réseau transitoire → retry
   }
-
-  return { images: [], error: 'Timeout : génération image > 45s' }
 }
