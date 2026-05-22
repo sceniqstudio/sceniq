@@ -355,23 +355,34 @@ export default function HomePage() {
     })
 
     // ── Autoplay dédié pour la vidéo studio ──────────────────────────────────
-    // Le selecteur global pause les vidéos hors viewport — la vidéo studio
-    // est exclue pour que autoPlay muted agisse nativement (pas de pause forcée).
-    // On force un play() explicite quand la section entre dans le viewport.
+    // Sur mobile, preload="auto" est ignoré → la vidéo n'a pas chargé quand
+    // l'observer fire. On force load() + play() à l'intersection, et on
+    // re-essaie au premier événement canplay si la vidéo était en cours de chargement.
     const studioVid = document.getElementById('studio-video') as HTMLVideoElement | null
     if (studioVid) {
+      let studioInView = false
+      const tryPlay = () => { if (studioInView) studioVid.play().catch(() => {}) }
+      studioVid.addEventListener('canplay', tryPlay)
       const studioObs = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
+          studioInView = entry.isIntersecting
           if (entry.isIntersecting) {
-            studioVid.play().catch(() => {})
+            if (studioVid.readyState >= 3) {
+              studioVid.play().catch(() => {})
+            } else {
+              studioVid.load()
+            }
+          } else {
+            studioVid.pause()
           }
         })
-      }, { rootMargin: '300px 0px', threshold: 0 })
+      }, { rootMargin: '200px 0px', threshold: 0 })
       studioObs.observe(studioVid)
       return () => {
         obs.disconnect()
         videoObs.disconnect()
         studioObs.disconnect()
+        studioVid.removeEventListener('canplay', tryPlay)
         fqHandlers.forEach(({ btn, handler }) => btn.removeEventListener('click', handler))
         anchorHandlers.forEach(({ a, handler }) => a.removeEventListener('click', handler))
       }
