@@ -108,26 +108,28 @@ export async function checkImageJob(jobId: string): Promise<ImageStatusResult> {
     const data  = await res.json().catch(() => ({}))
     if (!res.ok) return { status: 'failed', images: [], error: `BytePlus image poll ${res.status}: ${JSON.stringify(data)}` }
 
-    const status = data.status ?? 'pending'
+    const rawStatus: string = data.status ?? 'pending'
 
-    if (status === 'succeeded' || status === 'completed') {
-      const imgs: string[] =
-        (data.data as Array<{ url?: string }> | undefined)
-          ?.map(i => i.url).filter(Boolean) as string[] ??
-        data.content?.images?.map((img: { url: string }) => img.url) ??
-        []
+    if (rawStatus === 'succeeded' || rawStatus === 'completed') {
+      const dataItems = data.data as Array<{ url?: string }> | undefined
+      const imgs: string[] = dataItems
+        ? dataItems.map(i => i.url).filter((u): u is string => typeof u === 'string')
+        : (data.content?.images?.map((img: { url: string }) => img.url) ?? [])
       if (imgs.length === 0) {
         return { status: 'failed', images: [], error: 'Aucune URL image dans la réponse BytePlus' }
       }
       return { status: 'succeeded', images: imgs, error: null }
     }
 
-    if (['failed', 'expired', 'cancelled'].includes(status)) {
-      return { status, images: [], error: `Tâche image ${status}: ${JSON.stringify(data.error ?? {})}` }
+    if (rawStatus === 'failed' || rawStatus === 'expired' || rawStatus === 'cancelled') {
+      const s = rawStatus as 'failed' | 'expired' | 'cancelled'
+      return { status: s, images: [], error: `Tâche image ${s}: ${JSON.stringify(data.error ?? {})}` }
     }
 
-    return { status: status as ImageStatusResult['status'], images: [], error: null }
-  } catch {
+    const knownStatus = rawStatus as ImageStatusResult['status']
+    return { status: knownStatus, images: [], error: null }
+  } catch (e) {
+    void e
     return { status: 'processing', images: [], error: null }
   }
 }
