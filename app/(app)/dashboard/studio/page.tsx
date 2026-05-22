@@ -56,6 +56,55 @@ const RATIOS = [
 ]
 const MAX_REFS = 9
 
+// ── ImageCard — hover download ─────────────────────────────────────────────────
+
+function DownloadIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/>
+      <line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+  )
+}
+
+function ImageCard({ url, index, onDownload }: { url: string; index: number; onDownload: (url: string, i: number) => void }) {
+  const [hovered, setHovered] = useState(false)
+  return (
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{ position: 'relative', borderRadius: '12px', overflow: 'hidden', background: '#0a0a14', cursor: 'pointer' }}
+    >
+      <img src={url} alt={`Image ${index + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+      {/* Badge numéro */}
+      <div style={{ position: 'absolute', top: '8px', left: '8px', padding: '3px 8px', borderRadius: '4px', background: 'rgba(0,0,0,0.65)', color: 'rgba(255,255,255,0.85)', fontSize: '11px', fontWeight: 700 }}>#{index + 1}</div>
+      {/* Overlay hover */}
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: 'rgba(0,0,0,0.45)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
+        opacity: hovered ? 1 : 0,
+        transition: 'opacity 0.18s ease',
+        pointerEvents: hovered ? 'auto' : 'none',
+      }}>
+        <button
+          onClick={() => onDownload(url, index)}
+          title="Télécharger"
+          style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '9px 16px', borderRadius: '8px', border: 'none', background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(8px)', color: '#fff', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}
+        >
+          <DownloadIcon /> Télécharger
+        </button>
+        <button
+          onClick={() => window.open(url, '_blank')}
+          title="Ouvrir en plein écran"
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '38px', height: '38px', borderRadius: '8px', border: 'none', background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(8px)', color: '#fff', fontSize: '16px', cursor: 'pointer' }}
+        >↗</button>
+      </div>
+    </div>
+  )
+}
+
 // ── Component ──────────────────────────────────────────────────────────────────
 
 export default function StudioPage() {
@@ -245,7 +294,7 @@ export default function StudioPage() {
       const form = new FormData()
       form.append('prompt', prompt.trim())
       form.append('ratio', ratio)
-      form.append('numImages', '2')
+      form.append('numImages', '4')
       refImages.forEach(f => form.append('refs', f))
       const res  = await fetch('/api/studio/generate-images', { method: 'POST', headers: { 'x-admin-secret': ADMIN_SECRET }, body: form })
       const data = await res.json()
@@ -568,14 +617,7 @@ export default function StudioPage() {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 {imgen.images.map((url, i) => (
-                  <div key={i} style={{ position: 'relative', borderRadius: '12px', overflow: 'hidden', background: '#0a0a14', aspectRatio: aspectCss(ratio) }}>
-                    <img src={url} alt={`Image ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    <div style={{ position: 'absolute', bottom: '8px', right: '8px', display: 'flex', gap: '6px' }}>
-                      <button onClick={() => handleDownloadImage(url, i)} style={{ padding: '6px 10px', borderRadius: '6px', border: 'none', background: 'rgba(0,0,0,0.8)', color: '#fff', fontSize: '12px', cursor: 'pointer' }}>⬇</button>
-                      <button onClick={() => window.open(url, '_blank')} style={{ padding: '6px 10px', borderRadius: '6px', border: 'none', background: 'rgba(0,0,0,0.8)', color: '#fff', fontSize: '12px', cursor: 'pointer' }}>🔗</button>
-                    </div>
-                    <div style={{ position: 'absolute', top: '8px', left: '8px', padding: '3px 8px', borderRadius: '4px', background: 'rgba(0,0,0,0.7)', color: 'rgba(255,255,255,0.8)', fontSize: '11px', fontWeight: 700 }}>#{i + 1}</div>
-                  </div>
+                  <ImageCard key={i} url={url} index={i} onDownload={handleDownloadImage} />
                 ))}
               </div>
               </div>
