@@ -7,14 +7,14 @@
 const BASE_URL    = process.env.BYTEPLUS_BASE_URL ?? 'https://ark.ap-southeast.bytepluses.com/api/v3'
 const IMAGE_MODEL = 'seedream-5-0-260128'
 
-// Dreamina /images/generations : size = WIDTHxHEIGHT (pas un ratio)
+// Dreamina /images/generations : size = WIDTHxHEIGHT, minimum 3 686 400 px
 const RATIO_TO_SIZE: Record<string, string> = {
-  '16:9':  '2048x1152',
-  '9:16':  '1152x2048',
-  '1:1':   '2048x2048',
-  '4:3':   '2048x1536',
-  '3:4':   '1536x2048',
-  '21:9':  '2560x1100',
+  '16:9':  '2560x1440',   // 3 686 400 px ✓
+  '9:16':  '1440x2560',   // 3 686 400 px ✓
+  '1:1':   '1920x1920',   // 3 686 400 px ✓
+  '4:3':   '2400x1800',   // 4 320 000 px ✓
+  '3:4':   '1800x2400',   // 4 320 000 px ✓
+  '21:9':  '3360x1440',   // 4 838 400 px ✓
 }
 
 export interface ImageSubmitResult {
