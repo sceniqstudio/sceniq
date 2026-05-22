@@ -1,6 +1,7 @@
 'use client'
 // app/(app)/dashboard/studio/page.tsx
 // Studio IA — Text→Video · Image→Video · Text→Images (4 images)
+// Multi-image refs upload (max 9) commun aux 3 modes
 
 import { useState, useRef, useCallback } from 'react'
 
@@ -29,27 +30,63 @@ const ADMIN_SECRET = process.env.NEXT_PUBLIC_ADMIN_SECRET ?? ''
 const DURATIONS   = ['4', '5', '8', '10', '12', '15']
 const RESOLUTIONS = [{ v: '480p', l: '480p' }, { v: '720p', l: '720p HD' }, { v: '1080p', l: '1080p Full HD' }]
 const RATIOS      = [{ v: '16:9', l: '16:9 — Paysage' }, { v: '9:16', l: '9:16 — Portrait' }, { v: '1:1', l: '1:1 — Carré' }]
+const MAX_REFS    = 9
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function StudioPage() {
-  const [tab,          setTab]          = useState<Tab>('text')
-  const [prompt,       setPrompt]       = useState('')
-  const [duration,     setDuration]     = useState('8')
-  const [resolution,   setResolution]   = useState('1080p')
-  const [ratio,        setRatio]        = useState('16:9')
-  const [imageFile,    setImageFile]    = useState<File | null>(null)
-  const [imagePreview, setImagePreview] = useState<string | null>(null)
-  const [gen,          setGen]          = useState<VideoGenState>({
-    jobId: null, status: 'idle', videoUrl: null, error: null,
-  })
+  const [tab,         setTab]         = useState<Tab>('text')
+  const [prompt,      setPrompt]      = useState('')
+  const [duration,    setDuration]    = useState('8')
+  const [resolution,  setResolution]  = useState('1080p')
+  const [ratio,       setRatio]       = useState('16:9')
+
+  // Multi-image refs (commun aux 3 modes)
+  const [refImages,   setRefImages]   = useState<File[]>([])
+  const [refPreviews, setRefPreviews] = useState<string[]>([])
+
+  const [gen,   setGen]   = useState<VideoGenState>({ jobId: null, status: 'idle', videoUrl: null, error: null })
   const [imgen, setImgen] = useState<ImgenState>({ status: 'idle', images: [], error: null })
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const pollRef      = useRef<ReturnType<typeof setTimeout> | null>(null)
   const videoRef     = useRef<HTMLVideoElement>(null)
 
-  // ── Polling vidéo ────────────────────────────────────────────────────────────
+  // ── Multi-image upload helpers ────────────────────────────────────────────────
+
+  const addFiles = useCallback((files: FileList | File[]) => {
+    const arr = Array.from(files).filter(f => f.type.startsWith('image/'))
+    if (!arr.length) return
+
+    setRefImages(prev => {
+      const next = [...prev, ...arr].slice(0, MAX_REFS)
+      // Générer les previews
+      next.slice(prev.length).forEach((f, i) => {
+        const r = new FileReader()
+        r.onload = e => {
+          setRefPreviews(pp => {
+            const np = [...pp]
+            np[prev.length + i] = e.target?.result as string
+            return np
+          })
+        }
+        r.readAsDataURL(f)
+      })
+      return next
+    })
+  }, [])
+
+  const removeRef = (i: number) => {
+    setRefImages(prev => prev.filter((_, j) => j !== i))
+    setRefPreviews(prev => prev.filter((_, j) => j !== i))
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    addFiles(e.dataTransfer.files)
+  }
+
+  // ── Polling vidéo ─────────────────────────────────────────────────────────────
 
   const pollStatus = useCallback(async (jobId: string, attempt = 0) => {
     try {
@@ -69,11 +106,11 @@ export default function StudioPage() {
     }
   }, [])
 
-  // ── Submit vidéo ─────────────────────────────────────────────────────────────
+  // ── Submit vidéo ──────────────────────────────────────────────────────────────
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return
-    if (tab === 'image' && !imageFile) return
+    if (tab === 'image' && refImages.length === 0) return
     if (pollRef.current) clearTimeout(pollRef.current)
     setGen({ jobId: null, status: 'submitting', videoUrl: null, error: null })
     try {
@@ -82,7 +119,9 @@ export default function StudioPage() {
       form.append('duration', duration)
       form.append('resolution', resolution)
       form.append('ratio', ratio)
-      if (tab === 'image' && imageFile) form.append('image', imageFile)
+      // Ajoute toutes les refs (clé répétée = tableau côté serveur)
+      refImages.forEach(f => form.append('refs', f))
+
       const res  = await fetch('/api/studio/submit', { method: 'POST', headers: { 'x-admin-secret': ADMIN_SECRET }, body: form })
       const data = await res.json()
       if (!res.ok || data.error) { setGen({ jobId: null, status: 'failed', videoUrl: null, error: data.error ?? 'Erreur serveur' }); return }
@@ -91,16 +130,16 @@ export default function StudioPage() {
     } catch (e) { setGen({ jobId: null, status: 'failed', videoUrl: null, error: (e as Error).message }) }
   }
 
-  // ── Générer images ───────────────────────────────────────────────────────────
+  // ── Générer images ────────────────────────────────────────────────────────────
 
   const handleGenerateImages = async () => {
     if (!prompt.trim()) return
     setImgen({ status: 'loading', images: [], error: null })
     try {
       const res  = await fetch('/api/studio/generate-images', {
-        method: 'POST',
+        method:  'POST',
         headers: { 'x-admin-secret': ADMIN_SECRET, 'content-type': 'application/json' },
-        body: JSON.stringify({ prompt: prompt.trim(), ratio }),
+        body:    JSON.stringify({ prompt: prompt.trim(), ratio }),
       })
       const data = await res.json()
       if (!res.ok || data.error) { setImgen({ status: 'error', images: [], error: data.error ?? 'Erreur' }); return }
@@ -108,20 +147,7 @@ export default function StudioPage() {
     } catch (e) { setImgen({ status: 'error', images: [], error: (e as Error).message }) }
   }
 
-  // ── Image upload ─────────────────────────────────────────────────────────────
-
-  const handleImageChange = (file: File | null) => {
-    setImageFile(file)
-    if (file) { const r = new FileReader(); r.onload = e => setImagePreview(e.target?.result as string); r.readAsDataURL(file) }
-    else setImagePreview(null)
-  }
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    const file = e.dataTransfer.files[0]
-    if (file?.type.startsWith('image/')) handleImageChange(file)
-  }
-
-  // ── Download ─────────────────────────────────────────────────────────────────
+  // ── Download ──────────────────────────────────────────────────────────────────
 
   const handleDownloadVideo = async () => {
     if (!gen.videoUrl) return
@@ -134,19 +160,31 @@ export default function StudioPage() {
     catch { window.open(url, '_blank') }
   }
 
-  // ── Computed ─────────────────────────────────────────────────────────────────
+  // ── Computed ──────────────────────────────────────────────────────────────────
 
   const isVideoTab   = tab === 'text' || tab === 'image'
   const isRunning    = gen.status === 'submitting' || gen.status === 'pending' || gen.status === 'processing'
-  const canGenVideo  = !isRunning && !!prompt.trim() && (tab === 'text' || !!imageFile)
+  const canGenVideo  = !isRunning && !!prompt.trim() && (tab === 'text' || refImages.length > 0)
   const canGenImages = imgen.status !== 'loading' && !!prompt.trim()
+  const canAddMore   = refImages.length < MAX_REFS
 
   const statusLabel: Record<JobStatus, string> = {
     idle: '', submitting: 'Envoi…', pending: 'En file d\'attente…',
     processing: 'Génération (2-4 min)…', succeeded: 'Vidéo prête !', failed: 'Erreur',
   }
 
-  // ── Render ───────────────────────────────────────────────────────────────────
+  // Label de la zone refs selon le tab
+  const refsLabel =
+    tab === 'image'
+      ? `Images de référence — 1ère = départ (${refImages.length}/${MAX_REFS})`
+      : `Références visuelles (${refImages.length}/${MAX_REFS})`
+
+  const refsHint =
+    tab === 'image'
+      ? 'La 1ère image est utilisée comme frame de départ. Les suivantes guident le style.'
+      : 'Les images orientent le style visuel de la génération. Max 9.'
+
+  // ── Render ─────────────────────────────────────────────────────────────────────
 
   return (
     /* fond dark full-bleed — contre-carre le padding blanc de app-main */
@@ -162,7 +200,7 @@ export default function StudioPage() {
 
       {/* ── LEFT PANEL ── */}
       <div style={{
-        width: '380px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '16px',
+        width: '400px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '16px',
         background: 'rgba(255,255,255,0.03)', borderRadius: '16px', padding: '24px',
         border: '1px solid rgba(255,255,255,0.06)', overflowY: 'auto',
       }}>
@@ -176,31 +214,12 @@ export default function StudioPage() {
           ] as { v: Tab; l: string }[]).map(t => (
             <button key={t.v} onClick={() => setTab(t.v)} style={{
               flex: 1, padding: '8px 0', borderRadius: '7px', border: 'none', cursor: 'pointer',
-              fontSize: '12px', fontWeight: 600, transition: 'all 0.15s',
+              fontSize: '11px', fontWeight: 600, transition: 'all 0.15s',
               background: tab === t.v ? '#7C5CFC' : 'transparent',
               color:      tab === t.v ? '#fff' : 'rgba(255,255,255,0.5)',
             }}>{t.l}</button>
           ))}
         </div>
-
-        {/* Upload zone (Image→Vidéo) */}
-        {tab === 'image' && (
-          <div onDrop={handleDrop} onDragOver={e => e.preventDefault()} onClick={() => fileInputRef.current?.click()}
-            style={{ border: `2px dashed ${imagePreview ? 'rgba(124,92,252,0.5)' : 'rgba(255,255,255,0.15)'}`, borderRadius: '12px', cursor: 'pointer', overflow: 'hidden', minHeight: '160px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.02)', position: 'relative' }}>
-            {imagePreview ? (
-              <><img src={imagePreview} alt="Ref" style={{ width: '100%', height: '100%', objectFit: 'cover', maxHeight: '200px' }} />
-              <button onClick={e => { e.stopPropagation(); handleImageChange(null) }} style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(0,0,0,0.7)', border: 'none', borderRadius: '6px', color: '#fff', padding: '4px 8px', fontSize: '12px', cursor: 'pointer' }}>✕</button></>
-            ) : (
-              <div style={{ textAlign: 'center', padding: '24px', color: 'rgba(255,255,255,0.4)' }}>
-                <div style={{ fontSize: '32px', marginBottom: '8px' }}>📸</div>
-                <div style={{ fontSize: '13px', fontWeight: 600, color: 'rgba(255,255,255,0.6)' }}>Glisse ton image ici</div>
-                <div style={{ fontSize: '12px', marginTop: '4px' }}>ou clique pour parcourir</div>
-                <div style={{ fontSize: '11px', marginTop: '8px', color: 'rgba(255,255,255,0.25)' }}>JPG · PNG · WebP — max 10 Mo</div>
-              </div>
-            )}
-            <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => handleImageChange(e.target.files?.[0] ?? null)} />
-          </div>
-        )}
 
         {/* Prompt */}
         <div>
@@ -208,14 +227,91 @@ export default function StudioPage() {
           <textarea value={prompt} onChange={e => setPrompt(e.target.value)}
             placeholder={
               tab === 'imgen' ? 'Décris l\'image… ex : "Flacon de parfum sur marbre noir, éclairage studio, fond sombre, reflets dorés"'
-              : tab === 'image' ? 'Décris le mouvement… ex : "Zoom lent sur le produit, fond bokeh"'
+              : tab === 'image' ? 'Décris le mouvement… ex : "Zoom lent sur le produit, lumière dorée"'
               : 'Décris la vidéo… ex : "Barista verse un latte art en slow motion, lumière dorée"'
             }
-            rows={5} style={{ width: '100%', boxSizing: 'border-box', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', padding: '12px 14px', color: '#fff', fontSize: '14px', lineHeight: 1.6, resize: 'vertical', outline: 'none', fontFamily: 'inherit', transition: 'border-color 0.15s' }}
+            rows={4} style={{ width: '100%', boxSizing: 'border-box', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', padding: '12px 14px', color: '#fff', fontSize: '14px', lineHeight: 1.6, resize: 'vertical', outline: 'none', fontFamily: 'inherit', transition: 'border-color 0.15s' }}
             onFocus={e => (e.target.style.borderColor = 'rgba(124,92,252,0.6)')}
             onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.1)')}
           />
           <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.25)', marginTop: '4px', textAlign: 'right' }}>{prompt.length} / 2000</div>
+        </div>
+
+        {/* ── REFS UPLOAD — commun aux 3 modes ── */}
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+            <label style={{ fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.8px', textTransform: 'uppercase' }}>{refsLabel}</label>
+            {canAddMore && (
+              <button onClick={() => fileInputRef.current?.click()} style={{ fontSize: '11px', fontWeight: 600, color: '#A78BFA', background: 'transparent', border: 'none', cursor: 'pointer', padding: '2px 0' }}>+ Ajouter</button>
+            )}
+          </div>
+
+          {/* Zone drop ou thumbnails */}
+          {refImages.length === 0 ? (
+            <div
+              onDrop={handleDrop}
+              onDragOver={e => e.preventDefault()}
+              onClick={() => fileInputRef.current?.click()}
+              style={{ border: '2px dashed rgba(255,255,255,0.12)', borderRadius: '12px', cursor: 'pointer', minHeight: '100px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'rgba(255,255,255,0.02)', transition: 'border-color 0.15s' }}
+              onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(124,92,252,0.4)')}
+              onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)')}
+            >
+              <div style={{ fontSize: '28px' }}>📸</div>
+              <div style={{ fontSize: '13px', fontWeight: 600, color: 'rgba(255,255,255,0.5)' }}>Glisse tes images ici</div>
+              <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.25)' }}>JPG · PNG · WebP — max {MAX_REFS} images</div>
+            </div>
+          ) : (
+            <div>
+              {/* Grille de thumbnails */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginBottom: '8px' }}>
+                {refPreviews.map((src, i) => src && (
+                  <div key={i} style={{ position: 'relative', borderRadius: '8px', overflow: 'hidden', aspectRatio: '1', background: '#111' }}>
+                    <img src={src} alt={`Ref ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    {/* Badge "Départ" sur la 1ère image en mode Image→Vidéo */}
+                    {tab === 'image' && i === 0 && (
+                      <div style={{ position: 'absolute', top: '4px', left: '4px', padding: '2px 6px', borderRadius: '4px', background: '#7C5CFC', color: '#fff', fontSize: '9px', fontWeight: 700, letterSpacing: '0.5px' }}>DÉPART</div>
+                    )}
+                    {/* Numéro */}
+                    {!(tab === 'image' && i === 0) && (
+                      <div style={{ position: 'absolute', top: '4px', left: '4px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(0,0,0,0.7)', color: 'rgba(255,255,255,0.7)', fontSize: '9px', fontWeight: 700 }}>#{i + 1}</div>
+                    )}
+                    {/* Bouton supprimer */}
+                    <button
+                      onClick={e => { e.stopPropagation(); removeRef(i) }}
+                      style={{ position: 'absolute', top: '4px', right: '4px', width: '18px', height: '18px', borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,0.75)', color: '#fff', fontSize: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1 }}
+                    >✕</button>
+                  </div>
+                ))}
+                {/* Placeholder pour les images en cours de chargement */}
+                {refImages.slice(refPreviews.filter(Boolean).length).map((_, i) => (
+                  <div key={`loading-${i}`} style={{ borderRadius: '8px', aspectRatio: '1', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <SpinnerIcon size={14} />
+                  </div>
+                ))}
+                {/* Case "+" si on peut encore ajouter */}
+                {canAddMore && (
+                  <div
+                    onClick={() => fileInputRef.current?.click()}
+                    onDrop={handleDrop}
+                    onDragOver={e => e.preventDefault()}
+                    style={{ borderRadius: '8px', aspectRatio: '1', background: 'rgba(255,255,255,0.03)', border: '1px dashed rgba(255,255,255,0.1)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', color: 'rgba(255,255,255,0.2)', transition: 'all 0.15s' }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(124,92,252,0.4)'; e.currentTarget.style.color = '#A78BFA' }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = 'rgba(255,255,255,0.2)' }}
+                  >+</div>
+                )}
+              </div>
+              <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.25)', lineHeight: 1.5 }}>{refsHint}</div>
+            </div>
+          )}
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            multiple
+            style={{ display: 'none' }}
+            onChange={e => { if (e.target.files) { addFiles(e.target.files); e.target.value = '' } }}
+          />
         </div>
 
         {/* Ratio (commun à tous les modes) */}

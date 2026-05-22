@@ -20,11 +20,11 @@ export interface StatusResult {
 
 // ── Submit ────────────────────────────────────────────────────────────────────
 export async function submitStudioJob(input: {
-  prompt:       string
-  duration:     number      // secondes 4-15
-  resolution:   string      // '480p' | '720p' | '1080p'
-  ratio:        string      // '9:16' | '1:1' | '16:9'
-  imageUrl?:    string      // si image-to-video
+  prompt:      string
+  duration:    number      // secondes 4-15
+  resolution:  string      // '480p' | '720p' | '1080p'
+  ratio:       string      // '9:16' | '1:1' | '16:9'
+  imageUrls?:  string[]    // 0 = text-to-video, 1 = image-to-video, 2-9 = reference-to-video
 }): Promise<SubmitResult> {
   const apiKey = process.env.BYTEPLUS_API_KEY
   if (!apiKey) return { jobId: '', error: 'BYTEPLUS_API_KEY manquant' }
@@ -33,10 +33,12 @@ export async function submitStudioJob(input: {
     { type: 'text', text: input.prompt },
   ]
 
-  if (input.imageUrl) {
+  // Ajoute toutes les images comme reference_image (max 9)
+  const urls = (input.imageUrls ?? []).slice(0, 9)
+  for (const url of urls) {
     content.push({
       type:      'image_url',
-      image_url: { url: input.imageUrl },
+      image_url: { url },
       role:      'reference_image',
     })
   }

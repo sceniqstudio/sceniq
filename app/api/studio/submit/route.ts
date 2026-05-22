@@ -1,11 +1,11 @@
 // app/api/studio/submit/route.ts
 // POST — Soumet une tâche de génération vidéo BytePlus
 // Body (multipart/form-data) :
-//   prompt      string   requis
-//   duration    string   '4'|'5'|'8'|'10'|'12'|'15'
-//   resolution  string   '480p'|'720p'|'1080p'
-//   ratio       string   '9:16'|'1:1'|'16:9'
-//   image?      File     optionnel (image-to-video)
+//   prompt      string     requis
+//   duration    string     '4'|'5'|'8'|'10'|'12'|'15'
+//   resolution  string     '480p'|'720p'|'1080p'
+//   ratio       string     '9:16'|'1:1'|'16:9'
+//   refs        File[]     optionnel, jusqu'à 9 images de référence (clé répétée)
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient }              from '@supabase/supabase-js'
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
   let duration:   number
   let resolution: string
   let ratio:      string
-  let imageUrl:   string | undefined
+  let imageUrls:  string[] = []
 
   try {
     const form = await req.formData()
@@ -42,32 +42,39 @@ export async function POST(req: NextRequest) {
     duration   = parseInt(form.get('duration') as string ?? '5', 10)
     resolution = (form.get('resolution') as string ?? '720p')
     ratio      = (form.get('ratio')      as string ?? '16:9')
-    const img  = form.get('image') as File | null
 
     if (!prompt) return NextResponse.json({ error: 'Prompt requis' }, { status: 400 })
 
-    // ── Upload image → Supabase Storage si fournie ──
-    if (img && img.size > 0) {
-      const ext       = img.name.split('.').pop() ?? 'jpg'
-      const path      = `studio/${Date.now()}.${ext}`
-      const buf       = Buffer.from(await img.arrayBuffer())
-      const supabase  = supabaseAdmin()
+    // ── Upload toutes les images de ref → Supabase Storage ──
+    const refs = form.getAll('refs') as File[]
+    const validRefs = refs.filter(f => f instanceof File && f.size > 0).slice(0, 9)
 
-      const { error: upErr } = await supabase.storage
-        .from('brand-assets')
-        .upload(path, buf, { contentType: img.type, upsert: false })
+    if (validRefs.length > 0) {
+      const supabase = supabaseAdmin()
+      const ts       = Date.now()
 
-      if (upErr) return NextResponse.json({ error: `Upload image : ${upErr.message}` }, { status: 500 })
+      for (let i = 0; i < validRefs.length; i++) {
+        const img  = validRefs[i]
+        const ext  = img.name.split('.').pop() ?? 'jpg'
+        const path = `studio/${ts}-${i}.${ext}`
+        const buf  = Buffer.from(await img.arrayBuffer())
 
-      const { data: urlData } = supabase.storage.from('brand-assets').getPublicUrl(path)
-      imageUrl = urlData?.publicUrl
+        const { error: upErr } = await supabase.storage
+          .from('brand-assets')
+          .upload(path, buf, { contentType: img.type, upsert: false })
+
+        if (upErr) return NextResponse.json({ error: `Upload image ${i + 1} : ${upErr.message}` }, { status: 500 })
+
+        const { data: urlData } = supabase.storage.from('brand-assets').getPublicUrl(path)
+        if (urlData?.publicUrl) imageUrls.push(urlData.publicUrl)
+      }
     }
   } catch (e) {
     return NextResponse.json({ error: `Parsing requête : ${(e as Error).message}` }, { status: 400 })
   }
 
   // ── Soumettre la tâche BytePlus (non-bloquant) ──
-  const result = await submitStudioJob({ prompt, duration, resolution, ratio, imageUrl })
+  const result = await submitStudioJob({ prompt, duration, resolution, ratio, imageUrls })
   if (result.error) return NextResponse.json({ error: result.error }, { status: 502 })
 
   return NextResponse.json({ jobId: result.jobId })
