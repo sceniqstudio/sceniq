@@ -475,7 +475,7 @@ export default function StudioPage() {
 
         <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.2)', textAlign: 'center', margin: 0 }}>
           {tab === 'image'
-            ? 'FLUX.1 Schnell · fal.ai · 4 images'
+            ? `Dreamina Image 5.0 Lite · BytePlus · ${numImages} image${numImages > 1 ? 's' : ''}`
             : `Claude Sonnet → Seedance ${quality === 'fast' ? '2.0 Fast' : '2.0'} · ${duration}s`}
         </p>
       </div>
