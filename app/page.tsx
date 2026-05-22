@@ -355,34 +355,36 @@ export default function HomePage() {
     })
 
     // ── Autoplay dédié pour la vidéo studio ──────────────────────────────────
-    // Sur mobile, preload="auto" est ignoré → la vidéo n'a pas chargé quand
-    // l'observer fire. On force load() + play() à l'intersection, et on
-    // re-essaie au premier événement canplay si la vidéo était en cours de chargement.
+    // iOS Safari ignore complètement preload → le navigateur ne charge RIEN
+    // tant que load() n'est pas appelé explicitement. Stratégie :
+    // 1. load() immédiat au mount pour pré-remplir le buffer iOS dès le démarrage
+    // 2. canplay + loadeddata → play() si la section est en vue
+    // 3. IntersectionObserver → play/pause selon visibilité
     const studioVid = document.getElementById('studio-video') as HTMLVideoElement | null
     if (studioVid) {
       let studioInView = false
-      const tryPlay = () => { if (studioInView) studioVid.play().catch(() => {}) }
+      const tryPlay = () => { if (studioInView && studioVid.paused) studioVid.play().catch(() => {}) }
       studioVid.addEventListener('canplay', tryPlay)
+      studioVid.addEventListener('loadeddata', tryPlay)
+      // Déclenche le chargement immédiatement (iOS ignore preload="auto")
+      studioVid.load()
       const studioObs = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           studioInView = entry.isIntersecting
           if (entry.isIntersecting) {
-            if (studioVid.readyState >= 3) {
-              studioVid.play().catch(() => {})
-            } else {
-              studioVid.load()
-            }
+            studioVid.play().catch(() => {})
           } else {
             studioVid.pause()
           }
         })
-      }, { rootMargin: '200px 0px', threshold: 0 })
+      }, { rootMargin: '0px', threshold: 0.1 })
       studioObs.observe(studioVid)
       return () => {
         obs.disconnect()
         videoObs.disconnect()
         studioObs.disconnect()
         studioVid.removeEventListener('canplay', tryPlay)
+        studioVid.removeEventListener('loadeddata', tryPlay)
         fqHandlers.forEach(({ btn, handler }) => btn.removeEventListener('click', handler))
         anchorHandlers.forEach(({ a, handler }) => a.removeEventListener('click', handler))
       }
