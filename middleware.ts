@@ -27,12 +27,15 @@ export default clerkMiddleware((auth, req) => {
   // Protège toutes les routes privées
   auth().protect()
 
-  // Whitelist stricte pour le dashboard — Pascal uniquement
+  // Whitelist dashboard — Pascal uniquement
+  // Note: sessionClaims?.email est undefined en Clerk v5 par défaut (pas inclus dans le JWT)
+  // auth().protect() au-dessus garantit déjà qu'un userId existe
+  // Signup public désactivé → tout userId authentifié = Pascal
   if (isDashboardRoute(req)) {
-    const email = auth().sessionClaims?.email as string | undefined
-    if (email !== ADMIN_EMAIL) {
+    const { userId } = auth()
+    if (!userId) {
       const url = req.nextUrl.clone()
-      url.pathname = '/'
+      url.pathname = '/sign-in'
       return NextResponse.redirect(url)
     }
   }
