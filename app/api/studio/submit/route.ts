@@ -1,11 +1,12 @@
 // app/api/studio/submit/route.ts
-// POST — Soumet une tâche de génération vidéo BytePlus
+// POST — Soumet une tâche de génération vidéo BytePlus Seedance
 // Body (multipart/form-data) :
 //   prompt      string     requis
 //   duration    string     '4'|'5'|'8'|'10'|'12'|'15'
 //   resolution  string     '480p'|'720p'|'1080p'
-//   ratio       string     '9:16'|'1:1'|'16:9'
-//   refs        File[]     optionnel, jusqu'à 9 images de référence (clé répétée)
+//   ratio       string     '16:9'|'9:16'|'1:1'|'4:3'|'3:4'|'21:9'
+//   quality     string     'standard'|'fast'
+//   refs        File[]     images de référence obligatoires (clé répétée, 1-9)
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient }              from '@supabase/supabase-js'
@@ -34,6 +35,7 @@ export async function POST(req: NextRequest) {
   let duration:   number
   let resolution: string
   let ratio:      string
+  let quality:    'standard' | 'fast'
   let imageUrls:  string[] = []
 
   try {
@@ -42,6 +44,7 @@ export async function POST(req: NextRequest) {
     duration   = parseInt(form.get('duration') as string ?? '5', 10)
     resolution = (form.get('resolution') as string ?? '720p')
     ratio      = (form.get('ratio')      as string ?? '16:9')
+    quality    = (form.get('quality')    as string) === 'fast' ? 'fast' : 'standard'
 
     if (!prompt) return NextResponse.json({ error: 'Prompt requis' }, { status: 400 })
 
@@ -74,7 +77,7 @@ export async function POST(req: NextRequest) {
   }
 
   // ── Soumettre la tâche BytePlus (non-bloquant) ──
-  const result = await submitStudioJob({ prompt, duration, resolution, ratio, imageUrls })
+  const result = await submitStudioJob({ prompt, duration, resolution, ratio, quality, imageUrls })
   if (result.error) return NextResponse.json({ error: result.error }, { status: 502 })
 
   return NextResponse.json({ jobId: result.jobId })

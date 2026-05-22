@@ -2,8 +2,13 @@
 // Helpers non-bloquants pour le Studio admin — split submit / checkStatus
 // (évite le timeout Vercel du polling long de seedance.ts)
 
-const BASE_URL   = process.env.BYTEPLUS_BASE_URL ?? 'https://ark.ap-southeast.bytepluses.com/api/v3'
-const MODEL      = 'dreamina-seedance-2-0-260128'
+const BASE_URL = process.env.BYTEPLUS_BASE_URL ?? 'https://ark.ap-southeast.bytepluses.com/api/v3'
+
+// Modèles Seedance 2.0 — vérifier IDs exacts dans BytePlus console si erreur 404
+const VIDEO_MODELS = {
+  standard: 'dreamina-seedance-2-0-260128',
+  fast:     'dreamina-seedance-2-0-fast-260128',  // À confirmer avec BytePlus console
+} as const
 
 export type StudioJobStatus = 'pending' | 'processing' | 'succeeded' | 'failed' | 'expired' | 'cancelled'
 
@@ -23,11 +28,14 @@ export async function submitStudioJob(input: {
   prompt:      string
   duration:    number      // secondes 4-15
   resolution:  string      // '480p' | '720p' | '1080p'
-  ratio:       string      // '9:16' | '1:1' | '16:9'
-  imageUrls?:  string[]    // 0 = text-to-video, 1 = image-to-video, 2-9 = reference-to-video
+  ratio:       string      // '16:9' | '9:16' | '1:1' | '4:3' | '3:4' | '21:9'
+  quality:     'standard' | 'fast'
+  imageUrls?:  string[]    // 1+ obligatoire, 1ère = source, reste = références
 }): Promise<SubmitResult> {
   const apiKey = process.env.BYTEPLUS_API_KEY
   if (!apiKey) return { jobId: '', error: 'BYTEPLUS_API_KEY manquant' }
+
+  const model = VIDEO_MODELS[input.quality] ?? VIDEO_MODELS.standard
 
   const content: Record<string, unknown>[] = [
     { type: 'text', text: input.prompt },
@@ -44,7 +52,7 @@ export async function submitStudioJob(input: {
   }
 
   const body = {
-    model:          MODEL,
+    model:          model,
     content,
     generate_audio: true,
     resolution:     input.resolution,
