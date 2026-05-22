@@ -82,6 +82,27 @@ export default function StudioPage() {
   const pollRef         = useRef<ReturnType<typeof setTimeout> | null>(null)
   const imagePollRef    = useRef<ReturnType<typeof setTimeout> | null>(null)
   const videoRef        = useRef<HTMLVideoElement>(null)
+  const imgStartRef     = useRef<number | null>(null)
+  const vidStartRef     = useRef<number | null>(null)
+  const [imgElapsed, setImgElapsed] = useState(0)
+  const [vidElapsed, setVidElapsed] = useState(0)
+
+  // Timers d'affichage
+  useEffect(() => {
+    if (!isImgRunning) { imgStartRef.current = null; setImgElapsed(0); return }
+    if (!imgStartRef.current) imgStartRef.current = Date.now()
+    const t = setInterval(() => setImgElapsed(Math.floor((Date.now() - imgStartRef.current!) / 1000)), 1000)
+    return () => clearInterval(t)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [imgen.status])
+
+  useEffect(() => {
+    if (!isRunning) { vidStartRef.current = null; setVidElapsed(0); return }
+    if (!vidStartRef.current) vidStartRef.current = Date.now()
+    const t = setInterval(() => setVidElapsed(Math.floor((Date.now() - vidStartRef.current!) / 1000)), 1000)
+    return () => clearInterval(t)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gen.status])
 
   // Cleanup polling timers on unmount
   useEffect(() => () => {
@@ -192,6 +213,11 @@ export default function StudioPage() {
   // ── Polling images ─────────────────────────────────────────────────────────
 
   const pollImageStatus = useCallback(async (jobId: string, attempt = 0) => {
+    // Timeout à 3 min (36 tentatives × ~5s moy)
+    if (attempt >= 36) {
+      setImgen(p => ({ ...p, status: 'error', error: 'Timeout — BytePlus n\'a pas répondu en 3 min. Réessaie.' }))
+      return
+    }
     try {
       const res  = await fetch(`/api/studio/image-status/${jobId}`, { headers: { 'x-admin-secret': ADMIN_SECRET } })
       const data = await res.json()
@@ -516,7 +542,9 @@ export default function StudioPage() {
                     {imgen.status === 'pending'    && 'En file d\'attente Dreamina…'}
                     {imgen.status === 'processing' && 'Image 5.0 Lite génère…'}
                   </div>
-                  <div style={{ fontSize: '12px', marginTop: '6px', color: 'rgba(255,255,255,0.3)' }}>~15-30 secondes</div>
+                  <div style={{ fontSize: '12px', marginTop: '6px', color: 'rgba(255,255,255,0.3)' }}>
+                    {imgElapsed > 0 ? `${imgElapsed}s écoulées — max ~3 min` : 'Peut prendre 1-2 min'}
+                  </div>
                 </div>
               </div>
             )}
