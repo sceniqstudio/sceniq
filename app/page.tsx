@@ -349,46 +349,10 @@ export default function HomePage() {
       })
     }, { rootMargin: '200px 0px', threshold: 0 })
 
-    // Observer toutes les vidéos hors hero et hors studio (studio a son propre observer)
-    document.querySelectorAll('video:not(.lv2-hero video):not(#modal-video):not(#studio-video)').forEach(v => {
+    // Observer toutes les vidéos hors hero — studio inclus (même comportement que Seedance)
+    document.querySelectorAll('video:not(.lv2-hero video):not(#modal-video)').forEach(v => {
       videoObs.observe(v)
     })
-
-    // ── Autoplay dédié pour la vidéo studio ──────────────────────────────────
-    // iOS Safari ignore complètement preload → le navigateur ne charge RIEN
-    // tant que load() n'est pas appelé explicitement. Stratégie :
-    // 1. load() immédiat au mount pour pré-remplir le buffer iOS dès le démarrage
-    // 2. canplay + loadeddata → play() si la section est en vue
-    // 3. IntersectionObserver → play/pause selon visibilité
-    const studioVid = document.getElementById('studio-video') as HTMLVideoElement | null
-    if (studioVid) {
-      let studioInView = false
-      const tryPlay = () => { if (studioInView && studioVid.paused) studioVid.play().catch(() => {}) }
-      studioVid.addEventListener('canplay', tryPlay)
-      studioVid.addEventListener('loadeddata', tryPlay)
-      // Déclenche le chargement immédiatement (iOS ignore preload="auto")
-      studioVid.load()
-      const studioObs = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          studioInView = entry.isIntersecting
-          if (entry.isIntersecting) {
-            studioVid.play().catch(() => {})
-          } else {
-            studioVid.pause()
-          }
-        })
-      }, { rootMargin: '0px', threshold: 0.1 })
-      studioObs.observe(studioVid)
-      return () => {
-        obs.disconnect()
-        videoObs.disconnect()
-        studioObs.disconnect()
-        studioVid.removeEventListener('canplay', tryPlay)
-        studioVid.removeEventListener('loadeddata', tryPlay)
-        fqHandlers.forEach(({ btn, handler }) => btn.removeEventListener('click', handler))
-        anchorHandlers.forEach(({ a, handler }) => a.removeEventListener('click', handler))
-      }
-    }
 
     return () => {
       obs.disconnect()
@@ -635,8 +599,7 @@ export default function HomePage() {
                 aria-label={t.studio.videoAria}
               >
                 <video
-                  id="studio-video"
-                  autoPlay muted loop playsInline preload="auto"
+                  autoPlay muted loop playsInline preload="metadata"
                   style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }}
                 >
                   <source src="/showcase/volt.mp4" type="video/mp4" />
