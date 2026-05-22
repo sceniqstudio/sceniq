@@ -20,8 +20,9 @@ function supabaseAdmin() {
 }
 
 export async function POST(req: NextRequest) {
-  const secret = req.headers.get('x-admin-secret')
-  if (secret !== process.env.ADMIN_SECRET) {
+  const secret   = req.headers.get('x-admin-secret')
+  const expected = process.env.ADMIN_SECRET ?? process.env.NEXT_PUBLIC_ADMIN_SECRET
+  if (secret !== expected) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

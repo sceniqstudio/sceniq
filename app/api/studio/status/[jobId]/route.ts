@@ -9,7 +9,8 @@ export async function GET(
   { params }: { params: { jobId: string } },
 ) {
   const adminSecret = req.headers.get('x-admin-secret')
-  if (adminSecret !== process.env.ADMIN_SECRET) {
+  const expected    = process.env.ADMIN_SECRET ?? process.env.NEXT_PUBLIC_ADMIN_SECRET
+  if (adminSecret !== expected) {
     return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
   }
 
