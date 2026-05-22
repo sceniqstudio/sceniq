@@ -245,13 +245,18 @@ export default function StudioPage() {
       const form = new FormData()
       form.append('prompt', prompt.trim())
       form.append('ratio', ratio)
-      form.append('numImages', '4')
+      form.append('numImages', '2')
       refImages.forEach(f => form.append('refs', f))
       const res  = await fetch('/api/studio/generate-images', { method: 'POST', headers: { 'x-admin-secret': ADMIN_SECRET }, body: form })
       const data = await res.json()
       if (!res.ok || data.error) { setImgen({ jobId: null, status: 'error', images: [], error: data.error ?? 'Erreur serveur' }); return }
-      setImgen({ jobId: data.jobId, status: 'pending', images: [], error: null })
-      pollImageStatus(data.jobId)
+      // API synchrone — images retournées directement
+      if (data.images?.length) {
+        setImgen({ jobId: null, status: 'done', images: data.images, error: null }); return
+      }
+      // Fallback polling (cas async inattendu)
+      setImgen({ jobId: data.jobId ?? null, status: 'pending', images: [], error: null })
+      if (data.jobId) pollImageStatus(data.jobId)
     } catch (e) { setImgen({ jobId: null, status: 'error', images: [], error: (e as Error).message }) }
   }
 
