@@ -7,6 +7,16 @@
 const BASE_URL    = process.env.BYTEPLUS_BASE_URL ?? 'https://ark.ap-southeast.bytepluses.com/api/v3'
 const IMAGE_MODEL = 'seedream-5-0-260128'
 
+// Dreamina /images/generations : size = WIDTHxHEIGHT (pas un ratio)
+const RATIO_TO_SIZE: Record<string, string> = {
+  '16:9':  '2048x1152',
+  '9:16':  '1152x2048',
+  '1:1':   '2048x2048',
+  '4:3':   '2048x1536',
+  '3:4':   '1536x2048',
+  '21:9':  '2560x1100',
+}
+
 export interface ImageSubmitResult {
   jobId: string
   error:  string | null
@@ -31,12 +41,13 @@ export async function submitImageJob(input: {
   const n         = Math.min(input.numImages ?? 4, 4)
   const imageUrls = (input.imageUrls ?? []).slice(0, 10)
 
+  const size = RATIO_TO_SIZE[input.ratio] ?? '2048x2048'
+
   const body: Record<string, unknown> = {
     model:           IMAGE_MODEL,
     prompt:          input.prompt,
     n,
-    size:            input.ratio,   // '16:9' | '1:1' | '9:16' | '4:3' | '3:4' | '21:9'
-    quality:         '2K',
+    size,             // WIDTHxHEIGHT requis par /images/generations
     response_format: 'url',
     watermark:       false,
   }
