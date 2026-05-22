@@ -51,11 +51,16 @@ export async function submitStudioJob(input: {
     })
   }
 
+  // En mode r2v (reference-to-video), seul 1080p est garanti supporté
+  // sur tous les modèles Seedance — on force 1080p dès qu'il y a des refs
+  const hasRefs    = (input.imageUrls ?? []).length > 0
+  const resolution = hasRefs ? '1080p' : input.resolution
+
   const body = {
     model:          model,
     content,
     generate_audio: true,
-    resolution:     input.resolution,
+    resolution,
     ratio:          input.ratio,
     duration:       input.duration,
     watermark:      false,
