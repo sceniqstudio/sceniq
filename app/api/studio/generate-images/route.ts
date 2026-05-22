@@ -6,7 +6,9 @@ import { fal } from '@fal-ai/client'
 
 fal.config({ credentials: process.env.FAL_KEY ?? '' })
 
-const RATIO_TO_SIZE: Record<string, string> = {
+type FalImageSize = 'landscape_16_9' | 'portrait_16_9' | 'square_hd'
+
+const RATIO_TO_SIZE: Record<string, FalImageSize> = {
   '16:9': 'landscape_16_9',
   '9:16': 'portrait_16_9',
   '1:1':  'square_hd',
