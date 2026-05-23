@@ -430,9 +430,9 @@ export default function HomePage() {
             <li><a href="#reels">{t.nav.portfolio}</a></li>
           </ul>
           <div className="lv2-nav-right">
-            <button type="button" onClick={() => { setQuestionOpen(true); setQuestionSent(false) }} className="lv2-btn lv2-btn-ghost lv2-btn-sm">
+            <a href="#faq" className="lv2-btn lv2-btn-ghost lv2-btn-sm">
               {t.nav.question}
-            </button>
+            </a>
             <a href="/commande" className="lv2-btn lv2-btn-accent lv2-btn-sm" style={{ borderRadius: '100px', fontWeight: 700 }}>
               {t.nav.order}
             </a>
@@ -490,14 +490,14 @@ export default function HomePage() {
               <a href="/commande" className="lv2-btn lv2-btn-accent" onClick={() => setMobileMenuOpen(false)}>
                 {t.nav.orderMobile}
               </a>
-              <button
-                type="button"
+              <a
+                href="#faq"
                 className="lv2-btn lv2-btn-ghost"
-                onClick={() => { setMobileMenuOpen(false); setQuestionOpen(true); setQuestionSent(false) }}
+                onClick={() => setMobileMenuOpen(false)}
                 style={{ justifyContent: 'center' }}
               >
                 {t.nav.question}
-              </button>
+              </a>
             </div>
           </div>
         </div>
@@ -1123,6 +1123,44 @@ export default function HomePage() {
               ))}
             </div>
           </div>
+
+          {/* ── Bloc humain — réponse directe ── */}
+          <div className="rv" style={{ marginTop: 56 }}>
+            <div style={{
+              maxWidth: 560, margin: '0 auto',
+              textAlign: 'center',
+              padding: '36px 32px',
+              borderRadius: 20,
+              background: 'rgba(124,92,252,0.06)',
+              border: '1px solid rgba(124,92,252,0.2)',
+            }}>
+              <div style={{ fontSize: 28, marginBottom: 12 }}>💬</div>
+              <h3 style={{ fontSize: 20, fontWeight: 800, color: '#fff', marginBottom: 10, lineHeight: 1.25 }}>
+                {t.faq.ctaH3}
+              </h3>
+              <p style={{ fontSize: 14, color: 'var(--g5)', lineHeight: 1.7, marginBottom: 24, maxWidth: 400, margin: '0 auto 24px' }}>
+                {t.faq.ctaSub}
+              </p>
+              <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  onClick={() => { setQuestionOpen(true); setQuestionSent(false) }}
+                  className="lv2-btn lv2-btn-accent"
+                  style={{ borderRadius: 100 }}
+                >
+                  {t.faq.ctaBtn1}
+                </button>
+                <a
+                  href="tel:+33756808831"
+                  className="lv2-btn lv2-btn-ghost"
+                  style={{ borderRadius: 100 }}
+                >
+                  {t.faq.ctaBtn2}
+                </a>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
 
