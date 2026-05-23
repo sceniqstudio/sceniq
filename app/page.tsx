@@ -843,10 +843,20 @@ export default function HomePage() {
                     style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
                   />
+                  {/* Badge IA */}
                   <div style={{ position: 'absolute', top: 10, left: 10, padding: '2px 8px', borderRadius: 4, background: 'rgba(7,7,15,0.82)', border: '1px solid rgba(255,255,255,0.1)', fontSize: 9, fontWeight: 700, letterSpacing: '0.09em', color: 'rgba(165,180,252,0.7)' }}>IA</div>
+                  {/* Info overlay */}
                   <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '48px 14px 14px', background: 'linear-gradient(to top,rgba(7,7,15,0.97),transparent)' }}>
                     <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(165,180,252,0.65)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{t.models.renderLabel}</div>
-                    <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>{t.models.kaelysType}</div>
+                    <a
+                      href={t.models.kaelysIG}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ display: 'inline-block', fontSize: 12, color: 'rgba(165,180,252,0.9)', marginTop: 3, textDecoration: 'none', fontWeight: 600 }}
+                    >
+                      {t.models.kaelysHandle}
+                    </a>
+                    <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', marginTop: 2 }}>{t.models.kaelysType.replace(t.models.kaelysHandle + ' · ', '')}</div>
                   </div>
                 </div>
 
@@ -875,9 +885,25 @@ export default function HomePage() {
                 </div>
 
               </div>
+              {/* Note Kaelys — brand partner */}
+              <div style={{
+                marginTop: 10, padding: '14px 16px', borderRadius: 12,
+                border: '1px solid rgba(124,92,252,0.3)',
+                background: 'rgba(124,92,252,0.06)',
+                display: 'flex', alignItems: 'flex-start', gap: 12,
+              }}>
+                <span style={{ fontSize: 16, flexShrink: 0, marginTop: 1 }}>✦</span>
+                <p style={{ fontSize: 12, color: 'var(--g5)', lineHeight: 1.6, margin: 0 }}>
+                  {t.models.kaelysPartnerNote.split(t.models.kaelysHandle).map((part, i, arr) =>
+                    i < arr.length - 1
+                      ? <span key={i}>{part}<a href={t.models.kaelysIG} target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(165,180,252,0.9)', fontWeight: 600, textDecoration: 'none' }}>{t.models.kaelysHandle}</a></span>
+                      : <span key={i}>{part}</span>
+                  )}
+                </p>
+              </div>
               {/* Note exemples */}
               <div style={{
-                marginTop: 10, padding: '12px 16px', borderRadius: 12,
+                marginTop: 8, padding: '12px 16px', borderRadius: 12,
                 border: '1px dashed rgba(124,92,252,0.22)',
                 background: 'rgba(124,92,252,0.04)',
                 display: 'flex', alignItems: 'center', gap: 10,
