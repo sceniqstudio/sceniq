@@ -5,6 +5,34 @@ import { ShowcaseClip } from '@/app/_components/ShowcaseClip'
 import { SHOWCASE_VIDEOS, HERO_SLUGS } from '@/lib/showcase'
 import { translations, type Lang } from '@/lib/i18n'
 
+// ── Ticker hero — briefs exemples scrollants ────────────────────────────────
+const TICKER_FR = [
+  'Un parfum qui fait rêver',
+  'Une démo SaaS sobre',
+  'Un reel gaming explosif',
+  'Une ouverture de restaurant',
+  'Un teaser immobilier',
+  'Un clip mode minimaliste',
+  'Un spot B2B posé',
+  'Un avant/après beauté',
+  'Un event recap dynamique',
+  'Un lancement de produit',
+  'Un film corporate sans clichés',
+]
+const TICKER_EN = [
+  'A fragrance that makes you dream',
+  'A clean SaaS demo',
+  'An explosive gaming reel',
+  'A restaurant opening',
+  'A real estate teaser',
+  'A minimalist fashion clip',
+  'A calm B2B spot',
+  'A before/after beauty video',
+  'A dynamic event recap',
+  'A product launch film',
+  'A corporate film without clichés',
+]
+
 // ── Portfolio — items depuis lib/showcase.ts ────────────────────────────────
 // Slugs avec poster JPG (première frame extraite de chaque vidéo)
 const SLUGS_WITH_POSTER = new Set([
@@ -529,9 +557,19 @@ export default function HomePage() {
         </div>
         <div className="lv2-hover" aria-hidden="true" />
         <div className="lv2-hcontent">
-          <div className="lv2-badge">
+          <div className="lv2-badge lv2-badge--ticker">
             <span className="lv2-badge-pill">{t.hero.badge}</span>
-            {t.hero.badgeSub}
+            <div className="lv2-ticker-wrap" aria-hidden="true">
+              <div className="lv2-ticker-track">
+                {(lang === 'fr' ? TICKER_FR : TICKER_EN).map((b, i) => (
+                  <span key={i} className="lv2-ticker-item">✦ {b}</span>
+                ))}
+                {(lang === 'fr' ? TICKER_FR : TICKER_EN).map((b, i) => (
+                  <span key={`d${i}`} className="lv2-ticker-item" aria-hidden="true">✦ {b}</span>
+                ))}
+              </div>
+              <div className="lv2-ticker-fade" />
+            </div>
           </div>
           <h1 className="lv2-h1">
             {t.hero.h1a}<br />
