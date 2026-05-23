@@ -6,7 +6,14 @@ import { SHOWCASE_VIDEOS, HERO_SLUGS } from '@/lib/showcase'
 import { translations, type Lang } from '@/lib/i18n'
 
 // ── Portfolio — items depuis lib/showcase.ts ────────────────────────────────
-type PortfolioItem = { id: string; slug: string; ratio: number; label: string; grad: string; src?: string }
+// Slugs avec poster JPG disponible (exemple1-22 + volt)
+const SLUGS_WITH_POSTER = new Set([
+  'exemple1','exemple2','exemple3','exemple4','exemple5','exemple6','exemple7',
+  'exemple8','exemple9','exemple10','exemple11','exemple12','exemple13','exemple14',
+  'exemple15','exemple16','exemple17','exemple18','exemple19','exemple20','exemple21','exemple22',
+])
+
+type PortfolioItem = { id: string; slug: string; ratio: number; label: string; grad: string; poster?: string }
 
 const GRADS = [
   'linear-gradient(135deg,#0a0a14,#1a0a3c)',
@@ -14,12 +21,12 @@ const GRADS = [
 ]
 
 const PORTFOLIO_ITEMS: PortfolioItem[] = SHOWCASE_VIDEOS.map((v, i) => ({
-  id:    `e${String(i + 1).padStart(2, '0')}`,
-  slug:  v.slug,
-  ratio: v.ratio,
-  label: v.ratio > 1 ? '16:9' : v.ratio > 0.7 ? '3:4' : '9:16',
-  grad:  GRADS[i % 2],
-  src:   `/showcase/${v.slug}.mp4`,
+  id:     `e${String(i + 1).padStart(2, '0')}`,
+  slug:   v.slug,
+  ratio:  v.ratio,
+  label:  v.ratio > 1 ? '16:9' : v.ratio > 0.7 ? '3:4' : '9:16',
+  grad:   GRADS[i % 2],
+  poster: SLUGS_WITH_POSTER.has(v.slug) ? `/showcase/${v.slug}.jpg` : undefined,
 }))
 
 const SHOWCASE_SLUGS = HERO_SLUGS
@@ -161,10 +168,11 @@ function PortfolioRow({
               }}
               aria-label={`Lire ${item.slug}`}
             >
-              {item.src ? (
-                <video
-                  src={item.src}
-                  autoPlay muted loop playsInline preload="none"
+              {item.poster ? (
+                <img
+                  src={item.poster}
+                  alt=""
+                  loading="lazy"
                   style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
                 />
               ) : (
@@ -337,12 +345,23 @@ export default function HomePage() {
     })
 
     // ── IntersectionObserver : pause/play vidéos hors viewport ──────────────
-    // Exclure les vidéos hero (section .lv2-hero) et le lecteur modal
+    // iOS Safari ignore preload="none" → readyState=0 au premier passage.
+    // Il faut appeler load() d'abord, puis play() dans le handler canplay.
     const videoObs = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const vid = entry.target as HTMLVideoElement
         if (entry.isIntersecting) {
-          if (vid.paused) vid.play().catch(() => {/* autoplay bloqué : silencieux */})
+          if (vid.readyState === 0) {
+            // iOS : rien n'est chargé — load() puis play() sur canplay
+            const onCanPlay = () => {
+              vid.play().catch(() => {})
+              vid.removeEventListener('canplay', onCanPlay)
+            }
+            vid.addEventListener('canplay', onCanPlay)
+            vid.load()
+          } else if (vid.paused) {
+            vid.play().catch(() => {})
+          }
         } else {
           if (!vid.paused) vid.pause()
         }
@@ -599,7 +618,7 @@ export default function HomePage() {
                 aria-label={t.studio.videoAria}
               >
                 <video
-                  autoPlay muted loop playsInline preload="metadata"
+                  autoPlay muted loop playsInline preload="none" poster="/showcase/volt.jpg"
                   style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }}
                 >
                   <source src="/showcase/volt.mp4" type="video/mp4" />
@@ -651,7 +670,7 @@ export default function HomePage() {
                 aria-label={t.seedance.aria169}
               >
                 <video
-                  autoPlay muted loop playsInline preload="metadata"
+                  autoPlay muted loop playsInline preload="none" poster="/showcase/exemple19.jpg"
                   style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', pointerEvents:'none' }}
                 >
                   <source src="/showcase/exemple19.mp4" type="video/mp4" />
@@ -692,7 +711,7 @@ export default function HomePage() {
                 aria-label={t.seedance.aria916}
               >
                 <video
-                  autoPlay muted loop playsInline preload="metadata"
+                  autoPlay muted loop playsInline preload="none" poster="/showcase/exemple18.jpg"
                   style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', pointerEvents:'none' }}
                 >
                   <source src="/showcase/exemple18.mp4" type="video/mp4" />
@@ -803,6 +822,7 @@ export default function HomePage() {
                       background: 'var(--surface)', border: '1px solid var(--bdr-md)',
                     }}>
                       <img src={`/models/${m.slug}.jpg`} alt={m.name}
+                        loading="lazy"
                         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
                       />
