@@ -833,13 +833,13 @@ export default function HomePage() {
             <div>
               <div style={{ display: 'grid', gridTemplateColumns: '1.25fr 1fr', gap: 10, height: 520 }}>
 
-                {/* Kaelys — pleine hauteur */}
+                {/* Mivael — pleine hauteur */}
                 <div style={{
                   borderRadius: 14, overflow: 'hidden', position: 'relative', height: '100%',
                   background: 'linear-gradient(160deg,#1a0f3a,#0e0e1a)',
                   border: '1px solid rgba(124,92,252,0.35)',
                 }}>
-                  <img src="/models/kaelys.jpg" alt="Kaelys"
+                  <img src="/models/kaelys.jpg" alt="Mivael"
                     style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
                   />
@@ -885,7 +885,7 @@ export default function HomePage() {
                 </div>
 
               </div>
-              {/* Note Kaelys — brand partner */}
+              {/* Note Mivael — brand partner */}
               <div style={{
                 marginTop: 10, padding: '14px 16px', borderRadius: 12,
                 border: '1px solid rgba(124,92,252,0.3)',
