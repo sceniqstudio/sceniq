@@ -6,11 +6,12 @@ import { SHOWCASE_VIDEOS, HERO_SLUGS } from '@/lib/showcase'
 import { translations, type Lang } from '@/lib/i18n'
 
 // ── Portfolio — items depuis lib/showcase.ts ────────────────────────────────
-// Slugs avec poster JPG disponible (exemple1-22 + volt)
+// Slugs avec poster JPG (première frame extraite de chaque vidéo)
 const SLUGS_WITH_POSTER = new Set([
   'exemple1','exemple2','exemple3','exemple4','exemple5','exemple6','exemple7',
   'exemple8','exemple9','exemple10','exemple11','exemple12','exemple13','exemple14',
   'exemple15','exemple16','exemple17','exemple18','exemple19','exemple20','exemple21','exemple22',
+  'exemple23','exemple24','exemple25','exemple26',
 ])
 
 type PortfolioItem = { id: string; slug: string; ratio: number; label: string; grad: string; poster?: string }
