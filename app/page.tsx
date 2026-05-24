@@ -1230,6 +1230,7 @@ export default function HomePage() {
               <li><a href="tel:+33756808831">📞 07 56 80 88 31</a></li>
               <li><a href="/mentions-legales">{t.footer.links.legal}</a></li>
               <li><a href="/confidentialite">{t.footer.links.privacy}</a></li>
+              <li><a href="/cgv">{t.footer.links.cgv}</a></li>
             </ul>
           </div>
         </div>
