@@ -186,6 +186,10 @@ export default function CommandePage() {
   const [submitting,  setSubmitting]  = useState(false)
   const [error,       setError]       = useState<string | null>(null)
   const [dragOver,    setDragOver]    = useState(false)
+  const [acceptCgv,   setAcceptCgv]   = useState(false)
+  const [acceptRgpd,  setAcceptRgpd]  = useState(false)
+  const [acceptRights,setAcceptRights]= useState(false)
+  const [legalModal,  setLegalModal]  = useState<null | 'cgv' | 'confidentialite'>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Pré-remplissage URL params
@@ -317,7 +321,67 @@ export default function CommandePage() {
 
   // ─── Render ────────────────────────────────────────────────────────────────
 
+  // Ferme la modale sur Escape
+  useEffect(() => {
+    if (!legalModal) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setLegalModal(null) }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [legalModal])
+
   return (
+    <>
+    {/* ── Modale légale ─────────────────────────────────────────────────── */}
+    {legalModal && (
+      <div
+        onClick={() => setLegalModal(null)}
+        style={{
+          position:'fixed', inset:0, zIndex:9999,
+          background:'rgba(0,0,0,.75)', backdropFilter:'blur(4px)',
+          display:'flex', alignItems:'center', justifyContent:'center',
+          padding:'24px',
+        }}
+      >
+        <div
+          onClick={e => e.stopPropagation()}
+          style={{
+            width:'100%', maxWidth:760, height:'80vh',
+            background:'#13121f', borderRadius:16,
+            border:'1px solid rgba(124,92,252,.2)',
+            boxShadow:'0 24px 80px rgba(0,0,0,.6)',
+            display:'flex', flexDirection:'column', overflow:'hidden',
+          }}
+        >
+          {/* Header modale */}
+          <div style={{
+            display:'flex', alignItems:'center', justifyContent:'space-between',
+            padding:'14px 20px', borderBottom:'1px solid rgba(255,255,255,.08)', flexShrink:0,
+          }}>
+            <span style={{ fontSize:13, fontWeight:700, color:'rgba(255,255,255,.5)', letterSpacing:.5 }}>
+              {legalModal === 'cgv' ? 'Conditions Générales de Vente' : 'Politique de confidentialité'}
+            </span>
+            <button
+              onClick={() => setLegalModal(null)}
+              style={{
+                background:'rgba(255,255,255,.08)', border:'none', borderRadius:6,
+                color:'rgba(255,255,255,.6)', fontSize:16, cursor:'pointer',
+                width:28, height:28, display:'flex', alignItems:'center', justifyContent:'center',
+                transition:'background .15s',
+              }}
+              onMouseEnter={e=>(e.currentTarget.style.background='rgba(255,255,255,.15)')}
+              onMouseLeave={e=>(e.currentTarget.style.background='rgba(255,255,255,.08)')}
+            >✕</button>
+          </div>
+          {/* iframe */}
+          <iframe
+            src={legalModal === 'cgv' ? '/cgv' : '/confidentialite'}
+            style={{ flex:1, border:'none', width:'100%' }}
+            title={legalModal === 'cgv' ? 'CGV' : 'Politique de confidentialité'}
+          />
+        </div>
+      </div>
+    )}
+
     <main style={{
       minHeight:'100vh', background:s.bg, color:s.text,
       display:'flex', alignItems:'flex-start', justifyContent:'center',
@@ -846,6 +910,72 @@ export default function CommandePage() {
               {tc.s3.assurance}
             </div>
 
+            {/* Cases à cocher légales */}
+            <div style={{ display:'flex', flexDirection:'column', gap:12, marginBottom:20 }}>
+              {[
+                {
+                  checked: acceptCgv,
+                  set: setAcceptCgv,
+                  label: (
+                    <>
+                      {uiLang === 'en' ? 'I accept the ' : 'J\'accepte les '}
+                      <button onClick={e => { e.preventDefault(); e.stopPropagation(); setLegalModal('cgv') }} style={{ background:'none', border:'none', padding:0, cursor:'pointer', color:s.accent, textDecoration:'underline', fontSize:'inherit', fontFamily:'inherit' }}>
+                        {uiLang === 'en' ? 'Terms & Conditions' : 'Conditions Générales de Vente'}
+                      </button>
+                      {uiLang === 'en' ? ' and acknowledge that full payment is due before production begins.' : ' et reconnais que le paiement intégral est dû avant le démarrage de la production.'}
+                    </>
+                  ),
+                },
+                {
+                  checked: acceptRgpd,
+                  set: setAcceptRgpd,
+                  label: (
+                    <>
+                      {uiLang === 'en' ? 'I consent to the processing of my personal data in accordance with the ' : 'Je consens au traitement de mes données personnelles conformément à la '}
+                      <button onClick={e => { e.preventDefault(); e.stopPropagation(); setLegalModal('confidentialite') }} style={{ background:'none', border:'none', padding:0, cursor:'pointer', color:s.accent, textDecoration:'underline', fontSize:'inherit', fontFamily:'inherit' }}>
+                        {uiLang === 'en' ? 'Privacy Policy' : 'Politique de confidentialité'}
+                      </button>
+                      .
+                    </>
+                  ),
+                },
+                {
+                  checked: acceptRights,
+                  set: setAcceptRights,
+                  label: uiLang === 'en'
+                    ? 'I certify that I hold all rights to the elements provided (logos, images, brief) and take sole responsibility for their use.'
+                    : 'Je certifie être titulaire des droits sur les éléments fournis (logos, visuels, brief) et assume l\'entière responsabilité de leur utilisation.',
+                },
+              ].map(({ checked, set, label }, i) => (
+                <label key={i} style={{
+                  display:'flex', alignItems:'flex-start', gap:12, cursor:'pointer',
+                  padding:'12px 14px', borderRadius:10,
+                  background: checked ? 'rgba(165,180,252,.06)' : s.surface,
+                  border: checked ? s.borderAcc : s.border,
+                  transition:'all .15s',
+                }}>
+                  <div style={{
+                    flexShrink:0, marginTop:1,
+                    width:18, height:18, borderRadius:4,
+                    background: checked ? s.accent : 'transparent',
+                    border: checked ? 'none' : '1.5px solid rgba(255,255,255,.3)',
+                    display:'flex', alignItems:'center', justifyContent:'center',
+                    transition:'all .15s',
+                  }}>
+                    {checked && (
+                      <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                        <path d="M1 4L3.5 6.5L9 1" stroke="#1E1B4B" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    )}
+                  </div>
+                  <input type="checkbox" checked={checked} onChange={e => set(e.target.checked)} style={{ display:'none' }} />
+                  <span style={{ fontSize:13, color: checked ? 'rgba(255,255,255,.85)' : s.muted, lineHeight:1.55 }}>
+                    {label}
+                  </span>
+                </label>
+              ))}
+            </div>
+
             {error && (
               <div style={{ background:s.danger, border:'1px solid rgba(248,113,113,.3)', borderRadius:8, padding:'12px 16px', marginBottom:16, fontSize:14, color:s.red }}>
                 {error}
@@ -858,11 +988,12 @@ export default function CommandePage() {
                 background:'transparent', border:s.border, color:s.muted, fontSize:14, cursor:'pointer',
                 opacity: submitting ? 0.5 : 1,
               }}>{tc.back}</button>
-              <button onClick={handleSubmit} disabled={submitting} style={{
+              <button onClick={handleSubmit} disabled={submitting || !acceptCgv || !acceptRgpd || !acceptRights} style={{
                 flex:1, padding:'16px', borderRadius:10,
-                background: submitting ? 'rgba(165,180,252,.4)' : s.accent,
+                background: (submitting || !acceptCgv || !acceptRgpd || !acceptRights) ? 'rgba(165,180,252,.4)' : s.accent,
                 color:'#1E1B4B', fontSize:16, fontWeight:700, border:'none',
-                cursor: submitting ? 'wait' : 'pointer', transition:'all .15s', letterSpacing:-0.2,
+                cursor: (submitting || !acceptCgv || !acceptRgpd || !acceptRights) ? 'not-allowed' : 'pointer',
+                transition:'all .15s', letterSpacing:-0.2,
               }}>
                 {submitting
                   ? (uploading ? tc.s3.uploading : tc.s3.redirecting)
@@ -878,5 +1009,6 @@ export default function CommandePage() {
 
       </div>
     </main>
+    </>
   )
 }

@@ -75,7 +75,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       }
 
       // Chemin dans le bucket : client-uploads/temp/{sessionId}/{uuid}-{nom-sanitisé}
-      const ext = file.name.split('.').pop() ?? 'bin'
       const safeName = file.name
         .replace(/[^a-zA-Z0-9._-]/g, '_')
         .slice(0, 80)

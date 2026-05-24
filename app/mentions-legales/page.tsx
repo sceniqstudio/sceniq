@@ -26,8 +26,11 @@ export default function MentionsLegalesPage() {
         </p>
 
         <Section title="Éditeur du site">
-          <Row label="Raison sociale"              value="ScenIQ" />
-          <Row label="Statut"                       value="Micro-entreprise" />
+          <Row label="Raison sociale"              value="DESIGN SPRINT EXPERTS LTD" />
+          <Row label="Marque commerciale"           value="ScenIQ" />
+          <Row label="Forme juridique"              value="Private limited company (Ltd)" />
+          <Row label="Siège social"                 value="Henleaze House, 13 Harbury Road, Bristol, England, BS9 4PN" />
+          <Row label="Company number"               value="14310075" />
           <Row label="Responsable de publication"   value="Pascal Ekloui" />
           <Row label="Email"                        value={<a href="mailto:support@sceniq.studio" style={{ color: '#A5B4FC' }}>support@sceniq.studio</a>} />
           <Row label="Téléphone"                    value={<a href="tel:+33756808831" style={{ color: '#A5B4FC' }}>+33 7 56 80 88 31</a>} />
@@ -53,12 +56,15 @@ export default function MentionsLegalesPage() {
         </Section>
 
         <Section title="Droit applicable">
-          <p style={pStyle}>Le présent site est soumis au droit français. Tout litige relatif à son utilisation relève de la compétence des tribunaux français.</p>
+          <p style={pStyle}>Le présent site est soumis au droit anglais et gallois (England and Wales). Tout litige relatif à son utilisation relève de la compétence des tribunaux d'Angleterre et du Pays de Galles, sans préjudice des droits des consommateurs résidant dans l'Union européenne.</p>
         </Section>
 
-        <div style={{ marginTop: '48px', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,.08)' }}>
+        <div style={{ marginTop: '48px', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,.08)', display: 'flex', gap: '24px', flexWrap: 'wrap' as const }}>
           <Link href="/confidentialite" style={{ color: '#A5B4FC', fontSize: '14px', textDecoration: 'none' }}>
             Politique de confidentialité →
+          </Link>
+          <Link href="/cgv" style={{ color: '#A5B4FC', fontSize: '14px', textDecoration: 'none' }}>
+            CGV →
           </Link>
         </div>
 

@@ -128,7 +128,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     const session = await stripe.checkout.sessions.create({
       mode:                 'payment',
-      payment_method_types: ['card'],
+      payment_method_types: ['card'], // Apple Pay / Google Pay activés auto par Stripe Checkout sur appareils compatibles
       line_items:           lineItems,
       customer_email:       client_email,
       client_reference_id:  order.id,

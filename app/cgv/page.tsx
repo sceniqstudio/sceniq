@@ -30,7 +30,7 @@ export default function CGVPage() {
           <p style={pStyle}>
             Les présentes Conditions Générales de Vente (CGV) s'appliquent à toute commande de vidéos courtes
             (5 à 15 secondes) avec avatars et mannequins virtuels générés par intelligence artificielle,
-            proposées par ScenIQ aux clients situés dans l'Union européenne.
+            proposées par ScenIQ à tout client situé en Europe ou à l'international.
           </p>
           <p style={pStyle}>
             Toute commande validée implique l'acceptation sans réserve des présentes CGV.
@@ -77,10 +77,12 @@ export default function CGVPage() {
             <li style={liStyle}>Consent au traitement de ses données personnelles (RGPD)</li>
             <li style={liStyle}>Certifie être titulaire des droits sur les éléments fournis (logos, références, brief)</li>
           </ul>
-          <h3 style={h3Style}>4.3 Brief client</h3>
+          <h3 style={h3Style}>4.3 Brief client et démarrage</h3>
           <p style={pStyle}>
             Le client fournit les éléments nécessaires lors de la commande : photos, logos, textes, références
-            visuelles, brief créatif. La production débute après un appel de direction créative sous 4 h ouvrées.
+            visuelles, brief créatif. ScenIQ prend contact sous 4 h ouvrées suivant la soumission du formulaire
+            pour cadrer le besoin. La préprod (storyboard, ambiance, direction créative) est ensuite envoyée
+            pour validation avant la génération finale.
           </p>
         </Section>
 
@@ -93,7 +95,7 @@ export default function CGVPage() {
           </p>
           <h3 style={h3Style}>5.2 Modalités de paiement</h3>
           <ul style={ulStyle}>
-            <li style={liStyle}>Paiement 100 % à la commande — aucun acompte partiel</li>
+            <li style={liStyle}>Paiement intégral à la commande, avant démarrage de la production</li>
             <li style={liStyle}>Moyens acceptés : carte bancaire, Apple Pay, Google Pay (via Stripe)</li>
             <li style={liStyle}>Une facture est générée automatiquement après paiement</li>
             <li style={liStyle}>Aucune donnée de carte bancaire n'est stockée sur nos serveurs</li>
@@ -102,20 +104,24 @@ export default function CGVPage() {
 
         {/* Article 6 */}
         <Section title="Article 6 — Délais et livraison">
-          <h3 style={h3Style}>6.1 Délai</h3>
+          <h3 style={h3Style}>6.1 Délais</h3>
           <p style={pStyle}>
-            La vidéo finale est livrée sous 48 h après la validation de la direction créative lors de l'appel.
-            Le délai court à partir de cet appel, pas du paiement.
+            Le processus se déroule en trois temps : (1) appel de cadrage sous 4 h ouvrées suivant
+            la commande ; (2) envoi de la préprod et allers-retours de validation ; (3) génération
+            et livraison de la vidéo finale sous 4 h ouvrées après validation client.
           </p>
           <h3 style={h3Style}>6.2 Livraison</h3>
           <p style={pStyle}>
-            La vidéo est livrée par email au format MP4 1080p. Le client dispose de 48 h pour signaler
-            toute non-conformité par rapport au brief validé.
+            La vidéo est livrée par email au format MP4 1080p. Le client dispose de 48 h ouvrées pour signaler
+            toute non-conformité par rapport au brief validé lors de l'appel de cadrage.
           </p>
           <h3 style={h3Style}>6.3 Itérations</h3>
           <p style={pStyle}>
-            10 allers-retours sont inclus dans chaque commande. Si, après 10 itérations, aucun résultat
-            satisfaisant n'est atteint, le client est intégralement remboursé.
+            Les allers-retours inclus portent exclusivement sur des ajustements conformes au brief
+            validé lors de l'appel de cadrage (cadrage, timing, texte, couleur). Tout changement
+            de direction créative en cours de production est hors périmètre et peut faire l'objet
+            d'une nouvelle commande. Si, à l'issue des itérations, le résultat ne correspond pas
+            au brief validé, le client est intégralement remboursé.
           </p>
           <h3 style={h3Style}>6.4 Retard</h3>
           <p style={pStyle}>
@@ -125,7 +131,12 @@ export default function CGVPage() {
         </Section>
 
         {/* Article 7 */}
-        <Section title="Article 7 — Droit de rétractation (clients consommateurs UE)">
+        <Section title="Article 7 — Droit de rétractation (consommateurs UE uniquement)">
+          <p style={pStyle}>
+            Le présent article s'applique exclusivement aux clients personnes physiques agissant en
+            dehors de tout cadre professionnel (B2C). Les clients professionnels (agences, entreprises,
+            auto-entrepreneurs) n'en bénéficient pas.
+          </p>
           <p style={pStyle}>
             Conformément à la directive 2011/83/UE, le consommateur dispose d'un délai de 14 jours
             calendaires à compter de la conclusion du contrat pour se rétracter, sans motif.
@@ -168,9 +179,9 @@ export default function CGVPage() {
           <p style={pStyle}>
             Les avatars et comédiens utilisés sont intégralement générés par IA. Ils ne représentent
             aucune personne réelle. ScenIQ garantit qu'aucun droit à l'image de personne physique
-            identifiable n'est violé. Conformément au EU AI Act (art. 50) et à la loi française du
-            9 juin 2023, la mention « Image générée par IA » est obligatoire sur vos publications.
-            ScenIQ fournit cette mention dans chaque livraison.
+            identifiable n'est violé. Conformément au EU AI Act (art. 50) relatif à la transparence
+            des contenus générés par IA, la mention « Image générée par IA » est obligatoire sur vos
+            publications. ScenIQ fournit cette mention dans chaque livraison.
           </p>
         </Section>
 
