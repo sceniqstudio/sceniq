@@ -201,18 +201,13 @@ function PortfolioRow({
               }}
               aria-label={`Lire ${item.slug}`}
             >
-              {item.poster ? (
-                <img
-                  src={item.poster}
-                  alt=""
-                  loading="lazy"
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
-                />
-              ) : (
-                <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: 'rgba(255,255,255,0.18)', textTransform: 'uppercase' }}>
-                  {item.label}
-                </span>
-              )}
+              <video
+                autoPlay muted loop playsInline preload="none"
+                poster={item.poster}
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
+              >
+                <source src={`/showcase/${item.slug}.mp4`} type="video/mp4" />
+              </video>
               <div className="portfolio-card-play">
                 <div className="portfolio-card-play-icon">
                   <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
