@@ -29,26 +29,8 @@ export default function LegalHeader() {
         gap:            '16px',
       }}>
         {/* Logo */}
-        <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '14px' }}>
-          {/* Mark toupie */}
-          <svg width="44" height="44" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="32" height="32" rx="8" fill="url(#lg)"/>
-            <path d="M16 4 C16 12 20 16 28 16 C20 16 16 20 16 28 C16 20 12 16 4 16 C12 16 16 12 16 4 Z" fill="white"/>
-            <defs>
-              <linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#8485F8"/>
-                <stop offset="1" stopColor="#4F52D8"/>
-              </linearGradient>
-            </defs>
-          </svg>
-          <span style={{
-            fontSize:      '22px',
-            fontWeight:    800,
-            color:         '#fff',
-            letterSpacing: '-0.6px',
-          }}>
-            ScenIQ
-          </span>
+        <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+          <img src="/sceniq-logo-dark.svg" alt="ScenIQ" style={{ height: 44, width: 'auto', display: 'block' }} />
         </Link>
 
         {/* Retour */}

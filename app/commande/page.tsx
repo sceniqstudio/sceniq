@@ -394,7 +394,7 @@ export default function CommandePage() {
           <Link href="/" style={{ fontSize:13, color:s.muted, textDecoration:'none', display:'flex', alignItems:'center', gap:6 }}>
             {tc.back}
           </Link>
-          <img src="/logo-sceniq.svg" alt="ScenIQ" style={{ height:40, display:'block' }} />
+          <img src="/sceniq-logo-dark.svg" alt="ScenIQ" style={{ height:40, display:'block' }} />
         </div>
 
         <StepIndicator current={step} total={4} labels={tc.stepLabels} />
