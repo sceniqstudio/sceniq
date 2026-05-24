@@ -74,7 +74,7 @@ export default function CGVPage() {
           <p style={pStyle}>En passant commande, le client :</p>
           <ul style={ulStyle}>
             <li style={liStyle}>Accepte les présentes CGV</li>
-            <li style={liStyle}>Consent au traitement de ses données personnelles (RGPD)</li>
+            <li style={liStyle}>Consent au traitement de ses données personnelles (RGPD et UK GDPR)</li>
             <li style={liStyle}>Certifie être titulaire des droits sur les éléments fournis (logos, références, brief)</li>
           </ul>
           <h3 style={h3Style}>4.3 Brief client et démarrage</h3>
@@ -117,11 +117,11 @@ export default function CGVPage() {
           </p>
           <h3 style={h3Style}>6.3 Itérations</h3>
           <p style={pStyle}>
-            Les allers-retours inclus portent exclusivement sur des ajustements conformes au brief
-            validé lors de l'appel de cadrage (cadrage, timing, texte, couleur). Tout changement
-            de direction créative en cours de production est hors périmètre et peut faire l'objet
-            d'une nouvelle commande. Si, à l'issue des itérations, le résultat ne correspond pas
-            au brief validé, le client est intégralement remboursé.
+            Jusqu'à 10 allers-retours sont inclus dans le forfait. Ils portent exclusivement sur des
+            ajustements conformes au brief validé lors de l'appel de cadrage (cadrage, timing, texte,
+            couleur). Tout changement de direction créative en cours de production est hors périmètre
+            et peut faire l'objet d'une nouvelle commande. Si, à l'issue des itérations, le résultat
+            ne correspond pas au brief validé, le client est intégralement remboursé.
           </p>
           <h3 style={h3Style}>6.4 Retard</h3>
           <p style={pStyle}>
@@ -262,7 +262,7 @@ export default function CGVPage() {
           </p>
           <h3 style={h3Style}>12.3 Langue</h3>
           <p style={pStyle}>
-            Les présentes CGV sont rédigées en français. En cas de traduction, seule la version française fait foi.
+            Les présentes CGV sont rédigées en français.
           </p>
         </Section>
 

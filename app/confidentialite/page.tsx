@@ -36,7 +36,7 @@ export default function ConfidentialitePage() {
           <Row label="Téléphone"        value={<a href="tel:+33756808831" style={{ color: '#A5B4FC' }}>+33 7 56 80 88 31</a>} />
           <p style={{ ...pStyle, marginTop: '16px' }}>
             Bien que basée au Royaume-Uni, notre société respecte le Règlement Général sur la Protection
-            des Données (RGPD) pour tous les clients résidant dans l'Union européenne.
+            des Données (RGPD) et le UK GDPR pour tous les clients résidant dans l'Union européenne ou au Royaume-Uni.
           </p>
         </Section>
 
@@ -77,10 +77,10 @@ export default function ConfidentialitePage() {
         {/* Article 4 */}
         <Section title="4. Base légale du traitement">
           <ul style={ulStyle}>
-            <li style={liStyle}><strong style={{ color: '#fff' }}>Exécution du contrat</strong> — traitement nécessaire pour réaliser votre commande (art. 6.1.b RGPD)</li>
-            <li style={liStyle}><strong style={{ color: '#fff' }}>Obligation légale</strong> — conservation des factures, obligations comptables et fiscales (art. 6.1.c RGPD)</li>
-            <li style={liStyle}><strong style={{ color: '#fff' }}>Consentement</strong> — pour l'envoi de communications marketing (art. 6.1.a RGPD)</li>
-            <li style={liStyle}><strong style={{ color: '#fff' }}>Intérêt légitime</strong> — prévention de la fraude, amélioration de nos services (art. 6.1.f RGPD)</li>
+            <li style={liStyle}><strong style={{ color: '#fff' }}>Exécution du contrat</strong> — traitement nécessaire pour réaliser votre commande (art. 6.1.b RGPD et UK GDPR)</li>
+            <li style={liStyle}><strong style={{ color: '#fff' }}>Obligation légale</strong> — conservation des factures, obligations comptables et fiscales (art. 6.1.c RGPD et UK GDPR)</li>
+            <li style={liStyle}><strong style={{ color: '#fff' }}>Consentement</strong> — pour l'envoi de communications marketing (art. 6.1.a RGPD et UK GDPR)</li>
+            <li style={liStyle}><strong style={{ color: '#fff' }}>Intérêt légitime</strong> — prévention de la fraude, amélioration de nos services (art. 6.1.f RGPD et UK GDPR)</li>
           </ul>
         </Section>
 
@@ -154,7 +154,7 @@ export default function ConfidentialitePage() {
 
         {/* Article 8 */}
         <Section title="8. Vos droits">
-          <p style={pStyle}>Conformément au RGPD, vous disposez des droits suivants :</p>
+          <p style={pStyle}>Conformément au RGPD et au UK GDPR, vous disposez des droits suivants :</p>
           <ul style={ulStyle}>
             <li style={liStyle}><strong style={{ color: '#fff' }}>Droit d'accès</strong> — obtenir une copie de vos données personnelles</li>
             <li style={liStyle}><strong style={{ color: '#fff' }}>Droit de rectification</strong> — corriger des données inexactes ou incomplètes</li>
@@ -167,14 +167,15 @@ export default function ConfidentialitePage() {
           <p style={pStyle}>
             Pour exercer ces droits, envoyez votre demande à{' '}
             <a href="mailto:support@sceniq.studio" style={{ color: '#A5B4FC' }}>support@sceniq.studio</a>{' '}
-            avec la mention « Exercice de mes droits RGPD ». Délai de réponse : 1 mois maximum
+            avec la mention « Exercice de mes droits RGPD / UK GDPR ». Délai de réponse : 1 mois maximum
             (extensible à 3 mois si la demande est complexe).
           </p>
           <p style={pStyle}>
-            En cas de litige non résolu, vous pouvez déposer une plainte auprès de la{' '}
+            En cas de litige non résolu, vous pouvez déposer une plainte auprès de l'
+            <a href="https://www.ico.org.uk" target="_blank" rel="noopener noreferrer" style={{ color: '#A5B4FC' }}>ICO</a>{' '}
+            (Royaume-Uni), de la{' '}
             <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer" style={{ color: '#A5B4FC' }}>CNIL</a>{' '}
-            (France), de l'<a href="https://www.ico.org.uk" target="_blank" rel="noopener noreferrer" style={{ color: '#A5B4FC' }}>ICO</a>{' '}
-            (Royaume-Uni), ou de l'autorité de protection des données de votre pays de résidence.
+            (France), ou de l'autorité de protection des données de votre pays de résidence.
           </p>
         </Section>
 
