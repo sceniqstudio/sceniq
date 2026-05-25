@@ -27,12 +27,18 @@ interface ShowcaseClipProps {
  * Quand le composant entre dans le viewport :
  * - autoplay + muted + loop = lecture continue sans interaction
  * - playsInline = pas de fullscreen forcé sur iOS
+ *
+ * iOS Safari note :
+ * - `autoPlay` attribute is ignored for dynamically-inserted videos (not in initial HTML).
+ * - Fix: explicit `.play()` call in useEffect after mount, with readyState=0 guard.
  */
 export function ShowcaseClip({ slug, fallbackBg, fallbackEmoji, ariaLabel }: ShowcaseClipProps) {
   const [videoFailed, setVideoFailed] = useState(false)
   const [shouldLoad, setShouldLoad]   = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
+  const videoRef     = useRef<HTMLVideoElement>(null)
 
+  // ── 1. IntersectionObserver : lazy mount de la <video> ─────────────────────
   useEffect(() => {
     const el = containerRef.current
     if (!el || shouldLoad) return
@@ -48,8 +54,6 @@ export function ShowcaseClip({ slug, fallbackBg, fallbackEmoji, ariaLabel }: Sho
         }
       },
       {
-        // Précharge 200px avant que le clip n'arrive dans le viewport
-        // pour que la vidéo soit prête au moment où l'user la voit
         rootMargin: '200px 0px',
         threshold: 0.01,
       },
@@ -57,6 +61,33 @@ export function ShowcaseClip({ slug, fallbackBg, fallbackEmoji, ariaLabel }: Sho
 
     observer.observe(el)
     return () => observer.disconnect()
+  }, [shouldLoad])
+
+  // ── 2. iOS-safe autoplay : explicit play() après mount ──────────────────────
+  // iOS Safari ignore autoPlay sur les éléments insérés dynamiquement.
+  // Pattern : readyState=0 → load() → canplay → play()
+  useEffect(() => {
+    if (!shouldLoad) return
+    const vid = videoRef.current
+    if (!vid) return
+
+    let cancelled = false
+
+    const doPlay = () => {
+      if (!cancelled) vid.play().catch(() => {})
+    }
+
+    if (vid.readyState === 0) {
+      vid.addEventListener('canplay', doPlay, { once: true })
+      vid.load()
+    } else if (vid.paused) {
+      doPlay()
+    }
+
+    return () => {
+      cancelled = true
+      vid.removeEventListener('canplay', doPlay)
+    }
   }, [shouldLoad])
 
   if (videoFailed) {
@@ -72,12 +103,13 @@ export function ShowcaseClip({ slug, fallbackBg, fallbackEmoji, ariaLabel }: Sho
     <div ref={containerRef} style={{ width: '100%', height: '100%', position: 'relative' }}>
       {shouldLoad ? (
         <video
+          ref={videoRef}
           className="vc-video"
           autoPlay
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="none"
           poster={`/showcase/${slug}.jpg`}
           onError={() => setVideoFailed(true)}
           aria-label={ariaLabel}
