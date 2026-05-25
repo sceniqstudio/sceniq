@@ -202,7 +202,7 @@ function PortfolioRow({
               aria-label={`Lire ${item.slug}`}
             >
               <video
-                autoPlay muted loop playsInline preload="metadata"
+                autoPlay muted loop playsInline preload="none"
                 poster={item.poster}
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
               >
@@ -368,19 +368,24 @@ export default function HomePage() {
   // ── IntersectionObserver vidéos — re-run après shuffle du portfolio ──────
   // Séparé du useEffect principal pour s'exécuter à nouveau quand portfolioRows
   // change (le shuffle remplace les éléments DOM, il faut ré-observer).
-  // iOS Safari : preload="metadata" + load() + canplay → play() explicite.
+  //
+  // iOS Safari notes :
+  // - preload="none" → networkState=1 au départ, readyState=0
+  // - load() → networkState devient 2 (NETWORK_LOADING)
+  // - guard networkState !== 2 : évite le double-load() si l'observer
+  //   re-fire pour une vidéo déjà en cours de chargement (évite reset + boucle)
   useEffect(() => {
     const videoObs = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const vid = entry.target as HTMLVideoElement
         if (entry.isIntersecting) {
           if (vid.readyState === 0) {
-            const onCanPlay = () => {
-              vid.play().catch(() => {})
-              vid.removeEventListener('canplay', onCanPlay)
+            // Appeler load() seulement si pas déjà en cours (évite reset iOS)
+            if (vid.networkState !== 2) {
+              vid.addEventListener('canplay', () => vid.play().catch(() => {}), { once: true })
+              vid.load()
             }
-            vid.addEventListener('canplay', onCanPlay)
-            vid.load()
+            // si networkState===2 : déjà en chargement, le listener canplay existant suffit
           } else if (vid.paused) {
             vid.play().catch(() => {})
           }
@@ -508,7 +513,7 @@ export default function HomePage() {
               >
                 {[...COL_SLUGS[c], ...COL_SLUGS[c]].map((slug, i) => (
                   <div key={`${slug}-${c}-${i}`} className="lv2-hcard">
-                    <video autoPlay muted loop playsInline preload="metadata">
+                    <video autoPlay muted loop playsInline preload="none" poster={`/showcase/${slug}.jpg`}>
                       <source src={`/showcase/${slug}.mp4`} type="video/mp4" />
                     </video>
                   </div>
@@ -533,7 +538,7 @@ export default function HomePage() {
               >
                 {[...COL_SLUGS[c], ...COL_SLUGS[c]].map((slug, i) => (
                   <div key={`${slug}-${c}-${i}`} className="lv2-hcard">
-                    <video autoPlay muted loop playsInline preload="metadata">
+                    <video autoPlay muted loop playsInline preload="none" poster={`/showcase/${slug}.jpg`}>
                       <source src={`/showcase/${slug}.mp4`} type="video/mp4" />
                     </video>
                   </div>
@@ -645,7 +650,7 @@ export default function HomePage() {
                 aria-label={t.studio.videoAria}
               >
                 <video
-                  autoPlay muted loop playsInline preload="none" poster="/showcase/volt.jpg"
+                  autoPlay muted loop playsInline preload="metadata" poster="/showcase/volt.jpg"
                   style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }}
                 >
                   <source src="/showcase/volt.mp4" type="video/mp4" />
