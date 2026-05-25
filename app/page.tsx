@@ -202,7 +202,7 @@ function PortfolioRow({
               aria-label={`Lire ${item.slug}`}
             >
               <video
-                autoPlay muted loop playsInline preload="none"
+                autoPlay muted loop playsInline preload="metadata"
                 poster={item.poster}
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
               >
@@ -241,6 +241,7 @@ export default function HomePage() {
     PORTFOLIO_ITEMS.slice(0, 11), PORTFOLIO_ITEMS.slice(11),
   ])
   const [lang, setLang] = useState<Lang>('fr')
+  const [faqOpen, setFaqOpen] = useState<string | null>(null)
   const t = translations[lang]
 
   // Persist lang preference
@@ -340,20 +341,6 @@ export default function HomePage() {
     )
     document.querySelectorAll('.rv').forEach((el) => obs.observe(el))
 
-    // FAQ accordion — handles both old .fq/.fi and new layout
-    const fqHandlers: Array<{ btn: Element; handler: () => void }> = []
-    document.querySelectorAll('.fq').forEach((b) => {
-      const handler = () => {
-        const fi = b.closest('.fi')
-        if (!fi) return
-        const open = fi.classList.contains('open')
-        document.querySelectorAll('.fi').forEach((f) => f.classList.remove('open'))
-        if (!open) fi.classList.add('open')
-      }
-      b.addEventListener('click', handler)
-      fqHandlers.push({ btn: b, handler })
-    })
-
     // Shuffle portfolio rows on mount
     const shuffled = [...PORTFOLIO_ITEMS].sort(() => Math.random() - 0.5)
     const mid = Math.ceil(shuffled.length / 2)
@@ -372,15 +359,22 @@ export default function HomePage() {
       anchorHandlers.push({ a, handler })
     })
 
-    // ── IntersectionObserver : pause/play vidéos hors viewport ──────────────
-    // iOS Safari ignore preload="none" → readyState=0 au premier passage.
-    // Il faut appeler load() d'abord, puis play() dans le handler canplay.
+    return () => {
+      obs.disconnect()
+      anchorHandlers.forEach(({ a, handler }) => a.removeEventListener('click', handler))
+    }
+  }, [])
+
+  // ── IntersectionObserver vidéos — re-run après shuffle du portfolio ──────
+  // Séparé du useEffect principal pour s'exécuter à nouveau quand portfolioRows
+  // change (le shuffle remplace les éléments DOM, il faut ré-observer).
+  // iOS Safari : preload="metadata" + load() + canplay → play() explicite.
+  useEffect(() => {
     const videoObs = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const vid = entry.target as HTMLVideoElement
         if (entry.isIntersecting) {
           if (vid.readyState === 0) {
-            // iOS : rien n'est chargé — load() puis play() sur canplay
             const onCanPlay = () => {
               vid.play().catch(() => {})
               vid.removeEventListener('canplay', onCanPlay)
@@ -396,18 +390,13 @@ export default function HomePage() {
       })
     }, { rootMargin: '200px 0px', threshold: 0 })
 
-    // Observer toutes les vidéos hors hero — studio inclus (même comportement que Seedance)
-    document.querySelectorAll('video:not(.lv2-hero video):not(#modal-video)').forEach(v => {
+    // Inclut les vidéos hero (colonnes background) — exclut uniquement le modal
+    document.querySelectorAll('video:not(#modal-video)').forEach(v => {
       videoObs.observe(v)
     })
 
-    return () => {
-      obs.disconnect()
-      videoObs.disconnect()
-      fqHandlers.forEach(({ btn, handler }) => btn.removeEventListener('click', handler))
-      anchorHandlers.forEach(({ a, handler }) => a.removeEventListener('click', handler))
-    }
-  }, [])
+    return () => videoObs.disconnect()
+  }, [portfolioRows])
 
   // ════════════════════════════════════════════════════════════════════════
   //  JSX
@@ -519,7 +508,7 @@ export default function HomePage() {
               >
                 {[...COL_SLUGS[c], ...COL_SLUGS[c]].map((slug, i) => (
                   <div key={`${slug}-${c}-${i}`} className="lv2-hcard">
-                    <video autoPlay muted loop playsInline preload="none">
+                    <video autoPlay muted loop playsInline preload="metadata">
                       <source src={`/showcase/${slug}.mp4`} type="video/mp4" />
                     </video>
                   </div>
@@ -544,7 +533,7 @@ export default function HomePage() {
               >
                 {[...COL_SLUGS[c], ...COL_SLUGS[c]].map((slug, i) => (
                   <div key={`${slug}-${c}-${i}`} className="lv2-hcard">
-                    <video autoPlay muted loop playsInline preload="none">
+                    <video autoPlay muted loop playsInline preload="metadata">
                       <source src={`/showcase/${slug}.mp4`} type="video/mp4" />
                     </video>
                   </div>
@@ -1100,10 +1089,14 @@ export default function HomePage() {
             {/* Colonne gauche */}
             <div className="lv2-faq-col">
               {t.faq.left.map((item) => (
-                <div key={item.q} className="fi">
-                  <button className="fq">
+                <div key={item.q} className={`fi${faqOpen === item.q ? ' open' : ''}`}>
+                  <button
+                    className="fq"
+                    onClick={() => setFaqOpen(faqOpen === item.q ? null : item.q)}
+                    aria-expanded={faqOpen === item.q}
+                  >
                     {item.q}
-                    <span className="fi-ico">+</span>
+                    <span className="fi-ico">{faqOpen === item.q ? '−' : '+'}</span>
                   </button>
                   <div className="fa">{item.a}</div>
                 </div>
@@ -1113,10 +1106,14 @@ export default function HomePage() {
             {/* Colonne droite */}
             <div className="lv2-faq-col">
               {t.faq.right.map((item) => (
-                <div key={item.q} className="fi">
-                  <button className="fq">
+                <div key={item.q} className={`fi${faqOpen === item.q ? ' open' : ''}`}>
+                  <button
+                    className="fq"
+                    onClick={() => setFaqOpen(faqOpen === item.q ? null : item.q)}
+                    aria-expanded={faqOpen === item.q}
+                  >
                     {item.q}
-                    <span className="fi-ico">+</span>
+                    <span className="fi-ico">{faqOpen === item.q ? '−' : '+'}</span>
                   </button>
                   <div className="fa">{item.a}</div>
                 </div>
