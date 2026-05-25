@@ -992,7 +992,8 @@ export default function HomePage() {
                     )}
                   </div>
                   <ul className="lv2-price-perks">
-                    <li className="lv2-price-perk">{t.pricing.perks.shots(p.shots, p.maxFmts, p.fmts)} <span style={{ color:'var(--g6)', fontWeight:400 }}>{p.fmts}</span></li>
+                    <li className="lv2-price-perk">{t.pricing.perks.shots(p.shots)}</li>
+                    <li className="lv2-price-perk" style={{ color:'var(--g6)', fontWeight:400, fontSize:'0.9em' }}>{t.pricing.perks.formats}</li>
                     <li className="lv2-price-perk">{t.pricing.perks.script}</li>
                     <li className="lv2-price-perk">{t.pricing.perks.music}</li>
                     <li className="lv2-price-perk">{t.pricing.perks.lipsync} <span style={{ color: 'var(--g6)', fontWeight: 400 }}>🇫🇷 🇺🇸 🇯🇵 🇪🇸 🇧🇷 🇮🇩 🇨🇳</span></li>

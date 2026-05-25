@@ -24,14 +24,8 @@ type CartItem = {
 const PRICE: Record<Duration, number> = { 5: 69, 8: 89, 10: 109, 12: 129, 15: 159 }
 const AI_MODEL_ADDON = 49
 const DURATIONS: Duration[] = [5, 8, 10, 12, 15]
-const MAX_FORMATS: Record<Duration, number> = { 5: 2, 8: 2, 10: 3, 12: 3, 15: 3 }
-const DEFAULT_FORMATS: Record<Duration, Format[]> = {
-  5:  ['9:16', '1:1'],
-  8:  ['9:16', '1:1'],
-  10: ['9:16', '1:1', '16:9'],
-  12: ['9:16', '1:1', '16:9'],
-  15: ['9:16', '1:1', '16:9'],
-}
+// Un seul format au choix parmi 6 — pas de multi-sélection en V1
+const DEFAULT_FORMAT: Format = '9:16'
 
 const FORMATS: { value: Format; label: string; desc: string; ratio: [number, number] }[] = [
   { value: '9:16',  label: '9:16',  desc: 'TikTok · Reels',      ratio: [9,  16] },
@@ -199,7 +193,7 @@ export default function CommandePage() {
     if (duree) {
       const n = parseInt(duree) as Duration
       if (([5,8,10,12,15] as number[]).includes(n)) {
-        setCartItems([{ ...newItem(), duration: n, formats: DEFAULT_FORMATS[n] }])
+        setCartItems([{ ...newItem(), duration: n, formats: [DEFAULT_FORMAT] }])
       }
     }
     if (params.get('modele') === '1') {
@@ -467,7 +461,7 @@ export default function CommandePage() {
                     <p style={{ margin:'0 0 8px', fontSize:11, fontWeight:700, letterSpacing:1, textTransform:'uppercase', color:s.muted }}>{tc.s0.durLabel}</p>
                     <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
                       {DURATIONS.map(d => (
-                        <button key={d} onClick={() => updateItem(item.id, { duration: d, formats: DEFAULT_FORMATS[d] })} style={{
+                        <button key={d} onClick={() => updateItem(item.id, { duration: d, formats: [DEFAULT_FORMAT] })} style={{
                           flex:'1 1 0', minWidth:58, padding:'10px 4px', borderRadius:8, cursor:'pointer',
                           background: item.duration === d ? s.accentBg : 'rgba(255,255,255,.04)',
                           border:     item.duration === d ? s.borderAcc : s.border,
@@ -484,57 +478,36 @@ export default function CommandePage() {
                     </div>
                   </div>
 
-                  {/* Formats */}
-                  {item.duration && (() => {
-                    const max = MAX_FORMATS[item.duration]
-                    const toggleFmt = (fmt: Format) => {
-                      const sel = item.formats
-                      if (sel.includes(fmt)) {
-                        if (sel.length <= 1) return
-                        updateItem(item.id, { formats: sel.filter(f => f !== fmt) })
-                      } else {
-                        if (sel.length >= max) return
-                        updateItem(item.id, { formats: [...sel, fmt] })
-                      }
-                    }
-                    return (
-                      <div style={{ marginBottom:14 }}>
-                        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
-                          <p style={{ margin:0, fontSize:11, fontWeight:700, letterSpacing:1, textTransform:'uppercase', color:s.muted }}>
-                            {tc.s0.formatsLabel}
-                          </p>
-                          <span style={{ fontSize:11, color: item.formats.length === max ? s.accent : s.muted }}>
-                            {tc.s0.selected(item.formats.length, max)}
-                          </span>
-                        </div>
-                        <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:6 }}>
-                          {FORMATS.map(f => {
-                            const active = item.formats.includes(f.value)
-                            const atMax  = !active && item.formats.length >= max
-                            return (
-                              <button key={f.value}
-                                onClick={() => toggleFmt(f.value)}
-                                disabled={atMax}
-                                style={{
-                                  padding:'8px 6px', borderRadius:8, cursor: atMax ? 'not-allowed' : 'pointer',
-                                  background: active ? s.accentBg : 'rgba(255,255,255,.03)',
-                                  border:     active ? s.borderAcc : s.border,
-                                  color: s.text, textAlign:'center', transition:'all .15s',
-                                  opacity: atMax ? 0.35 : 1,
-                                }}>
-                                <FormatIcon ratio={f.ratio} active={active} />
-                                <div style={{ fontSize:12, fontWeight:700, color: active ? s.accent : '#fff' }}>{f.label}</div>
-                                <div style={{ fontSize:10, color:s.muted, marginTop:1 }}>{f.desc}</div>
-                              </button>
-                            )
-                          })}
-                        </div>
-                        <p style={{ margin:'6px 0 0', fontSize:11, color:'rgba(255,255,255,.3)', lineHeight:1.4 }}>
-                          {tc.s0.formatsNote(max)}
-                        </p>
+                  {/* Format — single choice among 6 */}
+                  {item.duration && (
+                    <div style={{ marginBottom:14 }}>
+                      <p style={{ margin:'0 0 8px', fontSize:11, fontWeight:700, letterSpacing:1, textTransform:'uppercase', color:s.muted }}>
+                        {tc.s0.formatsLabel}
+                      </p>
+                      <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:6 }}>
+                        {FORMATS.map(f => {
+                          const active = item.formats.includes(f.value)
+                          return (
+                            <button key={f.value}
+                              onClick={() => updateItem(item.id, { formats: [f.value] })}
+                              style={{
+                                padding:'8px 6px', borderRadius:8, cursor:'pointer',
+                                background: active ? s.accentBg : 'rgba(255,255,255,.03)',
+                                border:     active ? s.borderAcc : s.border,
+                                color: s.text, textAlign:'center', transition:'all .15s',
+                              }}>
+                              <FormatIcon ratio={f.ratio} active={active} />
+                              <div style={{ fontSize:12, fontWeight:700, color: active ? s.accent : '#fff' }}>{f.label}</div>
+                              <div style={{ fontSize:10, color:s.muted, marginTop:1 }}>{f.desc}</div>
+                            </button>
+                          )
+                        })}
                       </div>
-                    )
-                  })()}
+                      <p style={{ margin:'6px 0 0', fontSize:11, color:'rgba(255,255,255,.3)', lineHeight:1.4 }}>
+                        {tc.s0.formatsNote}
+                      </p>
+                    </div>
+                  )}
 
                   {/* Quantité */}
                   <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
