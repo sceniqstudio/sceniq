@@ -43,7 +43,7 @@ export const translations = {
       label: 'Comment ça marche',
       h2a:   'Du brief au MP4.',
       h2b:   'Cinq étapes.',
-      sub:   'Vous décrivez ce que vous imaginez. ScenIQ fait le reste — sans réunion, sans intermédiaire.',
+      sub:   'Vous décrivez ce que vous imaginez. ScenIQ fait le reste — aucun outil à maîtriser, aucune interface à apprivoiser, aucune réunion.',
       steps: [
         { n: '1', title: 'Brief',    desc: 'Décrivez ce que vous avez en tête — une ambiance, une scène, une envie. Ajoutez des références visuelles ou audio pour aller plus loin.' },
         { n: '2', title: 'Commande', desc: 'Choisissez la durée. Paiement 100 % sécurisé par Stripe. Confirmation par email immédiate.' },
@@ -383,7 +383,7 @@ export const translations = {
       label: 'How it works',
       h2a:   'From brief to MP4.',
       h2b:   'Five steps.',
-      sub:   'Describe what you imagine. ScenIQ handles the rest — no meetings, no middlemen.',
+      sub:   'Describe what you imagine. ScenIQ handles the rest — no tools to master, no interface to figure out, no meetings.',
       steps: [
         { n: '1', title: 'Brief',    desc: 'Describe what you have in mind — a mood, a scene, an idea. Add visual or audio references to go further.' },
         { n: '2', title: 'Order',    desc: 'Choose your duration. 100% secure payment via Stripe. Instant email confirmation.' },

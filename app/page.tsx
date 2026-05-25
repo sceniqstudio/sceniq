@@ -708,7 +708,7 @@ export default function HomePage() {
                 aria-label={t.seedance.aria169}
               >
                 <video
-                  autoPlay muted loop playsInline preload="none" poster="/showcase/exemple19.jpg"
+                  autoPlay muted loop playsInline preload="metadata" poster="/showcase/exemple19.jpg"
                   style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', pointerEvents:'none' }}
                 >
                   <source src="/showcase/exemple19.mp4" type="video/mp4" />
@@ -749,7 +749,7 @@ export default function HomePage() {
                 aria-label={t.seedance.aria916}
               >
                 <video
-                  autoPlay muted loop playsInline preload="none" poster="/showcase/exemple18.jpg"
+                  autoPlay muted loop playsInline preload="metadata" poster="/showcase/exemple18.jpg"
                   style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', pointerEvents:'none' }}
                 >
                   <source src="/showcase/exemple18.mp4" type="video/mp4" />

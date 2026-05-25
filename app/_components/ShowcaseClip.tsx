@@ -109,7 +109,7 @@ export function ShowcaseClip({ slug, fallbackBg, fallbackEmoji, ariaLabel }: Sho
           muted
           loop
           playsInline
-          preload="none"
+          preload="metadata"
           poster={`/showcase/${slug}.jpg`}
           onError={() => setVideoFailed(true)}
           aria-label={ariaLabel}
