@@ -365,27 +365,27 @@ export default function HomePage() {
     }
   }, [])
 
-  // ── IntersectionObserver vidéos — re-run après shuffle du portfolio ──────
-  // Séparé du useEffect principal pour s'exécuter à nouveau quand portfolioRows
-  // change (le shuffle remplace les éléments DOM, il faut ré-observer).
+  // ── Autoplay vidéos — approche multi-stratégie iOS Safari ──────────────
   //
-  // iOS Safari notes :
-  // - preload="none" → networkState=1 au départ, readyState=0
-  // - load() → networkState devient 2 (NETWORK_LOADING)
-  // - guard networkState !== 2 : évite le double-load() si l'observer
-  //   re-fire pour une vidéo déjà en cours de chargement (évite reset + boucle)
+  // Problème : IntersectionObserver ne fire pas correctement pour les vidéos
+  // à l'intérieur de containers overflow:hidden + transform animés (hero columns
+  // + portfolio track). iOS ignore aussi autoplay sur éléments React-rendus.
+  //
+  // Stratégie :
+  //  A) Vidéos Seedance/volt (position fixe dans le flow) → IntersectionObserver
+  //  B) Hero columns (.lv2-hcard video) → load() séquentiel avec stagger 30ms
+  //  C) Portfolio (.portfolio-card video) → re-observé via ref persistant après shuffle
+  const videoObsRef = useRef<IntersectionObserver | null>(null)
+
+  // Crée l'observer une fois — persistant (pas de cleanup sur shuffle)
   useEffect(() => {
-    const videoObs = new IntersectionObserver((entries) => {
+    const handler = (entries: IntersectionObserverEntry[]) => {
       entries.forEach(entry => {
         const vid = entry.target as HTMLVideoElement
         if (entry.isIntersecting) {
-          if (vid.readyState === 0) {
-            // Appeler load() seulement si pas déjà en cours (évite reset iOS)
-            if (vid.networkState !== 2) {
-              vid.addEventListener('canplay', () => vid.play().catch(() => {}), { once: true })
-              vid.load()
-            }
-            // si networkState===2 : déjà en chargement, le listener canplay existant suffit
+          if (vid.readyState === 0 && vid.networkState !== 2) {
+            vid.addEventListener('canplay', () => vid.play().catch(() => {}), { once: true })
+            vid.load()
           } else if (vid.paused) {
             vid.play().catch(() => {})
           }
@@ -393,14 +393,37 @@ export default function HomePage() {
           if (!vid.paused) vid.pause()
         }
       })
-    }, { rootMargin: '200px 0px', threshold: 0 })
+    }
+    const obs = new IntersectionObserver(handler, { rootMargin: '300px 0px', threshold: 0 })
+    videoObsRef.current = obs
 
-    // Inclut les vidéos hero (colonnes background) — exclut uniquement le modal
-    document.querySelectorAll('video:not(#modal-video)').forEach(v => {
-      videoObs.observe(v)
+    // Observe les vidéos hors hero (Seedance, volt, studio…) — pas le modal
+    document.querySelectorAll('video:not(.lv2-hcard video):not(#modal-video)').forEach(v => obs.observe(v))
+
+    // Hero columns : load() séquentiel pour ne pas saturer iOS (max 1 load à la fois)
+    // 100ms de délai initial pour laisser React finir le rendu
+    const heroVids = Array.from(document.querySelectorAll('.lv2-hcard video')) as HTMLVideoElement[]
+    heroVids.forEach((vid, i) => {
+      setTimeout(() => {
+        if (!vid.isConnected) return
+        if (vid.getBoundingClientRect().width === 0) return // display:none (mobile)
+        if (vid.networkState === 2 || vid.readyState > 0) return // déjà chargé
+        vid.addEventListener('canplay', () => vid.play().catch(() => {}), { once: true })
+        vid.load()
+      }, 100 + i * 40) // stagger 40ms entre chaque vidéo hero
     })
 
-    return () => videoObs.disconnect()
+    return () => {
+      obs.disconnect()
+      videoObsRef.current = null
+    }
+  }, [])
+
+  // Re-observe les vidéos portfolio après shuffle (nouveaux éléments DOM)
+  useEffect(() => {
+    const obs = videoObsRef.current
+    if (!obs) return
+    document.querySelectorAll('.portfolio-card video').forEach(v => obs.observe(v))
   }, [portfolioRows])
 
   // ════════════════════════════════════════════════════════════════════════
