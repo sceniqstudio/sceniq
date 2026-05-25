@@ -383,9 +383,12 @@ export default function HomePage() {
       entries.forEach(entry => {
         const vid = entry.target as HTMLVideoElement
         if (entry.isIntersecting) {
-          if (vid.readyState === 0 && vid.networkState !== 2) {
+          if (vid.readyState === 0) {
+            // Toujours enregistrer canplay même si preload=metadata est déjà en cours
+            // (networkState=2) — sans ce listener la vidéo finissait de charger
+            // mais personne n'appelait play()
             vid.addEventListener('canplay', () => vid.play().catch(() => {}), { once: true })
-            vid.load()
+            if (vid.networkState !== 2) vid.load() // évite reset si déjà en chargement
           } else if (vid.paused) {
             vid.play().catch(() => {})
           }
@@ -673,7 +676,7 @@ export default function HomePage() {
                 aria-label={t.studio.videoAria}
               >
                 <video
-                  autoPlay muted loop playsInline preload="metadata" poster="/showcase/volt.jpg"
+                  autoPlay muted loop playsInline preload="none" poster="/showcase/volt.jpg"
                   style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }}
                 >
                   <source src="/showcase/volt.mp4" type="video/mp4" />
