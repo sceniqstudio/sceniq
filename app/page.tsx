@@ -405,54 +405,85 @@ export default function HomePage() {
 
   // ── Autoplay vidéos — approche multi-stratégie iOS Safari ──────────────
   //
-  // Problème : IntersectionObserver ne fire pas correctement pour les vidéos
-  // à l'intérieur de containers overflow:hidden + transform animés (hero columns
-  // + portfolio track). iOS ignore aussi autoplay sur éléments React-rendus.
+  // Problème : saturation bande passante mobile — 32 vidéos hero + 26 portfolio
+  // + 3 vidéos section = ~60 vidéos peuvent toutes tenter de charger.
   //
   // Stratégie :
-  //  A) Vidéos Seedance/volt (position fixe dans le flow) → IntersectionObserver
-  //  B) Hero columns (.lv2-hcard video) → load() séquentiel avec stagger 30ms
-  //  C) Portfolio (.portfolio-card video) → re-observé via ref persistant après shuffle
+  //  A) Toutes les vidéos passent par IntersectionObserver (sauf modal)
+  //  B) Mobile : rootMargin='0px' → charge uniquement quand visible dans le viewport
+  //     Desktop : rootMargin='300px 0px' → précharge 300px avant entrée viewport
+  //  C) Mobile : file d'attente max 2 chargements simultanés
+  //  D) Hero columns : les vidéos hors-écran (hidden CSS) sont skip automatiquement
+  //     par l'IO car elles n'intersectent jamais le viewport
   const videoObsRef = useRef<IntersectionObserver | null>(null)
 
   // Crée l'observer une fois — persistant (pas de cleanup sur shuffle)
   useEffect(() => {
+    const isMobile = window.innerWidth < 768
+    // Mobile : charge uniquement au contact du viewport pour éviter la saturation
+    // Desktop : précharge 300px avant pour une expérience fluide
+    const rootMargin = isMobile ? '0px 0px' : '300px 0px'
+    // Mobile : max 2 vidéos en cours de chargement simultanément
+    const MAX_CONCURRENT = isMobile ? 2 : 20
+    let activeLoads = 0
+    const loadQueue: HTMLVideoElement[] = []
+
+    function processQueue() {
+      while (loadQueue.length > 0 && activeLoads < MAX_CONCURRENT) {
+        const vid = loadQueue.shift()!
+        startLoad(vid)
+      }
+    }
+
+    function startLoad(vid: HTMLVideoElement) {
+      if (vid.networkState === 2 || vid.readyState > 0) return // déjà en cours / chargé
+      activeLoads++
+      const onDone = () => {
+        activeLoads = Math.max(0, activeLoads - 1)
+        processQueue()
+      }
+      vid.addEventListener('canplay', () => { vid.play().catch(() => {}); onDone() }, { once: true })
+      vid.addEventListener('error', onDone, { once: true })
+      vid.load()
+    }
+
+    function enqueue(vid: HTMLVideoElement) {
+      if (vid.networkState === 2 || vid.readyState > 0) {
+        // Déjà chargé — juste play() si en pause
+        if (vid.paused) vid.play().catch(() => {})
+        return
+      }
+      if (activeLoads < MAX_CONCURRENT) {
+        startLoad(vid)
+      } else {
+        if (!loadQueue.includes(vid)) loadQueue.push(vid)
+      }
+    }
+
     const handler = (entries: IntersectionObserverEntry[]) => {
       entries.forEach(entry => {
         const vid = entry.target as HTMLVideoElement
         if (entry.isIntersecting) {
           if (vid.readyState === 0) {
-            // Toujours enregistrer canplay même si preload=metadata est déjà en cours
-            // (networkState=2) — sans ce listener la vidéo finissait de charger
-            // mais personne n'appelait play()
-            vid.addEventListener('canplay', () => vid.play().catch(() => {}), { once: true })
-            if (vid.networkState !== 2) vid.load() // évite reset si déjà en chargement
+            enqueue(vid)
           } else if (vid.paused) {
             vid.play().catch(() => {})
           }
         } else {
+          // Retire de la file si pas encore chargé (économie bande passante)
+          const qi = loadQueue.indexOf(vid)
+          if (qi !== -1) loadQueue.splice(qi, 1)
           if (!vid.paused) vid.pause()
         }
       })
     }
-    const obs = new IntersectionObserver(handler, { rootMargin: '300px 0px', threshold: 0 })
+
+    const obs = new IntersectionObserver(handler, { rootMargin, threshold: 0 })
     videoObsRef.current = obs
 
-    // Observe les vidéos hors hero (Seedance, volt, studio…) — pas le modal
-    document.querySelectorAll('video:not(.lv2-hcard video):not(#modal-video)').forEach(v => obs.observe(v))
-
-    // Hero columns : load() séquentiel pour ne pas saturer iOS (max 1 load à la fois)
-    // 100ms de délai initial pour laisser React finir le rendu
-    const heroVids = Array.from(document.querySelectorAll('.lv2-hcard video')) as HTMLVideoElement[]
-    heroVids.forEach((vid, i) => {
-      setTimeout(() => {
-        if (!vid.isConnected) return
-        if (vid.getBoundingClientRect().width === 0) return // display:none (mobile)
-        if (vid.networkState === 2 || vid.readyState > 0) return // déjà chargé
-        vid.addEventListener('canplay', () => vid.play().catch(() => {}), { once: true })
-        vid.load()
-      }, 100 + i * 40) // stagger 40ms entre chaque vidéo hero
-    })
+    // Observe TOUTES les vidéos sauf le modal — hero + section + portfolio
+    // Les vidéos hero CSS-masquées (display:none) n'intersecteront jamais → skip naturel
+    document.querySelectorAll('video:not(#modal-video)').forEach(v => obs.observe(v))
 
     return () => {
       obs.disconnect()
@@ -730,7 +761,7 @@ export default function HomePage() {
             <div>
               <button
                 type="button"
-                onClick={() => setOpenVideo('volt')}
+                onClick={() => setOpenVideo('exemple23')}
                 style={{
                   display: 'block', width: '100%',
                   aspectRatio: '16/9', borderRadius: 14, overflow: 'hidden',
@@ -743,7 +774,7 @@ export default function HomePage() {
                   autoPlay muted loop playsInline preload="none"
                   style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }}
                 >
-                  <source src={showcaseUrl('volt')} type="video/mp4" />
+                  <source src={showcaseUrl('exemple23')} type="video/mp4" />
                 </video>
                 <div style={{
                   position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
