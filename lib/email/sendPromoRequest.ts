@@ -6,12 +6,13 @@ import { getTransporter, SMTP_FROM, PASCAL_EMAIL } from './smtp'
 interface PromoParams {
   name:     string
   email:    string
+  phone?:   string | null
   company?: string | null
   brief:    string
 }
 
 export async function sendPromoRequest(params: PromoParams): Promise<void> {
-  const { name, email, company, brief } = params
+  const { name, email, phone, company, brief } = params
 
   const html = `
 <!DOCTYPE html>
@@ -39,6 +40,10 @@ export async function sendPromoRequest(params: PromoParams): Promise<void> {
           <td style="padding:6px 0;font-size:13px;color:rgba(255,255,255,.5)">Email</td>
           <td style="padding:6px 0;font-size:14px;color:#A5B4FC"><a href="mailto:${email}" style="color:#A5B4FC">${email}</a></td>
         </tr>
+        ${phone ? `<tr>
+          <td style="padding:6px 0;font-size:13px;color:rgba(255,255,255,.5)">Téléphone</td>
+          <td style="padding:6px 0;font-size:14px;color:#fff"><a href="tel:${phone}" style="color:#fff">${phone}</a></td>
+        </tr>` : ''}
         ${company ? `<tr>
           <td style="padding:6px 0;font-size:13px;color:rgba(255,255,255,.5)">Entreprise</td>
           <td style="padding:6px 0;font-size:14px;color:#fff">${company}</td>
@@ -69,7 +74,7 @@ export async function sendPromoRequest(params: PromoParams): Promise<void> {
     from:    `"ScenIQ Promo" <${SMTP_FROM()}>`,
     to:      PASCAL_EMAIL(),
     replyTo: email,
-    subject: `🎬 [ScenIQ] Reel offert — ${name}${company ? ` · ${company}` : ''}`,
+    subject: `🎬 [ScenIQ] Reel offert — ${name}${company ? ` · ${company}` : ''}${phone ? ` 📞` : ''}`,
     html,
   })
 }

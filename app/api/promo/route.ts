@@ -8,6 +8,7 @@ import { sendPromoRequest } from '@/lib/email/sendPromoRequest'
 const PromoSchema = z.object({
   name:    z.string().min(1).max(100),
   email:   z.string().email(),
+  phone:   z.string().max(30).optional().nullable(),
   company: z.string().max(100).optional().nullable(),
   brief:   z.string().min(5).max(1000),
 })
@@ -27,9 +28,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       )
     }
 
-    const { name, email, company, brief } = validation.data
+    const { name, email, phone, company, brief } = validation.data
 
-    await sendPromoRequest({ name, email, company, brief })
+    await sendPromoRequest({ name, email, phone, company, brief })
 
     return NextResponse.json({ success: true })
   } catch (err) {

@@ -248,7 +248,7 @@ export default function HomePage() {
   const [promoOpen, setPromoOpen]                   = useState(false)
   const [promoSent, setPromoSent]                   = useState(false)
   const [promoLoading, setPromoLoading]             = useState(false)
-  const [promoForm, setPromoForm]                   = useState({ name: '', email: '', company: '', brief: '' })
+  const [promoForm, setPromoForm]                   = useState({ name: '', email: '', phone: '', company: '', brief: '' })
 
   const t = translations[lang]
 
@@ -312,6 +312,7 @@ export default function HomePage() {
         body: JSON.stringify({
           name:    promoForm.name,
           email:   promoForm.email,
+          phone:   promoForm.phone || null,
           company: promoForm.company || null,
           brief:   promoForm.brief,
         }),
@@ -322,7 +323,7 @@ export default function HomePage() {
       // Fallback mailto
       const subject = encodeURIComponent(`Reel 8s offert — ${promoForm.name}`)
       const body = encodeURIComponent(
-        `Prénom : ${promoForm.name}\nEmail : ${promoForm.email}${promoForm.company ? `\nEntreprise : ${promoForm.company}` : ''}\n\nBrief :\n${promoForm.brief}`
+        `Prénom : ${promoForm.name}\nEmail : ${promoForm.email}${promoForm.phone ? `\nTéléphone : ${promoForm.phone}` : ''}${promoForm.company ? `\nEntreprise : ${promoForm.company}` : ''}\n\nBrief :\n${promoForm.brief}`
       )
       window.open(`mailto:support@sceniq.studio?subject=${subject}&body=${body}`, '_blank')
       setPromoSent(true)
@@ -1435,6 +1436,24 @@ export default function HomePage() {
                         }}
                       />
                     </div>
+                  </div>
+
+                  {/* Téléphone */}
+                  <div>
+                    <label style={{ fontSize: 12, fontWeight: 600, color: '#94A3B8', display: 'block', marginBottom: 6 }}>
+                      {t.promoModal.labelPhone}
+                    </label>
+                    <input
+                      type="tel" placeholder={t.promoModal.placePhone}
+                      value={promoForm.phone}
+                      onChange={(e) => setPromoForm((f) => ({ ...f, phone: e.target.value }))}
+                      style={{
+                        width: '100%', background: 'rgba(255,255,255,0.05)',
+                        border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8,
+                        padding: '10px 12px', color: '#fff', fontSize: 14, fontFamily: 'inherit',
+                        outline: 'none',
+                      }}
+                    />
                   </div>
 
                   {/* Entreprise */}
