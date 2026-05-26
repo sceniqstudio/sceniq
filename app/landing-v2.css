@@ -958,9 +958,10 @@ body:has(.lv2) {
   border-radius: 999px; padding: 4px 14px; letter-spacing: 0.02em;
 }
 .cmp-check { color: #4ADE80; font-weight: 700; font-size: 15px; }
-.cmp-cross  { color: rgba(255,255,255,0.25); font-weight: 700; font-size: 15px; }
+.cmp-cross  { color: #F87171; font-weight: 700; font-size: 15px; }
 .cmp-yes    { color: #fff; font-weight: 600; }
-.cmp-muted  { color: rgba(255,255,255,0.38); }
+.cmp-muted  { color: rgba(255,255,255,0.55); }
+.cmp-col.tools { color: rgba(255,255,255,0.75); }
 .cmp-note {
   margin-top: 24px; font-size: 14px;
   color: rgba(255,255,255,0.38); font-style: italic; text-align: center;
@@ -974,13 +975,16 @@ body:has(.lv2) {
   }
   .cmp-header .cmp-col-label { display: none; }
   .cmp-col-label {
-    font-size: 13px; color: rgba(255,255,255,0.38);
-    font-weight: 400; padding-bottom: 4px;
+    font-size: 13px; color: rgba(255,255,255,0.5);
+    font-weight: 600; padding-bottom: 6px;
     border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 8px;
+  }
+  .cmp-col.tools {
+    color: #fff;
   }
   .cmp-col.tools::before {
     content: "Les outils : ";
-    color: rgba(255,255,255,0.38); font-weight: 400; font-size: 12px;
+    color: rgba(255,255,255,0.45); font-weight: 400; font-size: 12px;
   }
   .cmp-col.sceniq::before {
     content: "ScenIQ : ";
