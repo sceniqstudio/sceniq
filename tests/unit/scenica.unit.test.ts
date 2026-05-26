@@ -1,35 +1,64 @@
-// tests/unit/credits/consume-credit.test.ts
-// Agent Tester — RED d'abord, Builder implémente après
+// tests/unit/scenica.unit.test.ts
+// Agent Tester — tests unitaires purs (sans BDD réelle)
+// Les contrats Supabase sont testés séparément en tests/integration/contracts/
 
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-// ─── Test RED : consumeCredit ───────────────────────────────────────────────
-// À écrire AVANT l'implémentation dans lib/credits/index.ts
+// ── Mock Supabase — hoisted avant tout import ─────────────────────────────
+// createClient() est appelé au chargement du module lib/credits/index.ts.
+// vi.mock est automatiquement hoisted par Vitest (avant les imports).
+const mockChain = vi.hoisted(() => {
+  const chain: Record<string, ReturnType<typeof vi.fn>> = {}
+  chain.from        = vi.fn().mockReturnValue(chain)
+  chain.select      = vi.fn().mockReturnValue(chain)
+  chain.eq          = vi.fn().mockReturnValue(chain)
+  chain.insert      = vi.fn().mockResolvedValue({ data: null, error: null })
+  chain.single      = vi.fn().mockResolvedValue({ data: { balance: 50 }, error: null })
+  chain.maybeSingle = vi.fn().mockResolvedValue({ data: null, error: null })
+  return chain
+})
+
+vi.mock('@supabase/supabase-js', () => ({
+  createClient: vi.fn(() => mockChain),
+}))
+
+// ─── Test : consumeCredit ───────────────────────────────────────────────────
 
 describe('consumeCredit()', () => {
-  it('retourne le nouveau solde après déduction', async () => {
-    // Arrange : mock Supabase — les vrais appels sont testés en contracts
-    const mockInsert = vi.fn().mockResolvedValue({ data: null, error: null })
-    const mockSelect = vi.fn().mockResolvedValue({
-      data: [{ balance: 49 }], error: null
-    })
+  beforeEach(() => {
+    vi.clearAllMocks()
+    // Remettre les valeurs par défaut après clearAllMocks
+    mockChain.from.mockReturnValue(mockChain)
+    mockChain.select.mockReturnValue(mockChain)
+    mockChain.eq.mockReturnValue(mockChain)
+    mockChain.insert.mockResolvedValue({ data: null, error: null })
+    mockChain.single.mockResolvedValue({ data: { balance: 50 }, error: null })
+    mockChain.maybeSingle.mockResolvedValue({ data: null, error: null })
+  })
 
-    // Import dynamique pour permettre le mock
+  it('retourne le nouveau solde après déduction', async () => {
+    // maybeSingle → pas d'entrée existante (défaut)
+    // single → balance = 50
+    // → newBalance = 49
+
+    vi.resetModules()
     const { consumeCredit } = await import('@/lib/credits/index')
 
-    // Act
     const result = await consumeCredit({
       userId: '00000000-0000-0000-0000-000000000001',
       projectId: '00000000-0000-0000-0002-000000000001',
       sceneId: '00000000-0000-0000-0005-000000000001',
     })
 
-    // Assert
     expect(result.newBalance).toBe(49)
     expect(result.error).toBeNull()
   })
 
   it('retourne une erreur si solde insuffisant', async () => {
+    // balance = 0 → insufficient_credits
+    mockChain.single.mockResolvedValue({ data: { balance: 0 }, error: null })
+
+    vi.resetModules()
     const { consumeCredit } = await import('@/lib/credits/index')
 
     const result = await consumeCredit({
@@ -43,18 +72,28 @@ describe('consumeCredit()', () => {
   })
 
   it('est idempotent si appelé deux fois avec le même sceneId', async () => {
-    // Un clip déjà généré ne doit pas consommer un deuxième crédit
+    // 1er appel : maybeSingle → null (pas encore consommé), balance 50 → OK
+    // 2ème appel : maybeSingle → { id: 'x' } (déjà consommé) → already_consumed
+    mockChain.maybeSingle
+      .mockResolvedValueOnce({ data: null,         error: null }) // 1er appel
+      .mockResolvedValueOnce({ data: { id: 'x' }, error: null }) // 2ème appel
+
+    mockChain.single
+      .mockResolvedValueOnce({ data: { balance: 50 }, error: null }) // getBalance 1er appel
+      .mockResolvedValueOnce({ data: { balance: 49 }, error: null }) // getBalance 2ème appel (after consume)
+
+    vi.resetModules()
     const { consumeCredit } = await import('@/lib/credits/index')
 
     const first  = await consumeCredit({ userId: 'u1', projectId: 'p1', sceneId: 'scene-already-done' })
     const second = await consumeCredit({ userId: 'u1', projectId: 'p1', sceneId: 'scene-already-done' })
 
+    expect(first.error).toBeNull()
     expect(second.error).toBe('already_consumed')
   })
 })
 
-// ─── Test RED : parseScenes ─────────────────────────────────────────────────
-// tests/unit/agents/parse-scenes.test.ts
+// ─── Test : parseScenes ─────────────────────────────────────────────────────
 
 describe('parseScenes()', () => {
   const SAMPLE_STORYBOARD = `SCÈNE 1 [8s] — Ouverture
@@ -90,7 +129,6 @@ Description FR: Signature finale.`
     const scenes = parseScenes(SAMPLE_STORYBOARD)
     scenes.forEach(scene => {
       expect(scene.seedancePrompt.length).toBeGreaterThan(20)
-      // Prompt en anglais — vérifié par la présence de mots anglais courants
       expect(scene.seedancePrompt).toMatch(/[a-z]/)
     })
   })
@@ -109,8 +147,7 @@ Description FR: Signature finale.`
   })
 })
 
-// ─── Test RED : validation brief ────────────────────────────────────────────
-// tests/unit/validation/brief.test.ts
+// ─── Test : validateBrief ────────────────────────────────────────────────────
 
 describe('validateBrief()', () => {
   it('accepte un brief valide', async () => {
