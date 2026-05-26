@@ -518,6 +518,7 @@ export default function HomePage() {
             <li><a href="#qualite">{t.nav.studio}</a></li>
             <li><a href="#modeles">{t.nav.models}</a></li>
             <li><a href="#tarifs">{t.nav.pricing}</a></li>
+            <li><a href="#comparaison">{t.nav.comparison}</a></li>
             <li><a href="#reels">{t.nav.portfolio}</a></li>
           </ul>
           <div className="lv2-nav-right">
@@ -566,8 +567,9 @@ export default function HomePage() {
               <li><a href="#process"  onClick={() => setMobileMenuOpen(false)}>{t.nav.process}</a></li>
               <li><a href="#qualite"  onClick={() => setMobileMenuOpen(false)}>{t.nav.studio}</a></li>
               <li><a href="#modeles"  onClick={() => setMobileMenuOpen(false)}>{t.nav.models}</a></li>
-              <li><a href="#tarifs"   onClick={() => setMobileMenuOpen(false)}>{t.nav.pricing}</a></li>
-              <li><a href="#reels"    onClick={() => setMobileMenuOpen(false)}>{t.nav.portfolio}</a></li>
+              <li><a href="#tarifs"      onClick={() => setMobileMenuOpen(false)}>{t.nav.pricing}</a></li>
+              <li><a href="#comparaison" onClick={() => setMobileMenuOpen(false)}>{t.nav.comparison}</a></li>
+              <li><a href="#reels"       onClick={() => setMobileMenuOpen(false)}>{t.nav.portfolio}</a></li>
             </ul>
             <div className="lv2-mob-cta">
               <button
@@ -1174,6 +1176,76 @@ export default function HomePage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── COMPARAISON ──────────────────────────────────────────────────── */}
+      <section id="comparaison" className="lv2-s">
+        <div className="lv2-si">
+          <div className="cmp-label">COMPARAISON</div>
+          <h2 className="cmp-h2">
+            ScenIQ n&apos;est pas<br />un outil de plus.
+          </h2>
+          <p className="cmp-sub">
+            Kling, Runway, Veo et Jimeng génèrent des clips impressionnants.
+            Ce qu&apos;ils ne font pas&nbsp;: écrire votre script, composer la bande-son,
+            calibrer la voix-off, formater pour chaque réseau — et vous livrer un MP4 prêt à diffuser.
+          </p>
+          <div className="cmp-table">
+            <div className="cmp-header">
+              <div className="cmp-col-label"></div>
+              <div className="cmp-col sceniq"><span className="cmp-pill">ScenIQ</span></div>
+              <div className="cmp-col tools">Kling · Runway · Veo · Jimeng</div>
+            </div>
+            <div className="cmp-row">
+              <div className="cmp-col-label">Ce que vous faites</div>
+              <div className="cmp-col sceniq"><span className="cmp-yes">Un brief de 2&nbsp;lignes</span></div>
+              <div className="cmp-col tools"><span className="cmp-muted">Apprendre les prompts</span></div>
+            </div>
+            <div className="cmp-row">
+              <div className="cmp-col-label">Script + angle narratif</div>
+              <div className="cmp-col sceniq"><span className="cmp-check">✓</span> Inclus</div>
+              <div className="cmp-col tools"><span className="cmp-cross">✕</span> À vous de l&apos;écrire</div>
+            </div>
+            <div className="cmp-row">
+              <div className="cmp-col-label">Storyboard shot par shot</div>
+              <div className="cmp-col sceniq"><span className="cmp-check">✓</span> Inclus</div>
+              <div className="cmp-col tools"><span className="cmp-cross">✕</span> À vous de le découper</div>
+            </div>
+            <div className="cmp-row">
+              <div className="cmp-col-label">Musique + voix-off</div>
+              <div className="cmp-col sceniq"><span className="cmp-check">✓</span> Inclus</div>
+              <div className="cmp-col tools"><span className="cmp-cross">✕</span> Outil séparé</div>
+            </div>
+            <div className="cmp-row">
+              <div className="cmp-col-label">Sous-titres + formats</div>
+              <div className="cmp-col sceniq"><span className="cmp-check">✓</span> 9:16 · 1:1 · 16:9</div>
+              <div className="cmp-col tools"><span className="cmp-cross">✕</span> Export manuel</div>
+            </div>
+            <div className="cmp-row">
+              <div className="cmp-col-label">Ce que vous recevez</div>
+              <div className="cmp-col sceniq"><span className="cmp-yes">Un MP4 1080p livré</span></div>
+              <div className="cmp-col tools"><span className="cmp-muted">Des clips bruts à assembler</span></div>
+            </div>
+            <div className="cmp-row">
+              <div className="cmp-col-label">Délai réel</div>
+              <div className="cmp-col sceniq"><span className="cmp-yes">48h ouvrées</span></div>
+              <div className="cmp-col tools"><span className="cmp-muted">Autant que ça prend</span></div>
+            </div>
+            <div className="cmp-row">
+              <div className="cmp-col-label">Abonnement</div>
+              <div className="cmp-col sceniq"><span className="cmp-check">✓</span> Aucun</div>
+              <div className="cmp-col tools"><span className="cmp-cross">✕</span> Mensuel obligatoire</div>
+            </div>
+            <div className="cmp-row cmp-row--last">
+              <div className="cmp-col-label">Crédits à surveiller</div>
+              <div className="cmp-col sceniq"><span className="cmp-check">✓</span> Aucun</div>
+              <div className="cmp-col tools"><span className="cmp-cross">✕</span> À chaque génération</div>
+            </div>
+          </div>
+          <p className="cmp-note">
+            Ces outils sont excellents — on les utilise. La différence&nbsp;: vous n&apos;avez pas à les maîtriser.
+          </p>
         </div>
       </section>
 

@@ -898,6 +898,96 @@ body:has(.lv2) {
 .lv2 .sdemo-dot   { width: 8px; height: 8px; border-radius: 50%; background: var(--bdr-md); border: none; cursor: pointer; transition: background 0.2s; }
 .lv2 .sdemo-dot.on { background: var(--accent); }
 
+/* ── Comparaison section ─────────────────────────────────────── */
+.cmp-label {
+  display: inline-block;
+  background: rgba(124,92,252,0.10);
+  color: #7C5CFC;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  border-radius: 999px; padding: 5px 12px; margin-bottom: 28px;
+}
+.cmp-h2 {
+  font-size: 52px; font-weight: 800; line-height: 1.1;
+  color: #fff; margin: 0 0 20px; max-width: 680px;
+}
+.cmp-sub {
+  font-size: 18px; color: rgba(255,255,255,0.88);
+  line-height: 1.7; max-width: 620px; margin: 0 0 56px;
+}
+.cmp-table {
+  width: 100%;
+  background: rgb(26,15,46);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px; overflow: hidden;
+}
+.cmp-header {
+  display: grid;
+  grid-template-columns: 1fr 220px 260px;
+  background: rgba(124,92,252,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 20px 32px; align-items: center; gap: 16px;
+}
+.cmp-row {
+  display: grid;
+  grid-template-columns: 1fr 220px 260px;
+  padding: 18px 32px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  align-items: center; gap: 16px;
+  transition: background 0.15s ease;
+}
+.cmp-row:hover { background: rgba(255,255,255,0.02); }
+.cmp-row--last { border-bottom: none; }
+.cmp-col-label {
+  font-size: 15px; color: rgba(255,255,255,0.88); font-weight: 500;
+}
+.cmp-header .cmp-col-label {
+  font-size: 13px; color: rgba(255,255,255,0.38);
+}
+.cmp-col {
+  font-size: 14px; font-weight: 500;
+  display: flex; align-items: center; gap: 6px;
+}
+.cmp-col.sceniq { color: #fff; }
+.cmp-col.tools  { color: rgba(255,255,255,0.38); }
+.cmp-header .cmp-col.sceniq { font-size: 13px; font-weight: 700; }
+.cmp-header .cmp-col.tools  { font-size: 12px; }
+.cmp-pill {
+  background: #7C5CFC; color: #fff;
+  font-size: 12px; font-weight: 700;
+  border-radius: 999px; padding: 4px 14px; letter-spacing: 0.02em;
+}
+.cmp-check { color: #4ADE80; font-weight: 700; font-size: 15px; }
+.cmp-cross  { color: rgba(255,255,255,0.25); font-weight: 700; font-size: 15px; }
+.cmp-yes    { color: #fff; font-weight: 600; }
+.cmp-muted  { color: rgba(255,255,255,0.38); }
+.cmp-note {
+  margin-top: 24px; font-size: 14px;
+  color: rgba(255,255,255,0.38); font-style: italic; text-align: center;
+}
+@media (max-width: 768px) {
+  .cmp-h2 { font-size: 36px; }
+  .cmp-header,
+  .cmp-row {
+    grid-template-columns: 1fr;
+    padding: 16px 20px; gap: 8px;
+  }
+  .cmp-header .cmp-col-label { display: none; }
+  .cmp-col-label {
+    font-size: 13px; color: rgba(255,255,255,0.38);
+    font-weight: 400; padding-bottom: 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 8px;
+  }
+  .cmp-col.tools::before {
+    content: "Les outils : ";
+    color: rgba(255,255,255,0.38); font-weight: 400; font-size: 12px;
+  }
+  .cmp-col.sceniq::before {
+    content: "ScenIQ : ";
+    color: #7C5CFC; font-weight: 600; font-size: 12px;
+  }
+}
+
 /* ═══════════════════════════════════════════════════════════════
    RESPONSIVE — Tablet 1024px
    ═══════════════════════════════════════════════════════════════ */

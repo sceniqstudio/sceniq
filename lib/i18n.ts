@@ -13,6 +13,7 @@ export const translations = {
       studio:     'Le studio',
       models:     'Comédiens IA',
       pricing:    'Tarifs',
+      comparison: 'Comparaison',
       portfolio:  'Réalisations',
       faq:        'FAQ',
       question:   'Une question ?',
@@ -263,7 +264,7 @@ export const translations = {
     // ── Promo banner ─────────────────────────────────────────────────────────
     promoBanner: {
       badge:   '🎬 Offre lancement',
-      text:    '50 premiers : votre reel 8s offert — testez notre IA sur votre brief avant de commander.',
+      text:    '50 premiers : votre reel 8s offert — testez la qualité ScenIQ sur votre brief avant de commander.',
       textShort: '1 reel 8s IA — offert pour vous',
       cta:     'Tester gratuitement →',
       ctaShort:'Tester gratuitement →',
@@ -389,6 +390,7 @@ export const translations = {
       studio:     'The studio',
       models:     'AI Talent',
       pricing:    'Pricing',
+      comparison: 'Comparison',
       portfolio:  'Work',
       faq:        'FAQ',
       question:   'Got a question?',
@@ -625,7 +627,7 @@ export const translations = {
     // ── Promo banner ─────────────────────────────────────────────────────────
     promoBanner: {
       badge:     '🎬 Launch offer',
-      text:      'First 50: get a free 8s reel — see our AI on your brief before committing.',
+      text:      'First 50: get a free 8s reel — see ScenIQ quality on your brief before committing.',
       textShort: '1 free AI reel — made for you',
       cta:       'Try it free →',
       ctaShort:  'Try it free →',
