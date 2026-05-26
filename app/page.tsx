@@ -496,8 +496,7 @@ export default function HomePage() {
             className="lv2-promo-cta"
             onClick={() => setPromoOpen(true)}
           >
-            <span className="promo-long">{t.promoBanner.cta}</span>
-            <span className="promo-short">{t.promoBanner.ctaShort}</span>
+            {t.promoBanner.ctaShort}
           </button>
           <button
             type="button"

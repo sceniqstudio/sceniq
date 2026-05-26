@@ -264,9 +264,9 @@ export const translations = {
     promoBanner: {
       badge:   '🎬 Offre lancement',
       text:    '50 premiers : votre reel 8s offert — testez notre IA sur votre brief avant de commander.',
-      textShort: 'Reel 8s offert — 50 spots',
-      cta:     'Je le veux gratuitement →',
-      ctaShort:'Je le veux →',
+      textShort: '1 reel 8s IA — offert pour vous',
+      cta:     'Tester gratuitement →',
+      ctaShort:'Tester gratuitement →',
       close:   'Fermer l\'annonce',
     },
 
@@ -626,9 +626,9 @@ export const translations = {
     promoBanner: {
       badge:     '🎬 Launch offer',
       text:      'First 50: get a free 8s reel — see our AI on your brief before committing.',
-      textShort: 'Free 8s reel — 50 spots',
-      cta:       'Claim mine free →',
-      ctaShort:  'Claim it →',
+      textShort: '1 free AI reel — made for you',
+      cta:       'Try it free →',
+      ctaShort:  'Try it free →',
       close:     'Dismiss',
     },
 
