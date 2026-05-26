@@ -1187,7 +1187,7 @@ export default function HomePage() {
             ScenIQ n&apos;est pas<br />un outil de plus.
           </h2>
           <p className="cmp-sub">
-            Kling, Runway, Veo et Jimeng génèrent des clips impressionnants.
+            Kling, Runway, Veo, Sora, Pika et Luma génèrent des clips impressionnants.
             Ce qu&apos;ils ne font pas&nbsp;: écrire votre script, composer la bande-son,
             calibrer la voix-off, formater pour chaque réseau — et vous livrer un MP4 prêt à diffuser.
           </p>
@@ -1195,7 +1195,7 @@ export default function HomePage() {
             <div className="cmp-header">
               <div className="cmp-col-label"></div>
               <div className="cmp-col sceniq"><span className="cmp-pill">ScenIQ</span></div>
-              <div className="cmp-col tools">Kling · Runway · Veo · Jimeng</div>
+              <div className="cmp-col tools">Kling · Runway · Veo · Sora · Pika · Luma</div>
             </div>
             <div className="cmp-row">
               <div className="cmp-col-label">Ce que vous faites</div>
