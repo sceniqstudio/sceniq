@@ -183,6 +183,7 @@ body:has(.lv2) {
   /* hauteur via padding vertical — le CTA ne peut plus "sortir" */
   padding: 8px 8px 8px 20px;
   display: flex; align-items: center; gap: 0;
+  overflow: hidden; /* clip tout débordement interne */
   background: rgba(10,10,20,0.82);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
@@ -900,12 +901,16 @@ body:has(.lv2) {
 /* ═══════════════════════════════════════════════════════════════
    RESPONSIVE — Tablet 1024px
    ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 1200px) {
+  /* Masquer le ghost "Une question ?" dès 1200px pour éviter le squish */
+  .lv2-nav-right .lv2-btn-ghost { display: none; }
+}
+
 @media (max-width: 1024px) {
   .lv2-nav { padding: 16px 16px 0; }
   .lv2-nav-inner { padding: 8px 8px 8px 16px; }
   .lv2-nav-links { display: none; }
   .lv2-burger    { display: flex; }
-  .lv2-nav-right .lv2-btn-ghost { display: none; }
 
   .lv2-prices { grid-template-columns: repeat(3, 1fr); }
   .lv2 .why-grid { grid-template-columns: repeat(2, 1fr); }
