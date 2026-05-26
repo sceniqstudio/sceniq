@@ -260,6 +260,37 @@ export const translations = {
       sentClose:   'Fermer',
     },
 
+    // ── Promo banner ─────────────────────────────────────────────────────────
+    promoBanner: {
+      badge:   '🎬 Offre lancement',
+      text:    '50 premiers : votre reel 8s offert — testez notre IA sur votre brief avant de commander.',
+      textShort: 'Reel 8s offert — 50 spots',
+      cta:     'Je le veux gratuitement →',
+      ctaShort:'Je le veux →',
+      close:   'Fermer l\'annonce',
+    },
+
+    // ── Promo modal ──────────────────────────────────────────────────────────
+    promoModal: {
+      closeAria:    'Fermer',
+      badge:        '🎬 OFFRE LANCEMENT · 50 SPOTS',
+      h3:           'Votre premier reel — offert.',
+      sub:          'Décrivez votre vidéo en deux lignes. Je génère un reel 8s sur votre cas concret, gratuitement. Vous voyez le résultat avant de vous engager.',
+      labelName:    'Prénom',
+      placeName:    'Marie',
+      labelEmail:   'Email',
+      placeEmail:   'marie@agence.fr',
+      labelCompany: 'Entreprise / Marque',
+      placeCompany: 'Agence Alpha (optionnel)',
+      labelBrief:   'Décrivez votre vidéo',
+      placeBrief:   'Ex : Un spot 8s pour notre nouvelle gamme de cosmétiques — ambiance luxe, lumière dorée, ton féminin posé.',
+      submit:       'Envoyer mon brief →',
+      footer:       'Sans engagement · MP4 1080p · Livré sous 48h ouvrées',
+      sentTitle:    'Brief reçu 🎬',
+      sentSub:      'Je lance la génération personnellement. Votre reel 8s vous sera envoyé sous 48h ouvrées — directement par email.',
+      sentClose:    'Fermer',
+    },
+
     // ── Misc ─────────────────────────────────────────────────────────────────
     misc: {
       langSwitch:    'EN',
@@ -587,6 +618,37 @@ export const translations = {
       sentTitle:   'Message received 👋',
       sentSub:     'I\'ll get back to you personally within 4 business hours. If it\'s urgent, call directly.',
       sentClose:   'Close',
+    },
+
+    // ── Promo banner ─────────────────────────────────────────────────────────
+    promoBanner: {
+      badge:     '🎬 Launch offer',
+      text:      'First 50: get a free 8s reel — see our AI on your brief before committing.',
+      textShort: 'Free 8s reel — 50 spots',
+      cta:       'Claim mine free →',
+      ctaShort:  'Claim it →',
+      close:     'Dismiss',
+    },
+
+    // ── Promo modal ──────────────────────────────────────────────────────────
+    promoModal: {
+      closeAria:    'Close',
+      badge:        '🎬 LAUNCH OFFER · 50 SPOTS',
+      h3:           'Your first reel — on us.',
+      sub:          'Describe your video in two lines. I\'ll generate a free 8s reel on your actual brief. See the result before you commit.',
+      labelName:    'First name',
+      placeName:    'Alex',
+      labelEmail:   'Email',
+      placeEmail:   'alex@agency.com',
+      labelCompany: 'Company / Brand',
+      placeCompany: 'Agency Alpha (optional)',
+      labelBrief:   'Describe your video',
+      placeBrief:   'E.g. An 8s spot for our new skincare line — luxury feel, golden light, calm feminine tone.',
+      submit:       'Send my brief →',
+      footer:       'No commitment · 1080p MP4 · Delivered within 48 business hours',
+      sentTitle:    'Brief received 🎬',
+      sentSub:      'I\'m generating it personally. Your 8s reel will be sent to you within 48 business hours — straight to your inbox.',
+      sentClose:    'Close',
     },
 
     misc: {

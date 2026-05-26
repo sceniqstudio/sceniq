@@ -242,12 +242,23 @@ export default function HomePage() {
   ])
   const [lang, setLang] = useState<Lang>('fr')
   const [faqOpen, setFaqOpen] = useState<string | null>(null)
+
+  // ── Promo banner + modal ─────────────────────────────────────────────────
+  const [promoBannerVisible, setPromoBannerVisible] = useState(false) // false until hydration
+  const [promoOpen, setPromoOpen]                   = useState(false)
+  const [promoSent, setPromoSent]                   = useState(false)
+  const [promoLoading, setPromoLoading]             = useState(false)
+  const [promoForm, setPromoForm]                   = useState({ name: '', email: '', company: '', brief: '' })
+
   const t = translations[lang]
 
-  // Persist lang preference
+  // Persist lang preference + promo banner dismissed state
   useEffect(() => {
     const saved = localStorage.getItem('sceniq-lang') as Lang | null
     if (saved === 'en' || saved === 'fr') setLang(saved)
+    // Show banner unless previously dismissed
+    const dismissed = localStorage.getItem('sceniq-promo-dismissed')
+    if (!dismissed) setPromoBannerVisible(true)
   }, [])
   const toggleLang = () => {
     const next: Lang = lang === 'fr' ? 'en' : 'fr'
@@ -285,14 +296,50 @@ export default function HomePage() {
     }
   }
 
+  // ── Promo handlers ──────────────────────────────────────────────────────
+  const handleDismissBanner = () => {
+    setPromoBannerVisible(false)
+    localStorage.setItem('sceniq-promo-dismissed', '1')
+  }
+
+  const handlePromoSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+    setPromoLoading(true)
+    try {
+      const res = await fetch('/api/promo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name:    promoForm.name,
+          email:   promoForm.email,
+          company: promoForm.company || null,
+          brief:   promoForm.brief,
+        }),
+      })
+      if (!res.ok) throw new Error('Erreur serveur')
+      setPromoSent(true)
+    } catch {
+      // Fallback mailto
+      const subject = encodeURIComponent(`Reel 8s offert — ${promoForm.name}`)
+      const body = encodeURIComponent(
+        `Prénom : ${promoForm.name}\nEmail : ${promoForm.email}${promoForm.company ? `\nEntreprise : ${promoForm.company}` : ''}\n\nBrief :\n${promoForm.brief}`
+      )
+      window.open(`mailto:support@sceniq.studio?subject=${subject}&body=${body}`, '_blank')
+      setPromoSent(true)
+    } finally {
+      setPromoLoading(false)
+    }
+  }
+
   // ── ESC + body scroll lock ──────────────────────────────────────────────
   useEffect(() => {
-    if (!openVideo && !mobileMenuOpen && !questionOpen) return
+    if (!openVideo && !mobileMenuOpen && !questionOpen && !promoOpen) return
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setOpenVideo(null)
         setMobileMenuOpen(false)
         setQuestionOpen(false)
+        setPromoOpen(false)
       }
     }
     document.addEventListener('keydown', onKey)
@@ -302,7 +349,7 @@ export default function HomePage() {
       document.removeEventListener('keydown', onKey)
       document.body.style.overflow = prevOverflow
     }
-  }, [openVideo, mobileMenuOpen, questionOpen])
+  }, [openVideo, mobileMenuOpen, questionOpen, promoOpen])
 
   // ── Nav scroll state ────────────────────────────────────────────────────
   useEffect(() => {
@@ -433,7 +480,32 @@ export default function HomePage() {
   //  JSX
   // ════════════════════════════════════════════════════════════════════════
   return (
-    <div className="lv2">
+    <div className={`lv2${promoBannerVisible ? ' lv2--banner' : ''}`}>
+
+      {/* ── PROMO BANNER ─────────────────────────────────────────────────── */}
+      {promoBannerVisible && (
+        <div className="lv2-promo-banner" role="banner" aria-label={t.promoBanner.badge}>
+          <span className="lv2-promo-badge">{t.promoBanner.badge}</span>
+          <span className="lv2-promo-text">
+            <span className="promo-long">{t.promoBanner.text}</span>
+            <span className="promo-short">{t.promoBanner.textShort}</span>
+          </span>
+          <button
+            type="button"
+            className="lv2-promo-cta"
+            onClick={() => setPromoOpen(true)}
+          >
+            <span className="promo-long">{t.promoBanner.cta}</span>
+            <span className="promo-short">{t.promoBanner.ctaShort}</span>
+          </button>
+          <button
+            type="button"
+            className="lv2-promo-close"
+            onClick={handleDismissBanner}
+            aria-label={t.promoBanner.close}
+          >×</button>
+        </div>
+      )}
 
       {/* ── NAV ──────────────────────────────────────────────────────────── */}
       <nav className="lv2-nav" aria-label="Navigation principale">
@@ -1268,6 +1340,184 @@ export default function HomePage() {
           <span>{t.footer.bottom2}</span>
         </div>
       </footer>
+
+      {/* ── MODALE PROMO — Reel 8s offert ──────────────────────────────── */}
+      {promoOpen && (
+        <div
+          style={{
+            position: 'fixed', inset: 0, zIndex: 300,
+            background: 'rgba(0,0,0,0.78)', backdropFilter: 'blur(10px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '20px',
+          }}
+          onClick={() => setPromoOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Réclamer votre reel offert"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: '#0E0E1A',
+              border: '1px solid rgba(124,92,252,0.25)',
+              borderRadius: 20, padding: '32px',
+              width: '100%', maxWidth: 480,
+              maxHeight: '90vh', overflowY: 'auto',
+              position: 'relative',
+              boxShadow: '0 0 60px rgba(124,92,252,0.18), 0 32px 64px rgba(0,0,0,0.6)',
+            }}
+          >
+            {/* Close */}
+            <button
+              type="button"
+              onClick={() => setPromoOpen(false)}
+              aria-label={t.promoModal.closeAria}
+              style={{
+                position: 'absolute', top: 16, right: 16,
+                background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '50%', width: 32, height: 32, cursor: 'pointer',
+                color: 'rgba(255,255,255,0.55)', fontSize: 18, display: 'flex',
+                alignItems: 'center', justifyContent: 'center', fontFamily: 'inherit',
+              }}
+            >×</button>
+
+            {!promoSent ? (
+              <div>
+                {/* Header */}
+                <div style={{
+                  fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase',
+                  color: '#A5B4FC',
+                  background: 'rgba(124,92,252,0.12)',
+                  border: '1px solid rgba(124,92,252,0.25)',
+                  borderRadius: 100, display: 'inline-block',
+                  padding: '4px 10px', marginBottom: 16,
+                }}>{t.promoModal.badge}</div>
+
+                <h3 style={{ fontSize: 26, fontWeight: 800, color: '#fff', marginBottom: 10, lineHeight: 1.1, letterSpacing: '-0.5px' }}>
+                  {t.promoModal.h3}
+                </h3>
+                <p style={{ fontSize: 14, color: '#94A3B8', lineHeight: 1.65, marginBottom: 24 }}>
+                  {t.promoModal.sub}
+                </p>
+
+                <form onSubmit={handlePromoSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                  {/* Prénom + Email */}
+                  <div style={{ display: 'flex', gap: 12 }}>
+                    <div style={{ flex: 1 }}>
+                      <label style={{ fontSize: 12, fontWeight: 600, color: '#94A3B8', display: 'block', marginBottom: 6 }}>
+                        {t.promoModal.labelName}
+                      </label>
+                      <input
+                        type="text" required placeholder={t.promoModal.placeName}
+                        value={promoForm.name}
+                        onChange={(e) => setPromoForm((f) => ({ ...f, name: e.target.value }))}
+                        style={{
+                          width: '100%', background: 'rgba(255,255,255,0.05)',
+                          border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8,
+                          padding: '10px 12px', color: '#fff', fontSize: 14, fontFamily: 'inherit',
+                          outline: 'none',
+                        }}
+                      />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <label style={{ fontSize: 12, fontWeight: 600, color: '#94A3B8', display: 'block', marginBottom: 6 }}>
+                        {t.promoModal.labelEmail}
+                      </label>
+                      <input
+                        type="email" required placeholder={t.promoModal.placeEmail}
+                        value={promoForm.email}
+                        onChange={(e) => setPromoForm((f) => ({ ...f, email: e.target.value }))}
+                        style={{
+                          width: '100%', background: 'rgba(255,255,255,0.05)',
+                          border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8,
+                          padding: '10px 12px', color: '#fff', fontSize: 14, fontFamily: 'inherit',
+                          outline: 'none',
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Entreprise */}
+                  <div>
+                    <label style={{ fontSize: 12, fontWeight: 600, color: '#94A3B8', display: 'block', marginBottom: 6 }}>
+                      {t.promoModal.labelCompany}
+                    </label>
+                    <input
+                      type="text" placeholder={t.promoModal.placeCompany}
+                      value={promoForm.company}
+                      onChange={(e) => setPromoForm((f) => ({ ...f, company: e.target.value }))}
+                      style={{
+                        width: '100%', background: 'rgba(255,255,255,0.05)',
+                        border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8,
+                        padding: '10px 12px', color: '#fff', fontSize: 14, fontFamily: 'inherit',
+                        outline: 'none',
+                      }}
+                    />
+                  </div>
+
+                  {/* Brief */}
+                  <div>
+                    <label style={{ fontSize: 12, fontWeight: 600, color: '#94A3B8', display: 'block', marginBottom: 6 }}>
+                      {t.promoModal.labelBrief}
+                    </label>
+                    <textarea
+                      required rows={4}
+                      placeholder={t.promoModal.placeBrief}
+                      value={promoForm.brief}
+                      onChange={(e) => setPromoForm((f) => ({ ...f, brief: e.target.value }))}
+                      style={{
+                        width: '100%', background: 'rgba(255,255,255,0.05)',
+                        border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8,
+                        padding: '10px 12px', color: '#fff', fontSize: 14, fontFamily: 'inherit',
+                        outline: 'none', resize: 'vertical', lineHeight: 1.6,
+                      }}
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={promoLoading}
+                    style={{
+                      width: '100%', padding: '14px', borderRadius: 100,
+                      background: promoLoading ? 'rgba(124,92,252,0.5)' : 'var(--accent, #7C5CFC)',
+                      color: '#fff', fontSize: 15, fontWeight: 700, cursor: promoLoading ? 'wait' : 'pointer',
+                      border: 'none', fontFamily: 'inherit',
+                      boxShadow: '0 0 22px rgba(124,92,252,0.35)',
+                      transition: 'background .15s',
+                    }}
+                  >
+                    {promoLoading ? '…' : t.promoModal.submit}
+                  </button>
+                  <p style={{ fontSize: 12, color: '#475569', textAlign: 'center', margin: 0 }}>
+                    {t.promoModal.footer}
+                  </p>
+                </form>
+              </div>
+            ) : (
+              <div style={{ textAlign: 'center', padding: '20px 0' }}>
+                <div style={{ fontSize: 48, marginBottom: 16 }}>🎬</div>
+                <h3 style={{ fontSize: 22, fontWeight: 800, color: '#fff', marginBottom: 10 }}>
+                  {t.promoModal.sentTitle}
+                </h3>
+                <p style={{ fontSize: 15, color: '#94A3B8', lineHeight: 1.6, marginBottom: 24 }}>
+                  {t.promoModal.sentSub}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => { setPromoOpen(false); setPromoSent(false) }}
+                  style={{
+                    background: 'rgba(124,92,252,0.15)', border: '1px solid rgba(124,92,252,0.3)',
+                    borderRadius: 100, padding: '10px 24px',
+                    color: '#A5B4FC', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+                  }}
+                >
+                  {t.promoModal.sentClose}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* ── MODALE QUESTION ─────────────────────────────────────────────── */}
       {questionOpen && (

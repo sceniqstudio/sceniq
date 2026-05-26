@@ -62,6 +62,85 @@ body:has(.lv2) {
 .lv2-btn-lg     { padding: 17px 36px; font-size: 16px; }
 .lv2-btn-xl     { padding: 20px 48px; font-size: 17px; }
 
+/* ── PROMO BANNER ────────────────────────────────────────── */
+.lv2-promo-banner {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 102;
+  height: 48px;
+  background: linear-gradient(90deg, #0a0818 0%, #130d2a 50%, #0a0818 100%);
+  border-bottom: 1px solid rgba(124,92,252,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 52px 0 16px; /* right padding = close button width */
+  gap: 10px;
+  overflow: hidden;
+}
+/* Subtle glow line at the bottom */
+.lv2-promo-banner::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 60%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(124,92,252,0.6), transparent);
+  pointer-events: none;
+}
+.lv2-promo-badge {
+  flex-shrink: 0;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  color: #A5B4FC;
+  background: rgba(124,92,252,0.15);
+  border: 1px solid rgba(124,92,252,0.3);
+  padding: 3px 8px; border-radius: 100px;
+  white-space: nowrap;
+}
+.lv2-promo-text {
+  font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.8);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  flex: 1; min-width: 0;
+}
+.lv2-promo-text strong { color: #fff; font-weight: 700; }
+.lv2-promo-cta {
+  flex-shrink: 0;
+  font-size: 12px; font-weight: 700;
+  background: var(--accent); color: #fff;
+  border: none; border-radius: 100px;
+  padding: 6px 14px; cursor: pointer;
+  font-family: inherit; white-space: nowrap;
+  transition: background 0.15s, transform 0.15s;
+  box-shadow: 0 0 14px rgba(124,92,252,0.4);
+}
+.lv2-promo-cta:hover { background: var(--accent-h); transform: translateY(-1px); }
+.lv2-promo-close {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.5); font-size: 16px; line-height: 1;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-family: inherit;
+  transition: background 0.15s, color 0.15s;
+}
+.lv2-promo-close:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+/* When banner visible: push nav down */
+.lv2--banner .lv2-nav { top: 48px; }
+
+/* Mobile banner */
+@media (max-width: 640px) {
+  .lv2-promo-badge   { display: none; }
+  .lv2-promo-text    { font-size: 12px; }
+}
+@media (max-width: 480px) {
+  .lv2-promo-text .promo-long  { display: none; }
+  .lv2-promo-text .promo-short { display: inline; }
+  .lv2-promo-cta { font-size: 11px; padding: 5px 10px; }
+}
+@media (min-width: 481px) {
+  .lv2-promo-text .promo-long  { display: inline; }
+  .lv2-promo-text .promo-short { display: none; }
+}
+
 /* ── NAV — Floating pill 2026 ─────────────────────────────── */
 /* position:fixed → ne prend aucun espace dans le flux
    la pill flotte au-dessus du hero (style Luma / Linear) */
