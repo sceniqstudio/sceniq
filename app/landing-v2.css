@@ -67,7 +67,7 @@ body:has(.lv2) {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 102;
-  height: 48px;
+  min-height: 48px;
   background: linear-gradient(90deg, #0a0818 0%, #130d2a 50%, #0a0818 100%);
   border-bottom: 1px solid rgba(124,92,252,0.35);
   display: flex;
@@ -75,7 +75,7 @@ body:has(.lv2) {
   justify-content: center;
   padding: 0 52px 0 16px; /* right padding = close button width */
   gap: 10px;
-  overflow: hidden;
+  overflow: visible;
 }
 /* Subtle glow line at the bottom */
 .lv2-promo-banner::after {
@@ -128,14 +128,34 @@ body:has(.lv2) {
 
 /* Mobile banner */
 @media (max-width: 640px) {
-  .lv2-promo-badge   { display: none; }
-  .lv2-promo-text    { font-size: 12px; }
+  .lv2-promo-badge { display: none; }
+  .lv2-promo-text  { font-size: 12px; }
 }
+
+/* ≤ 480px : 2-line stacked layout, height auto */
 @media (max-width: 480px) {
+  .lv2-promo-banner {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 40px 8px 16px;
+    min-height: 64px;
+  }
+  .lv2-promo-text {
+    white-space: normal;
+    text-align: center;
+    font-size: 12px;
+    overflow: visible;
+    text-overflow: clip;
+    line-height: 1.4;
+  }
   .lv2-promo-text .promo-long  { display: none; }
   .lv2-promo-text .promo-short { display: inline; }
-  .lv2-promo-cta { font-size: 11px; padding: 5px 10px; }
+  .lv2-promo-cta { font-size: 11px; padding: 5px 14px; }
+  .lv2--banner .lv2-nav { top: 64px; }
 }
+
 @media (min-width: 481px) {
   .lv2-promo-text .promo-long  { display: inline; }
   .lv2-promo-text .promo-short { display: none; }
