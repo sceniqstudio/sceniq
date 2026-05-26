@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, type FormEvent } from 'react'
 import { ShowcaseClip } from '@/app/_components/ShowcaseClip'
-import { SHOWCASE_VIDEOS, HERO_SLUGS } from '@/lib/showcase'
+import { SHOWCASE_VIDEOS, HERO_SLUGS, showcaseUrl } from '@/lib/showcase'
 import { translations, type Lang } from '@/lib/i18n'
 
 // ── Ticker hero — briefs exemples scrollants ────────────────────────────────
@@ -38,15 +38,7 @@ const TICKER_EN = [
 ]
 
 // ── Portfolio — items depuis lib/showcase.ts ────────────────────────────────
-// Slugs avec poster JPG (première frame extraite de chaque vidéo)
-const SLUGS_WITH_POSTER = new Set([
-  'exemple1','exemple2','exemple3','exemple4','exemple5','exemple6','exemple7',
-  'exemple8','exemple9','exemple10','exemple11','exemple12','exemple13','exemple14',
-  'exemple15','exemple16','exemple17','exemple18','exemple19','exemple20','exemple21','exemple22',
-  'exemple23','exemple24','exemple25','exemple26',
-])
-
-type PortfolioItem = { id: string; slug: string; ratio: number; label: string; grad: string; poster?: string }
+type PortfolioItem = { id: string; slug: string; ratio: number; label: string; grad: string }
 
 const GRADS = [
   'linear-gradient(135deg,#0a0a14,#1a0a3c)',
@@ -59,7 +51,6 @@ const PORTFOLIO_ITEMS: PortfolioItem[] = SHOWCASE_VIDEOS.map((v, i) => ({
   ratio:  v.ratio,
   label:  v.ratio > 1 ? '16:9' : v.ratio > 0.7 ? '3:4' : '9:16',
   grad:   GRADS[i % 2],
-  poster: SLUGS_WITH_POSTER.has(v.slug) ? `/showcase/${v.slug}.jpg` : undefined,
 }))
 
 const SHOWCASE_SLUGS = HERO_SLUGS
@@ -203,10 +194,9 @@ function PortfolioRow({
             >
               <video
                 autoPlay muted loop playsInline preload="none"
-                poster={item.poster}
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
               >
-                <source src={`/showcase/${item.slug}.mp4`} type="video/mp4" />
+                <source src={showcaseUrl(item.slug)} type="video/mp4" />
               </video>
               <div className="portfolio-card-play">
                 <div className="portfolio-card-play-icon">
@@ -613,8 +603,8 @@ export default function HomePage() {
               >
                 {[...COL_SLUGS[c], ...COL_SLUGS[c]].map((slug, i) => (
                   <div key={`${slug}-${c}-${i}`} className="lv2-hcard">
-                    <video autoPlay muted loop playsInline preload="none" poster={`/showcase/${slug}.jpg`}>
-                      <source src={`/showcase/${slug}.mp4`} type="video/mp4" />
+                    <video autoPlay muted loop playsInline preload="none">
+                      <source src={showcaseUrl(slug)} type="video/mp4" />
                     </video>
                   </div>
                 ))}
@@ -638,8 +628,8 @@ export default function HomePage() {
               >
                 {[...COL_SLUGS[c], ...COL_SLUGS[c]].map((slug, i) => (
                   <div key={`${slug}-${c}-${i}`} className="lv2-hcard">
-                    <video autoPlay muted loop playsInline preload="none" poster={`/showcase/${slug}.jpg`}>
-                      <source src={`/showcase/${slug}.mp4`} type="video/mp4" />
+                    <video autoPlay muted loop playsInline preload="none">
+                      <source src={showcaseUrl(slug)} type="video/mp4" />
                     </video>
                   </div>
                 ))}
@@ -750,10 +740,10 @@ export default function HomePage() {
                 aria-label={t.studio.videoAria}
               >
                 <video
-                  autoPlay muted loop playsInline preload="none" poster="/showcase/volt.jpg"
+                  autoPlay muted loop playsInline preload="none"
                   style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }}
                 >
-                  <source src="/showcase/volt.mp4" type="video/mp4" />
+                  <source src={showcaseUrl('volt')} type="video/mp4" />
                 </video>
                 <div style={{
                   position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -802,10 +792,10 @@ export default function HomePage() {
                 aria-label={t.seedance.aria169}
               >
                 <video
-                  autoPlay muted loop playsInline preload="metadata" poster="/showcase/exemple19.jpg"
+                  autoPlay muted loop playsInline preload="metadata"
                   style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', pointerEvents:'none' }}
                 >
-                  <source src="/showcase/exemple19.mp4" type="video/mp4" />
+                  <source src={showcaseUrl('exemple19')} type="video/mp4" />
                 </video>
                 {/* Label format */}
                 <div style={{
@@ -843,10 +833,10 @@ export default function HomePage() {
                 aria-label={t.seedance.aria916}
               >
                 <video
-                  autoPlay muted loop playsInline preload="metadata" poster="/showcase/exemple18.jpg"
+                  autoPlay muted loop playsInline preload="metadata"
                   style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', pointerEvents:'none' }}
                 >
-                  <source src="/showcase/exemple18.mp4" type="video/mp4" />
+                  <source src={showcaseUrl('exemple18')} type="video/mp4" />
                 </video>
                 {/* Label format */}
                 <div style={{
@@ -1798,7 +1788,7 @@ export default function HomePage() {
             <video
               key={openVideo}
               className="video-modal-video"
-              src={`/showcase/${openVideo}.mp4`}
+              src={showcaseUrl(openVideo!)}
               autoPlay
               controls
               playsInline

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { showcaseUrl } from '@/lib/showcase'
 
 interface ShowcaseClipProps {
   /** Slug du fichier dans /public/showcase/ — ex: 'cafe-de-flore' → /showcase/cafe-de-flore.mp4 */
@@ -21,7 +22,6 @@ interface ShowcaseClipProps {
  *   le composant entre dans le viewport (avec une marge de 200px pour
  *   précharger juste à temps). Les vidéos invisibles ne consomment 0 bande passante.
  * - **preload="none"** côté navigateur — on contrôle nous-mêmes le chargement.
- * - **poster JPG** affiché instantanément avant que la vidéo ne soit dans le viewport.
  * - Fallback gradient si le fichier .mp4 n'existe pas ou échoue.
  *
  * Quand le composant entre dans le viewport :
@@ -110,22 +110,17 @@ export function ShowcaseClip({ slug, fallbackBg, fallbackEmoji, ariaLabel }: Sho
           loop
           playsInline
           preload="metadata"
-          poster={`/showcase/${slug}.jpg`}
           onError={() => setVideoFailed(true)}
           aria-label={ariaLabel}
         >
-          <source src={`/showcase/${slug}.mp4`} type="video/mp4" />
+          <source src={showcaseUrl(slug)} type="video/mp4" />
         </video>
       ) : (
-        // Placeholder visuel pendant que le composant attend d'être visible
-        // — affiche le poster JPG (effet "wow" instantané) avec le gradient en dessous
+        // Placeholder gradient pendant que la vidéo attend d'être dans le viewport
         <div
           className="vc-video"
           style={{
-            backgroundImage: `url(/showcase/${slug}.jpg), ${fallbackBg}`,
-            backgroundSize: 'cover, auto',
-            backgroundPosition: 'center, center',
-            backgroundRepeat: 'no-repeat, no-repeat',
+            background: fallbackBg,
             backgroundColor: '#1a1a2e',
             width: '100%',
             height: '100%',

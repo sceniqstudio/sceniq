@@ -1,7 +1,7 @@
 // ─── ScenIQ — Configuration des vidéos showcase ────────────────────────────
 //
 // Pour mettre à jour les vidéos :
-//   1. Copier le(s) fichier(s) dans public/showcase/ (ex: exemple23.mp4 + exemple23.jpg)
+//   1. Uploader le(s) fichier(s) sur Cloudflare R2 bucket "sceniq-showcase"
 //   2. Modifier SHOWCASE_VIDEOS ci-dessous
 //   3. git add . && git commit -m "feat(showcase): nouvelles vidéos" && git push
 //
@@ -10,7 +10,22 @@
 //   Portrait standard  → ratio: 414/720   ≈ 0.575  (format TikTok/Reels classique)
 //   Portrait carré+    → ratio: 720/1280  ≈ 0.5625 (format TikTok plein écran)
 //   Paysage 16:9       → ratio: 16/9      ≈ 1.777  (format YouTube/Web)
+//
+// CDN : Cloudflare R2 (NEXT_PUBLIC_R2_BASE_URL) — fallback /showcase/ en local
 // ────────────────────────────────────────────────────────────────────────────
+
+/** Base URL du CDN R2. En local, les fichiers sont servis depuis /public/showcase/ */
+const R2_BASE = (process.env.NEXT_PUBLIC_R2_BASE_URL ?? '').replace(/\/$/, '')
+
+/**
+ * Retourne l'URL MP4 d'une vidéo showcase.
+ * - Prod  : https://pub-xxx.r2.dev/exemple1.mp4 (Cloudflare R2, zéro egress)
+ * - Local : /showcase/exemple1.mp4
+ */
+export function showcaseUrl(slug: string): string {
+  if (R2_BASE) return `${R2_BASE}/${slug}.mp4`
+  return `/showcase/${slug}.mp4`
+}
 
 export type ShowcaseVideo = {
   slug:  string          // nom du fichier sans extension (ex: "exemple1")
