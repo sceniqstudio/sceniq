@@ -180,6 +180,27 @@ export const translations = {
       ],
     },
 
+    // ── Comparison ───────────────────────────────────────────────────────────
+    comparison: {
+      label:  'COMPARAISON',
+      h2a:    'ScenIQ n\'est pas',
+      h2b:    'un outil de plus.',
+      sub:    'Kling, Runway, Veo, Sora, Pika et Luma génèrent des clips impressionnants. Ce qu\'ils ne font pas : écrire votre script, composer la bande-son, calibrer la voix-off, formater pour chaque réseau — et vous livrer un MP4 prêt à diffuser.',
+      colTools: 'Kling · Runway · Veo · Sora · Pika · Luma',
+      rows: [
+        { label: 'Ce que vous faites',      sceniq: 'Un brief de 2 lignes',       tools: 'Apprendre les prompts',       sceniqType: 'yes', toolsType: 'muted' },
+        { label: 'Script + angle narratif', sceniq: 'Inclus',                         tools: 'À vous de l\'écrire',          sceniqType: 'check', toolsType: 'cross' },
+        { label: 'Storyboard shot par shot',sceniq: 'Inclus',                         tools: 'À vous de le découper',        sceniqType: 'check', toolsType: 'cross' },
+        { label: 'Musique + voix-off',      sceniq: 'Inclus',                         tools: 'Outil séparé',                 sceniqType: 'check', toolsType: 'cross' },
+        { label: 'Sous-titres + formats',   sceniq: '9:16 · 1:1 · 16:9',             tools: 'Export manuel',                sceniqType: 'check', toolsType: 'cross' },
+        { label: 'Ce que vous recevez',     sceniq: 'Un MP4 1080p livré',             tools: 'Des clips bruts à assembler',  sceniqType: 'yes',   toolsType: 'muted' },
+        { label: 'Délai réel',              sceniq: '48h ouvrées',                    tools: 'Autant que ça prend',          sceniqType: 'yes',   toolsType: 'muted' },
+        { label: 'Abonnement',              sceniq: 'Aucun',                          tools: 'Mensuel obligatoire',          sceniqType: 'check', toolsType: 'cross' },
+        { label: 'Crédits à surveiller',    sceniq: 'Aucun',                          tools: 'À chaque génération',          sceniqType: 'check', toolsType: 'cross' },
+      ],
+      note: 'Ces outils sont excellents — on les utilise. La différence : vous n\'avez pas à les maîtriser.',
+    },
+
     // ── FAQ ──────────────────────────────────────────────────────────────────
     faq: {
       label:   'FAQ',
@@ -545,6 +566,26 @@ export const translations = {
         { init: 'S', color: '#D97706', name: 'Sophie R.', role: 'CMO · Maison Velours',                verified: true,  em: 'Brief, payment, creative call, delivery.', pre: '"Four steps, zero friction. ', post: ' We\'re integrating this into every product launch."' },
         { init: 'A', color: '#DC2626', name: 'Alexis M.', role: 'Creative Director · Studio Arkhe',    verified: false, em: 'The question is no longer relevant.', pre: '"We were skeptical about AI for video. ', post: ' The client asked for a second video before the first one even landed."' },
       ],
+    },
+
+    comparison: {
+      label:  'COMPARISON',
+      h2a:    'ScenIQ is not',
+      h2b:    'just another tool.',
+      sub:    'Kling, Runway, Veo, Sora, Pika and Luma generate impressive clips. What they don\'t do: write your script, compose the soundtrack, calibrate the voice-over, format for every platform — and deliver a ready-to-broadcast MP4.',
+      colTools: 'Kling · Runway · Veo · Sora · Pika · Luma',
+      rows: [
+        { label: 'What you do',              sceniq: 'A 2-line brief',              tools: 'Learn prompting',               sceniqType: 'yes',   toolsType: 'muted' },
+        { label: 'Script + narrative angle', sceniq: 'Included',                    tools: 'Write it yourself',             sceniqType: 'check', toolsType: 'cross' },
+        { label: 'Shot-by-shot storyboard',  sceniq: 'Included',                    tools: 'Break it down yourself',        sceniqType: 'check', toolsType: 'cross' },
+        { label: 'Music + voice-over',       sceniq: 'Included',                    tools: 'Separate tool',                 sceniqType: 'check', toolsType: 'cross' },
+        { label: 'Subtitles + formats',      sceniq: '9:16 · 1:1 · 16:9',          tools: 'Manual export',                 sceniqType: 'check', toolsType: 'cross' },
+        { label: 'What you receive',         sceniq: 'A delivered 1080p MP4',       tools: 'Raw clips to assemble',         sceniqType: 'yes',   toolsType: 'muted' },
+        { label: 'Actual turnaround',        sceniq: '48 working hours',            tools: 'However long it takes',         sceniqType: 'yes',   toolsType: 'muted' },
+        { label: 'Subscription',             sceniq: 'None',                        tools: 'Monthly required',              sceniqType: 'check', toolsType: 'cross' },
+        { label: 'Credits to monitor',       sceniq: 'None',                        tools: 'Every generation',              sceniqType: 'check', toolsType: 'cross' },
+      ],
+      note: 'These tools are excellent — we use them. The difference: you don\'t have to master them.',
     },
 
     faq: {
