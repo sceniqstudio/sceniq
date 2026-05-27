@@ -436,23 +436,31 @@ export default function HomePage() {
     }
 
     function startLoad(vid: HTMLVideoElement) {
-      if (vid.networkState === 2 || vid.readyState > 0) return // déjà en cours / chargé
+      if (vid.networkState === 2) return // déjà en cours de chargement réseau
       activeLoads++
       const onDone = () => {
         activeLoads = Math.max(0, activeLoads - 1)
         processQueue()
       }
+      // canplay = assez de données pour démarrer la lecture sans stall
       vid.addEventListener('canplay', () => { vid.play().catch(() => {}); onDone() }, { once: true })
       vid.addEventListener('error', onDone, { once: true })
-      vid.load()
+      vid.load() // reset + charge depuis le début (nécessaire même si preload="metadata")
     }
 
     function enqueue(vid: HTMLVideoElement) {
-      if (vid.networkState === 2 || vid.readyState > 0) {
-        // Déjà chargé — juste play() si en pause
+      // HAVE_FUTURE_DATA (3) / HAVE_ENOUGH_DATA (4) = vraiment prêt à jouer
+      if (vid.readyState >= 3) {
         if (vid.paused) vid.play().catch(() => {})
         return
       }
+      // En cours de chargement réseau (networkState=2) → juste attacher le listener play
+      if (vid.networkState === 2) {
+        vid.addEventListener('canplay', () => vid.play().catch(() => {}), { once: true })
+        return
+      }
+      // readyState=0 ou readyState=1 (preload=metadata → metadata only, pas de data vidéo)
+      // → charger via la queue
       if (activeLoads < MAX_CONCURRENT) {
         startLoad(vid)
       } else {
@@ -464,11 +472,7 @@ export default function HomePage() {
       entries.forEach(entry => {
         const vid = entry.target as HTMLVideoElement
         if (entry.isIntersecting) {
-          if (vid.readyState === 0) {
-            enqueue(vid)
-          } else if (vid.paused) {
-            vid.play().catch(() => {})
-          }
+          enqueue(vid)
         } else {
           // Retire de la file si pas encore chargé (économie bande passante)
           const qi = loadQueue.indexOf(vid)
@@ -774,7 +778,7 @@ export default function HomePage() {
                   autoPlay muted loop playsInline preload="none"
                   style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }}
                 >
-                  <source src={showcaseUrl('exemple23')} type="video/mp4" />
+                  <source src={showcaseUrl('volt')} type="video/mp4" />
                 </video>
                 <div style={{
                   position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -823,7 +827,7 @@ export default function HomePage() {
                 aria-label={t.seedance.aria169}
               >
                 <video
-                  autoPlay muted loop playsInline preload="metadata"
+                  autoPlay muted loop playsInline preload="none"
                   style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', pointerEvents:'none' }}
                 >
                   <source src={showcaseUrl('exemple19')} type="video/mp4" />
@@ -864,7 +868,7 @@ export default function HomePage() {
                 aria-label={t.seedance.aria916}
               >
                 <video
-                  autoPlay muted loop playsInline preload="metadata"
+                  autoPlay muted loop playsInline preload="none"
                   style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', pointerEvents:'none' }}
                 >
                   <source src={showcaseUrl('exemple18')} type="video/mp4" />
