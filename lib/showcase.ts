@@ -37,7 +37,7 @@ export const SHOWCASE_VIDEOS: ShowcaseVideo[] = [
   { slug: 'exemple1',  ratio: 414/720  },
   { slug: 'exemple2',  ratio: 414/720  },
   { slug: 'exemple3',  ratio: 414/720  },
-  { slug: 'exemple4',  ratio: 414/720  },
+  { slug: 'exemple4',  ratio: 1/1      },  // ← 1:1 carré (960×960)
   { slug: 'exemple5',  ratio: 414/720  },
   { slug: 'exemple6',  ratio: 414/720  },
   { slug: 'exemple7',  ratio: 414/720  },
