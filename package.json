@@ -26,6 +26,7 @@
     "seed:dev": "supabase db reset",
 
     "generate:showcase": "tsx scripts/generate-showcase.ts",
+    "push:videos": "tsx scripts/push-videos.ts",
 
     "db:push": "supabase db push",
     "db:types": "supabase gen types typescript --project-id lawmjbyhqmuxalxqraxz > lib/supabase/types.ts",

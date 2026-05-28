@@ -104,30 +104,36 @@ export interface Database {
       }
       projects: {
         Row: {
-          id:           string
-          user_id:      string
-          brand_id:     string | null
-          name:         string
-          brief:        string
-          format:       ProjectFormat
-          duration_sec: number
-          tone:         string
-          status:       ProjectStatus
-          created_at:   string
-          updated_at:   string
+          id:               string
+          user_id:          string
+          brand_id:         string | null
+          name:             string
+          brief:            string
+          format:           ProjectFormat
+          duration_sec:     number
+          tone:             string
+          status:           ProjectStatus
+          ref_image_urls:   string[]
+          final_video_url:  string | null
+          video_job_id:     string | null
+          created_at:       string
+          updated_at:       string
         }
         Insert: {
-          id?:           string
-          user_id:       string
-          brand_id?:     string | null
-          name:          string
-          brief:         string
-          format?:       ProjectFormat
-          duration_sec?: number
-          tone?:         string
-          status?:       ProjectStatus
-          created_at?:   string
-          updated_at?:   string
+          id?:               string
+          user_id:           string
+          brand_id?:         string | null
+          name:              string
+          brief:             string
+          format?:           ProjectFormat
+          duration_sec?:     number
+          tone?:             string
+          status?:           ProjectStatus
+          ref_image_urls?:   string[]
+          final_video_url?:  string | null
+          video_job_id?:     string | null
+          created_at?:       string
+          updated_at?:       string
         }
         Update: Partial<Database['public']['Tables']['projects']['Row']>
         Relationships: [
