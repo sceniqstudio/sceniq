@@ -137,7 +137,7 @@ export async function GET(
     // Ownership + chargement projet
     const { data: project } = await sb
       .from('projects')
-      .select('id, name, brief, format, duration_sec, tone, status')
+      .select('id, name, brief, format, duration_sec, tone, status, ref_image_urls, video_job_id, final_video_url')
       .eq('id', params.projectId)
       .eq('user_id', dbUserId)
       .single()
