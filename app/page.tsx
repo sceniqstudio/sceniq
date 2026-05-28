@@ -195,6 +195,15 @@ function PortfolioRow({
               <video
                 autoPlay muted loop playsInline preload="none"
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
+                onLoadedMetadata={(e) => {
+                  // Auto-ajuste la largeur de la carte au ratio réel de la vidéo
+                  // → upload n'importe quel format sur R2, la carte s'adapte sans toucher au code
+                  const vid = e.currentTarget
+                  if (vid.videoWidth && vid.videoHeight) {
+                    const card = vid.closest('.portfolio-card') as HTMLElement | null
+                    if (card) card.style.width = `${Math.round(rowHeight * vid.videoWidth / vid.videoHeight)}px`
+                  }
+                }}
               >
                 <source src={showcaseUrl(item.slug)} type="video/mp4" />
               </video>
