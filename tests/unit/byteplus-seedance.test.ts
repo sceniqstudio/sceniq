@@ -88,14 +88,17 @@ describe('generateClipByteplus()', () => {
 
     expect(result.videoUrl).toBeTruthy()
 
-    // Vérifier que image_url (first ref) a bien été envoyé
+    // Format v3 ModelArk : les références vivent dans content[] (pas en top-level
+    // image_url / references[]). content[0] = texte, puis 1 entrée image_url par ref.
     const callBody = JSON.parse(
       (mockFetch.mock.calls[0][1] as RequestInit).body as string
     )
-    expect(callBody.image_url).toBe('https://brand.com/logo.png')
-    // Deuxième ref → dans references[]
-    expect(callBody.references).toHaveLength(1)
-    expect(callBody.references[0].url).toBe('https://brand.com/mood.jpg')
+    const content = callBody.content as Array<Record<string, unknown>>
+    expect(content[0]).toEqual({ type: 'text', text: 'Chanel N°5 product shot' })
+    expect(content.slice(1)).toEqual([
+      { type: 'image_url', image_url: { url: 'https://brand.com/logo.png' }, role: 'reference_image' },
+      { type: 'image_url', image_url: { url: 'https://brand.com/mood.jpg' }, role: 'reference_image' },
+    ])
   })
 
   it('native audio = true par défaut', async () => {
@@ -118,9 +121,9 @@ describe('generateClipByteplus()', () => {
     const callBody = JSON.parse(
       (mockFetch.mock.calls[0][1] as RequestInit).body as string
     )
-    expect(callBody.audio).toBe(true)
-    expect(callBody.resolution).toBe('720p')        // 720p — max des plans Light/Production/Premium BytePlus
-    expect(callBody.model).toBe('seedance-2.0')     // Standard, jamais Fast
+    expect(callBody.generate_audio).toBe(true)      // format v3 : `generate_audio`, pas `audio`
+    expect(callBody.resolution).toBe('720p')        // défaut 720p quand resolution non précisée
+    expect(callBody.model).toBe('dreamina-seedance-2-0-260128')  // ID confirmé console BytePlus, Standard jamais Fast
   })
 
   it('timeout → retourne error après _maxWaitMs', async () => {

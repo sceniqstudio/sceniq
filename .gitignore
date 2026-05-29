@@ -57,3 +57,7 @@ scenica-*.html.ref
 scenica-*.jsx.ref
 video-agency-studio*.jsx.ref
 .wrangler/
+
+# Dossiers temp sandbox (Cowork) — non supprimables localement
+.tmp-npm-cache/
+.vitest-tmp/
