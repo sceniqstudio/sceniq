@@ -1,0 +1,22 @@
+# Cloudflare Worker — sceniq-media
+# Sert les vidéos du bucket R2 `sceniq-showcase` via l'URL gratuite *.workers.dev,
+# avec cache edge Cloudflare + support des Range requests (vidéo iOS).
+# Remplace l'endpoint r2.dev (rate-limited, sans cache, déconseillé en prod).
+#
+# Déploiement (depuis workers/media/) :
+#   npx wrangler login        # une fois — auth compte Cloudflare
+#   npx wrangler deploy
+# → l'URL renvoyée ressemble à https://sceniq-media.<sous-domaine>.workers.dev
+
+name                = "sceniq-media"
+main                = "src/index.js"
+compatibility_date  = "2025-05-01"
+workers_dev         = true
+
+# Liaison vers le bucket R2 (accès interne, pas d'egress, pas de throttle r2.dev)
+[[r2_buckets]]
+binding     = "BUCKET"
+bucket_name = "sceniq-showcase"
+
+[observability]
+enabled = true
