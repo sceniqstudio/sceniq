@@ -126,9 +126,10 @@ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 CLERK_SECRET_KEY=
 
 # Stripe
-STRIPE_SECRET_KEY=
-STRIPE_WEBHOOK_SECRET=
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
+STRIPE_SECRET_KEY=                      # sk_live_... en prod / sk_test_... en dev
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=     # pk_live_... en prod
+STRIPE_WEBHOOK_SECRET=                  # whsec_... pour /api/webhooks/stripe (subscriptions)
+STRIPE_CHECKOUT_WEBHOOK_SECRET=         # whsec_... pour /api/webhooks/stripe-checkout (orders)
 
 # Claude API
 ANTHROPIC_API_KEY=
@@ -143,8 +144,21 @@ FAL_KEY=
 # Studio admin (dashboard Pascal)
 ADMIN_SECRET=                  # secret partagé header x-admin-secret (toutes routes /api/studio/*)
 
+# SMTP IONOS (emails commandes + contact)
+SMTP_HOST=                     # smtp.ionos.fr
+SMTP_PORT=                     # 587
+SMTP_USER=                     # support@sceniq.studio
+SMTP_PASS=
+SMTP_FROM=                     # "ScenIQ Studio <support@sceniq.studio>"
+
+# CDN Cloudflare R2 (vidéos showcase)
+NEXT_PUBLIC_R2_BASE_URL=       # https://pub-xxx.r2.dev (sans slash final)
+
+# Analytics
+NEXT_PUBLIC_GA4_MEASUREMENT_ID= # G-XXXXXXXXXX
+
 # App
-NEXT_PUBLIC_APP_URL=
+NEXT_PUBLIC_APP_URL=           # https://sceniq.studio en prod
 ```
 
 ---

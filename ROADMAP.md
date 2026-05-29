@@ -32,7 +32,7 @@ dégressif sur mesure.
 
 ### Process client
 
-1. Client va sur sceniq.app → clique "Lancer ma vidéo" → page `/commande` (à coder)
+1. Client va sur sceniq.studio → clique "Lancer ma vidéo" → page `/commande` ✅
 2. Formulaire multi-step : configuration (format + durée) → brief 2-5 lignes + upload refs (images, audio, logo) → coordonnées + créneau d'appel préféré → paiement Stripe Checkout
 3. Email automatique → client (confirmation) + Pascal (notification nouvelle commande)
 4. Pascal rappelle sous 4 h ouvrées pour caler la pré-prod
@@ -54,7 +54,7 @@ dégressif sur mesure.
 - [x] FAQ 9 questions refondue agence (process, vs Runway/Kling/Veo, prix, livrable, droits, remboursement, délai, types projets, why no self-service)
 - [x] CTA final repensé : "Prêt à lancer votre vidéo ?" + waitlist V2 2027
 - [x] Menu réordonné dans l'ordre des sections : Réalisations → Seedance 2.0 → Équipe créa → Le process → Tarifs → FAQ
-- [x] Page `/commande` placeholder (mailto bridge en attendant le vrai checkout Stripe)
+- [x] Page `/commande` placeholder (mailto bridge) → remplacée par checkout Stripe complet (22 mai 2026)
 - [x] Fix overflow FAQ (max-height 180→1200px) + hero font clamp adaptatif (24-80px)
 - [x] Retrait fausses promesses (lip-sync FR précis) — remplacé par note honnête sur EN/JP/ES/PT/ID supportés officiellement
 
@@ -73,6 +73,10 @@ dégressif sur mesure.
 **Infra & creds**
 - [x] BYTEPLUS_AK + BYTEPLUS_SK créés et ajoutés à Vercel Environment Variables (root account, à migrer vers IAM user dédié en V2)
 - [x] Service OmniHuman 1.5 activé en mode Free trial dans la console BytePlus (Vision AI section, pas ModelArk)
+- [x] CDN Cloudflare R2 bucket "sceniq-showcase" — 26+ vidéos showcase + hero (zéro egress Vercel)
+- [x] `scripts/push-videos.ts` — compression ffmpeg auto (cible 1.6 Mo, seuil 2 Mo) + upload R2 via wrangler
+- [x] Google Analytics 4 intégré dans `app/layout.tsx` (NEXT_PUBLIC_GA4_MEASUREMENT_ID)
+- [x] Bannière promo "50 premiers — Reel offert" + modale demande email → route `/api/promo`
 
 ### Ce qui reste à construire (V1, ordre de priorité)
 
@@ -85,19 +89,22 @@ dégressif sur mesure.
 - [x] Email notification → client (confirmation) + Pascal (nouvelle commande) via SMTP (`lib/email/` — SMTP credentials à ajouter sur Vercel)
 - [x] Page `/commande/success` (post-paiement)
 
-**2. Dashboard projet refondu (admin only) — gros chantier (3-4 h)**
-- [ ] Whitelist Clerk email (`uxdesignparis@gmail.com` + `support@sceniq.studio`) — bloquer signup public
-- [ ] Cacher section Marque du sidebar (code conservé pour V2)
-- [ ] Page Projet refondue selon flow Figma : upload 6 images max (renommées Image1/Image2…), 3 blocs modifiables (Concept, Storyboard 4 scènes, Ambiance sonore), Prompt final unifié, CTA "Générer la vidéo"
-- [ ] Backend : refactor route generation → 1 seul appel API BytePlus avec prompt unifié multi-shot → 1 vidéo finale (au lieu de N appels par scène)
-- [ ] `idealShots()` adaptatif : 5s=2 shots, 8-10s=3 shots, 12-15s=4 shots
+**2. Dashboard projet refondu (admin only) — ✅ livré (28-29 mai 2026)**
+- [x] Whitelist Clerk email (`uxdesignparis@gmail.com` + `support@sceniq.studio`) — `app/(app)/layout.tsx`
+- [x] Section Marque masquée du sidebar (code conservé pour V2)
+- [x] Page Production refondue : 4 blocs UI (Concept, Storyboard, Ambiance, Prompt final unifié) + upload 6 images ref + polling génération 5s + CTA "Générer la vidéo"
+- [x] Backend : route `/api/generation/[projectId]/unified` — 1 appel BytePlus prompt unifié multi-shot → 1 vidéo finale
+- [x] `idealShots()` adaptatif : 5s=2 shots, 8-10s=3 shots, 12-15s=4 shots (`lib/utils/scenes.ts`)
+- [x] Route `/api/projects/[id]/ref-images` — upload/delete images de référence projet (max 6)
+- [x] 3 nouvelles colonnes BDD projects : `ref_image_urls text[]`, `final_video_url text`, `video_job_id text`
+- [x] `scripts/push-videos.ts` — compression ffmpeg auto (cible 1.6 Mo, seuil 2 Mo, MAX_WIDTH 1280)
 
 **3. Setup tech à finaliser (Pascal — actions manuelles)**
-- [ ] Créer une clé Stripe `sceniq-prod` sur dashboard.stripe.com → ajouter `STRIPE_SECRET_KEY` + `STRIPE_PUBLISHABLE_KEY` sur Vercel
+- [ ] Créer une clé Stripe `sceniq-prod` sur dashboard.stripe.com → ajouter `STRIPE_SECRET_KEY` + `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` sur Vercel
 - [ ] Enregistrer webhooks Stripe : `https://sceniq.studio/api/webhooks/stripe` (subscriptions) + `https://sceniq.studio/api/webhooks/stripe-checkout` (checkout.session.completed) → ajouter `STRIPE_WEBHOOK_SECRET` + `STRIPE_CHECKOUT_WEBHOOK_SECRET` sur Vercel
 - [ ] Récupérer credentials SMTP IONOS `support@sceniq.studio` (host, port, user, pass) → ajouter `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` / `SMTP_FROM` sur Vercel
-- [ ] Appliquer les 2 migrations en attente : `supabase db push` (orders table + client-uploads bucket)
-- [ ] Remplacer logo SVG par PNG dans Brand Memory existante (le SVG cassait la génération Seedance — filtre code OK mais préfère PNG)
+- [ ] Appliquer les migrations en attente via `supabase db push` (orders table + client-uploads bucket — `projects_video_fields` déjà appliquée manuellement)
+- [ ] Remplacer logo SVG par PNG dans Brand Memory existante (filtre code OK mais préfère PNG)
 
 ### Ce qui est volontairement absent de la V1
 

@@ -139,24 +139,44 @@ Convention : voir memory `agents-convention.md`. Chaque agent a un format de sor
 ```
 lib/credits/index.ts                ✓ getBalance() + consumeCredit()
 lib/byteplus/seedance.ts            ✓ generateClipByteplus() — PROVIDER PRINCIPAL 1080p + audio natif + polling backoff
+lib/byteplus/studio.ts             ✓ submitStudioJob() + checkStudioJob() — Studio admin + pipeline unifié client
 lib/fal/seedance.ts                 ✓ generateClip() — fallback silencieux 720p Pro tier
 lib/utils/validation.ts             ✓ validateBrief() + BriefSchema (Zod)
-lib/utils/scenes.ts                 ✓ idealScenes(durationSec) + secondsPerScene()
+lib/utils/scenes.ts                 ✓ idealScenes() + secondsPerScene() + idealShots() + secondsPerShot()
+                                      idealShots() adaptatif : 5s=2 / 8-10s=3 / 12-15s=4
 lib/stripe/plans.ts                 ✓ PLANS config
+lib/orders/index.ts                 ✓ createOrder() + helpers commande
+lib/email/smtp.ts                   ✓ transporter SMTP IONOS nodemailer
+lib/email/sendOrderConfirmation.ts  ✓ email client post-paiement
+lib/email/sendOrderNotification.ts  ✓ email Pascal nouvelle commande
+lib/email/sendContactMessage.ts     ✓ email formulaire contact
+lib/email/sendPromoRequest.ts       ✓ email demande promo "50 premiers"
+lib/showcase.ts                     ✓ SHOWCASE_VIDEOS (slug+ratio) + showcaseUrl() — CDN R2 ou fallback local
+                                      Ratios : 414/720 portrait, 720/1280 plein écran, 1/1 carré, 834/1112 3:4, 16/9 paysage
 ```
 
 ### API routes — toutes câblées sur Supabase + ensureUser()
 
 ```
-app/api/projects/route.ts                       ✓ GET + POST — liste/crée projets
-app/api/production/[projectId]/route.ts         ✓ GET (état) + POST → runAllAgents() persist agent_outputs + scenes
-app/api/generation/[sceneId]/route.ts           ✓ POST Seedance — limite 9 refs Brand Memory, BytePlus → fallback fal.ai
-app/api/credits/route.ts                        ✓ GET balance
-app/api/brands/route.ts                         ✓ GET + POST — Brand Memory CRUD
-app/api/brands/[id]/route.ts                    ✓ GET + PATCH + DELETE
-app/api/brands/[id]/assets/route.ts             ✓ POST upload (multipart FormData → Supabase Storage)
-app/api/brands/[id]/assets/[assetId]/route.ts   ✓ DELETE asset + fichier Storage
-app/api/webhooks/stripe/route.ts                ✓ invoice.paid + subscription.deleted
+app/api/projects/route.ts                            ✓ GET + POST — liste/crée projets
+app/api/projects/[id]/route.ts                       ✓ GET + PATCH + DELETE — projet individuel
+app/api/projects/[id]/ref-images/route.ts            ✓ POST upload image ref + DELETE (max 6, bucket brand-assets/projects/[id]/)
+app/api/production/[projectId]/route.ts              ✓ GET (état + scenes + agentOutputs) + POST → runAllAgents()
+app/api/production/[projectId]/agent/[agentId]/route.ts ✓ POST (régénérer) + PATCH (accepter/modifier contenu)
+app/api/generation/[sceneId]/route.ts                ✓ POST Seedance scène — BytePlus → fallback fal.ai
+app/api/generation/[projectId]/unified/route.ts      ✓ POST → submitStudioJob() prompt unifié multi-shot
+                                                       GET → checkStudioJob() poll (appelé client-side toutes 5s)
+app/api/credits/route.ts                             ✓ GET balance
+app/api/brands/route.ts                              ✓ GET + POST — Brand Memory CRUD
+app/api/brands/[id]/route.ts                         ✓ GET + PATCH + DELETE
+app/api/brands/[id]/assets/route.ts                  ✓ POST upload (multipart FormData → Supabase Storage)
+app/api/brands/[id]/assets/[assetId]/route.ts        ✓ DELETE asset + fichier Storage
+app/api/orders/route.ts                              ✓ POST crée order + Stripe Checkout session
+app/api/orders/upload/route.ts                       ✓ POST upload refs client (bucket client-uploads privé)
+app/api/webhooks/stripe/route.ts                     ✓ invoice.paid + subscription.deleted
+app/api/webhooks/stripe-checkout/route.ts            ✓ checkout.session.completed → order paid + emails client + Pascal
+app/api/promo/route.ts                               ✓ POST demande bannière promo "50 premiers"
+app/api/contact/route.ts                             ✓ POST formulaire contact
 ```
 
 ### Helpers Supabase
@@ -183,17 +203,22 @@ app/(app)/dashboard/brands/page.tsx                 ✓ Liste marques (Brand Mem
 app/(app)/dashboard/brands/[id]/page.tsx            ✓ Édition + upload logo + 9 images de ref
 app/(app)/dashboard/studio/page.tsx                 ✓ Studio admin — Pré-prod IA (6 blocs) + Image IA + Vidéo IA
 app/(app)/project/[id]/brief/page.tsx               ✓ Marques dynamiques + inline create + POST /api/projects
-app/(app)/project/[id]/production/page.tsx         ✓ Auto-trigger POST /api/production + GET state
-app/(app)/project/[id]/generate/page.tsx           ✓ Génération scène par scène via /api/generation/[sceneId]
-app/(app)/project/[id]/export/page.tsx             ✓ Player vidéos + dossier de production (5 outputs agents)
+app/(app)/project/[id]/production/page.tsx          ✓ 4 blocs UI (Concept, Storyboard, Ambiance, Prompt unifié) +
+                                                       upload 6 images ref + CTA "Générer la vidéo" + polling 5s
+app/(app)/project/[id]/generate/page.tsx            ✓ Génération scène par scène via /api/generation/[sceneId]
+app/(app)/project/[id]/export/page.tsx              ✓ Player vidéos + dossier de production (5 outputs agents)
+app/commande/page.tsx                               ✓ Checkout multi-step (format → brief + refs → coordonnées → Stripe)
+app/commande/success/page.tsx                       ✓ Page post-paiement
 ```
 
 ### Assets showcase
 
 ```
-public/showcase/   17 reels exemple{1..17}.mp4 + 5agents.mp4 + hero.mp4 + hero1.mp4
-                   + 20 posters JPG (~30 KB chacun, instant load)
-                   Total 24 MB (compressés depuis 87 MB via ffmpeg CRF 26, 720p)
+public/showcase/   exemple{1..4}.mp4 en local (les autres sont sur R2)
+                   CDN Cloudflare R2 bucket "sceniq-showcase" : exemple{1..26}.mp4 + volt.mp4 + hero.mp4 etc.
+                   NEXT_PUBLIC_R2_BASE_URL → urls servies depuis CDN R2 (zéro egress Vercel)
+scripts/push-videos.ts → upload R2 avec compression auto ffmpeg (cible 1.6 Mo, MAX 2 Mo, MAX_WIDTH 1280)
+                   Options : --new (skip si déjà sur R2), --dry (simulation), --no-compress
 ```
 
 ### Tests
@@ -215,36 +240,26 @@ tests/e2e/main.spec.ts                                     ✓ parcours brief �
 
 ## Ce qui reste à construire (V1 agence services)
 
-### Priorité 1 — Page `/commande` checkout complet (3-4 h dev)
+### ✅ Tout le code V1 est livré (29 mai 2026)
 
-Actuellement : placeholder `app/commande/page.tsx` avec mailto bridge. À remplacer par :
-- Migration BDD : table `orders` (id, status, format, duration, price, brief, client coords, stripe_session_id, …)
-- Bucket Supabase `client-uploads` (privé, signed URLs)
-- Page multi-step (config → brief + upload refs → coordonnées + créneau → Stripe Checkout)
-- Route `/api/orders` POST → crée order + session Stripe
-- Webhook `/api/webhooks/stripe-checkout` (séparé du webhook subscriptions existant)
-- Email post-paiement via SMTP IONOS `support@sceniq.studio` (à setuper)
-- Page `/commande/success`
+Toutes les fonctionnalités V1 sont implémentées et en prod sur sceniq.studio / sceniq-ashen.vercel.app.
 
-### Priorité 2 — Dashboard projet refondu (admin only, 3-4 h dev)
+### Actions manuelles Pascal (bloquantes pour la mise en prod complète)
 
-- Whitelist Clerk email (Pascal seul) — bloquer signup public, rediriger non-autorisés
-- Cacher section Marque du sidebar (code conservé pour V2)
-- Page Projet refondue selon flow Figma : upload 6 images max renommées Image1/Image2, 3 blocs modifiables (Concept, Storyboard 4 scènes avec voix off/dialogue si demandé, Ambiance No Lyrics), affichage Prompt final unifié copiable, CTA "Générer la vidéo"
-- Backend refactor : route generation → **1 seul appel API BytePlus avec prompt unifié multi-shot** (au lieu de N appels par scène) → 1 vidéo finale déjà montée
-- `idealShots()` adaptatif : 5s=2 / 8-10s=3 / 12-15s=4
+1. **Stripe production** : passer en mode Live sur dashboard.stripe.com → copier `sk_live_` + `pk_live_` dans Vercel env vars `STRIPE_SECRET_KEY` + `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`. Enregistrer 2 webhooks :
+   - `https://sceniq.studio/api/webhooks/stripe` → `invoice.paid` + `customer.subscription.deleted` → `STRIPE_WEBHOOK_SECRET`
+   - `https://sceniq.studio/api/webhooks/stripe-checkout` → `checkout.session.completed` → `STRIPE_CHECKOUT_WEBHOOK_SECRET`
 
-### Priorité 3 — Setup tech Pascal (manuel)
+2. **SMTP IONOS** : récupérer credentials `support@sceniq.studio` → ajouter sur Vercel :
+   `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` / `SMTP_FROM`
 
-- Créer clé Stripe `sceniq-prod` sur dashboard.stripe.com → `STRIPE_SECRET_KEY` + `STRIPE_PUBLISHABLE_KEY` Vercel
-- Récupérer credentials SMTP IONOS `support@sceniq.studio` → `SMTP_HOST/PORT/USER/PASS/FROM` Vercel
-- Remplacer logo SVG par PNG dans Brand Memory existante (filtre code OK mais préfère PNG)
+3. **Supabase db push** : 2 migrations en attente (jamais appliquées via `supabase db push`) :
+   - `20260518000000_orders.sql` + `20260521000000_orders_multicart.sql` — table orders
+   - `20260522000000_storage_client_uploads.sql` — bucket client-uploads privé
+   - `20260528000000_projects_video_fields.sql` — ref_image_urls + final_video_url + video_job_id
+     *(celle-ci déjà appliquée manuellement via SQL Editor Supabase — idempotent)*
 
-### Priorité 4 — Domaine sceniq.app + Clerk prod (cf SWITCH_PROD.md)
-
-- Pointer DNS IONOS → Vercel (A record + CNAME)
-- Créer instance Clerk Production pour sceniq.app
-- Update env vars Clerk (pk_live + sk_live)
+4. **Videos showcase** : uploader les nouveaux .mp4 via `npm run push:videos` (ou `-- --new` pour les absents seulement)
 
 ### V1.5 — OmniHuman 1.5 pour lip-sync FR
 
