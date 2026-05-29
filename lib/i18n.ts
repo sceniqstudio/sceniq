@@ -57,6 +57,10 @@ export const translations = {
 
     // ── Cas concret (Studio IA) ───────────────────────────────────────────────
     caseStudy: {
+      sectionLabel: 'Studio IA',
+      sectionIntro: 'Le studio où ScenIQ produit tes vidéos, de l\'idée au livrable. Deux façons de le voir.',
+      tabCase:      'Le cas concret',
+      tabTeam:      'L\'équipe créa',
       label:   'Cas concret',
       h2a:     'Lancer un produit,',
       h2b:     'sans monter une équipe.',
@@ -464,6 +468,10 @@ export const translations = {
     },
 
     caseStudy: {
+      sectionLabel: 'AI Studio',
+      sectionIntro: 'The studio where ScenIQ produces your videos, from idea to delivery. Two ways to look at it.',
+      tabCase:      'Real case',
+      tabTeam:      'The creative team',
       label:   'Real case',
       h2a:     'Launch a product,',
       h2b:     'without building a team.',

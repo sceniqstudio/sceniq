@@ -236,6 +236,7 @@ export default function HomePage() {
   const [questionLoading, setQuestionLoading] = useState(false)
   const [qForm, setQForm]                   = useState({ name: '', email: '', phone: '', message: '' })
   const [pricingModel, setPricingModel]     = useState(false)
+  const [studioTab, setStudioTab]           = useState<'case' | 'team'>('case')
   const [portfolioRows, setPortfolioRows]   = useState<[PortfolioItem[], PortfolioItem[]]>([
     PORTFOLIO_ITEMS.slice(0, 11), PORTFOLIO_ITEMS.slice(11),
   ])
@@ -550,7 +551,6 @@ export default function HomePage() {
           <ul className="lv2-nav-links">
             <li><a href="#process">{t.nav.process}</a></li>
             <li><a href="#studio-ia">{t.nav.studioIA}</a></li>
-            <li><a href="#qualite">{t.nav.studio}</a></li>
             <li><a href="#modeles">{t.nav.models}</a></li>
             <li><a href="#tarifs">{t.nav.pricing}</a></li>
             <li><a href="#comparaison">{t.nav.comparison}</a></li>
@@ -601,7 +601,6 @@ export default function HomePage() {
             <ul className="lv2-mob-links">
               <li><a href="#process"  onClick={() => setMobileMenuOpen(false)}>{t.nav.process}</a></li>
               <li><a href="#studio-ia" onClick={() => setMobileMenuOpen(false)}>{t.nav.studioIA}</a></li>
-              <li><a href="#qualite"  onClick={() => setMobileMenuOpen(false)}>{t.nav.studio}</a></li>
               <li><a href="#modeles"  onClick={() => setMobileMenuOpen(false)}>{t.nav.models}</a></li>
               <li><a href="#tarifs"      onClick={() => setMobileMenuOpen(false)}>{t.nav.pricing}</a></li>
               <li><a href="#comparaison" onClick={() => setMobileMenuOpen(false)}>{t.nav.comparison}</a></li>
@@ -746,34 +745,91 @@ export default function HomePage() {
       {/* ── CAS CONCRET — produit en situation via Studio IA ─────────────── */}
       <section className="lv2-s" id="studio-ia">
         <div className="lv2-si">
+          {/* En-tête commun */}
+          <div className="rv" style={{ textAlign: 'center' }}>
+            <div className="lv2-label">{t.caseStudy.sectionLabel}</div>
+            <p className="lv2-s-sub" style={{ maxWidth: 520, margin: '12px auto 0' }}>{t.caseStudy.sectionIntro}</p>
+          </div>
+
+          {/* Onglets */}
+          <div className="rv" role="tablist" aria-label={t.caseStudy.sectionLabel}
+            style={{ display: 'flex', justifyContent: 'center', gap: 8, margin: '32px 0 48px' }}>
+            {([['case', t.caseStudy.tabCase], ['team', t.caseStudy.tabTeam]] as const).map(([key, label]) => {
+              const active = studioTab === key
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setStudioTab(key)}
+                  style={{
+                    padding: '10px 22px', borderRadius: 999, cursor: 'pointer',
+                    fontSize: 14, fontWeight: 600, transition: 'all 0.2s',
+                    border: active ? '1px solid transparent' : '1px solid var(--bdr-md)',
+                    background: active ? '#7C5CFC' : 'var(--surface)',
+                    color: active ? '#fff' : 'rgba(255,255,255,0.65)',
+                  }}
+                >
+                  {label}
+                </button>
+              )
+            })}
+          </div>
+
+          {/* Contenu selon l'onglet */}
           <div className="lv2-split lv2-split-reverse rv">
             <div>
-              <div className="lv2-label">{t.caseStudy.label}</div>
-              <h2>{t.caseStudy.h2a}<br />{t.caseStudy.h2b}</h2>
-              <p className="lv2-s-sub" style={{ marginTop: 16 }}>{t.caseStudy.body1}</p>
-              <p className="lv2-s-sub" style={{ marginTop: 16 }}>{t.caseStudy.body2}</p>
-              <div style={{ marginTop: 24, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-                <span className="lv2-label" style={{ margin: 0 }}>{t.caseStudy.promise}</span>
-                <a href="/commande" className="lv2-btn lv2-btn-accent">{t.caseStudy.cta}</a>
-              </div>
+              {studioTab === 'case' ? (
+                <>
+                  <h2>{t.caseStudy.h2a}<br />{t.caseStudy.h2b}</h2>
+                  <p className="lv2-s-sub" style={{ marginTop: 16 }}>{t.caseStudy.body1}</p>
+                  <p className="lv2-s-sub" style={{ marginTop: 16 }}>{t.caseStudy.body2}</p>
+                  <div style={{ marginTop: 24, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+                    <span className="lv2-label" style={{ margin: 0 }}>{t.caseStudy.promise}</span>
+                    <a href="/commande" className="lv2-btn lv2-btn-accent">{t.caseStudy.cta}</a>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h2>{t.studio.h2a}<br />{t.studio.h2b}</h2>
+                  <p className="lv2-s-sub" style={{ marginTop: 16 }}>{t.studio.sub}</p>
+                  <ul className="lv2-feat-list">
+                    {t.studio.agents.map((item) => (
+                      <li key={item.name} className="lv2-feat-item">
+                        <span className="lv2-feat-check">
+                          <svg viewBox="0 0 12 12" fill="none" stroke="#7C5CFC" strokeWidth="2" width="10" height="10">
+                            <polyline points="2,6 5,9 10,3"/>
+                          </svg>
+                        </span>
+                        <span>
+                          <strong style={{ color: '#fff' }}>{item.name}</strong>
+                          {' '}— {item.desc}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
             </div>
             <div>
               <button
                 type="button"
-                onClick={() => setOpenVideo('exemple4')}
+                onClick={() => setOpenVideo(studioTab === 'case' ? 'exemple4' : 'volt')}
                 style={{
                   display: 'block', width: '100%',
-                  aspectRatio: '1/1', borderRadius: 14, overflow: 'hidden',
+                  aspectRatio: studioTab === 'case' ? '1/1' : '16/9', borderRadius: 14, overflow: 'hidden',
                   background: 'var(--surface)', border: '1px solid var(--bdr-md)',
                   position: 'relative', cursor: 'pointer', padding: 0,
                 }}
-                aria-label={t.caseStudy.videoAria}
+                aria-label={studioTab === 'case' ? t.caseStudy.videoAria : t.studio.videoAria}
               >
                 <video
+                  key={studioTab}
                   autoPlay muted loop playsInline preload="none"
                   style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }}
                 >
-                  <source src={showcaseUrl('exemple4')} type="video/mp4" />
+                  <source src={showcaseUrl(studioTab === 'case' ? 'exemple4' : 'volt')} type="video/mp4" />
                 </video>
                 <div style={{
                   position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -797,59 +853,7 @@ export default function HomePage() {
       >
         <div className="lv2-si">
 
-          {/* Split 1 : agents IA */}
-          <div className="lv2-split rv" style={{ marginBottom: 96 }}>
-            <div>
-              <div className="lv2-label">{t.studio.label}</div>
-              <h2>{t.studio.h2a}<br />{t.studio.h2b}</h2>
-              <p className="lv2-s-sub" style={{ marginTop: 16 }}>{t.studio.sub}</p>
-              <ul className="lv2-feat-list">
-                {t.studio.agents.map((item) => (
-                  <li key={item.name} className="lv2-feat-item">
-                    <span className="lv2-feat-check">
-                      <svg viewBox="0 0 12 12" fill="none" stroke="#7C5CFC" strokeWidth="2" width="10" height="10">
-                        <polyline points="2,6 5,9 10,3"/>
-                      </svg>
-                    </span>
-                    <span>
-                      <strong style={{ color: '#fff' }}>{item.name}</strong>
-                      {' '}— {item.desc}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <button
-                type="button"
-                onClick={() => setOpenVideo('volt')}
-                style={{
-                  display: 'block', width: '100%',
-                  aspectRatio: '16/9', borderRadius: 14, overflow: 'hidden',
-                  background: 'var(--surface)', border: '1px solid var(--bdr-md)',
-                  position: 'relative', cursor: 'pointer', padding: 0,
-                }}
-                aria-label={t.studio.videoAria}
-              >
-                <video
-                  autoPlay muted loop playsInline preload="none"
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }}
-                >
-                  <source src={showcaseUrl('volt')} type="video/mp4" />
-                </video>
-                <div style={{
-                  position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  opacity: 0, transition: 'opacity 0.2s',
-                }} className="play-overlay">
-                  <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(124,92,252,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <svg viewBox="0 0 16 16" fill="white" width="16" height="16"><polygon points="4,2 14,8 4,14"/></svg>
-                  </div>
-                </div>
-              </button>
-            </div>
-          </div>
-
-          {/* Split 2 : génération vidéo */}
+          {/* Split : génération vidéo (Seedance) */}
           <div className="lv2-split lv2-split-reverse rv">
             <div>
               <div className="lv2-label">{t.seedance.label}</div>
