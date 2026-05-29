@@ -14,6 +14,11 @@
 
 const ALLOWED_EXT = /\.(mp4|webm|ogg|jpg|jpeg|png|webp|gif)$/i
 
+// Namespace du cache edge. Incrémenter cette valeur (v2 → v3 …) puis redéployer
+// = purge globale instantanée : toutes les anciennes entrées deviennent
+// inaccessibles et chaque fichier est re-téléchargé frais depuis R2.
+const CACHE_VERSION = 'v2'
+
 const CORS = {
   'access-control-allow-origin': '*',
   'access-control-allow-methods': 'GET, HEAD, OPTIONS',
@@ -58,7 +63,7 @@ export default {
     const cache    = caches.default
     // La query fait partie de la clé de cache → ajouter ?v=2 force une entrée
     // neuve (rafraîchissement immédiat après remplacement d'une vidéo).
-    const cacheKey = new Request(`${url.origin}/${key}${url.search}`)
+    const cacheKey = new Request(`${url.origin}/${CACHE_VERSION}/${key}${url.search}`)
 
     let data           // ArrayBuffer du fichier complet
     let contentType = key.endsWith('.mp4') ? 'video/mp4' : 'application/octet-stream'

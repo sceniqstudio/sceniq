@@ -10,6 +10,7 @@ export const translations = {
     // ── Nav ──────────────────────────────────────────────────────────────────
     nav: {
       process:    'Comment ça marche',
+      studioIA:   'Studio IA',
       studio:     'Le studio',
       models:     'Comédiens IA',
       pricing:    'Tarifs',
@@ -52,6 +53,18 @@ export const translations = {
         { n: '4', title: 'Pré-prod', desc: 'Director, Scriptwriter, Storyboarder, Music et Visual travaillent en parallèle. Pré-prod livrée sans intermédiaire.' },
         { n: '5', title: 'Livraison',desc: 'MP4 1080p envoyé par e-mail sous 48h ouvrées. Pas d\'espace client, pas de compte. 10 itérations incluses.' },
       ],
+    },
+
+    // ── Cas concret (Studio IA) ───────────────────────────────────────────────
+    caseStudy: {
+      label:   'Cas concret',
+      h2a:     'Lancer un produit,',
+      h2b:     'sans monter une équipe.',
+      body1:   'Une marque sort un nouveau produit physique. Il lui faut une vidéo courte pour le présenter et le montrer en situation : entre les mains de quelqu\'un, dans son décor, en usage réel. D\'habitude ça veut dire un brief, un tournage, une équipe à coordonner et des jours d\'allers-retours.',
+      body2:   'Avec ScenIQ, le produit entre dans le Studio IA et j\'orchestre tout de A à Z : concept, mise en scène, lumière, plans. Tu récupères une vidéo prête à diffuser, ton produit mis en avant et en situation, sans réunion ni équipe à gérer.',
+      promise: 'Brief en 2 lignes → vidéo en 48 h',
+      cta:     'Lancer ma vidéo →',
+      videoAria: 'Exemple de vidéo produit en situation',
     },
 
     // ── Studio ───────────────────────────────────────────────────────────────
@@ -408,6 +421,7 @@ export const translations = {
   en: {
     nav: {
       process:    'How it works',
+      studioIA:   'AI Studio',
       studio:     'The studio',
       models:     'AI Talent',
       pricing:    'Pricing',
@@ -447,6 +461,17 @@ export const translations = {
         { n: '4', title: 'Pre-prod', desc: 'Director, Scriptwriter, Storyboarder, Music and Visual work in parallel. Pre-production delivered with no middleman.' },
         { n: '5', title: 'Delivery', desc: '1080p MP4 sent by email within 48 working hours. No client portal, no account needed. 10 revisions included.' },
       ],
+    },
+
+    caseStudy: {
+      label:   'Real case',
+      h2a:     'Launch a product,',
+      h2b:     'without building a team.',
+      body1:   'A brand ships a new physical product. It needs a short video to present it and show it in context: in someone\'s hands, in its setting, in real use. Usually that means a brief, a shoot, a team to coordinate and days of back-and-forth.',
+      body2:   'With ScenIQ, the product goes into the AI Studio and I handle everything end to end: concept, staging, lighting, shots. You get a ready-to-publish video, your product front and center and in context, with no meetings and no team to manage.',
+      promise: 'A 2-line brief → a video in 48h',
+      cta:     'Start my video →',
+      videoAria: 'Example of a product video in context',
     },
 
     studio: {

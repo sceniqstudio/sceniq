@@ -549,6 +549,7 @@ export default function HomePage() {
           </a>
           <ul className="lv2-nav-links">
             <li><a href="#process">{t.nav.process}</a></li>
+            <li><a href="#studio-ia">{t.nav.studioIA}</a></li>
             <li><a href="#qualite">{t.nav.studio}</a></li>
             <li><a href="#modeles">{t.nav.models}</a></li>
             <li><a href="#tarifs">{t.nav.pricing}</a></li>
@@ -599,6 +600,7 @@ export default function HomePage() {
             </div>
             <ul className="lv2-mob-links">
               <li><a href="#process"  onClick={() => setMobileMenuOpen(false)}>{t.nav.process}</a></li>
+              <li><a href="#studio-ia" onClick={() => setMobileMenuOpen(false)}>{t.nav.studioIA}</a></li>
               <li><a href="#qualite"  onClick={() => setMobileMenuOpen(false)}>{t.nav.studio}</a></li>
               <li><a href="#modeles"  onClick={() => setMobileMenuOpen(false)}>{t.nav.models}</a></li>
               <li><a href="#tarifs"      onClick={() => setMobileMenuOpen(false)}>{t.nav.pricing}</a></li>
@@ -737,6 +739,52 @@ export default function HomePage() {
                 <div className="lv2-process-desc">{step.desc}</div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CAS CONCRET — produit en situation via Studio IA ─────────────── */}
+      <section className="lv2-s" id="studio-ia">
+        <div className="lv2-si">
+          <div className="lv2-split lv2-split-reverse rv">
+            <div>
+              <div className="lv2-label">{t.caseStudy.label}</div>
+              <h2>{t.caseStudy.h2a}<br />{t.caseStudy.h2b}</h2>
+              <p className="lv2-s-sub" style={{ marginTop: 16 }}>{t.caseStudy.body1}</p>
+              <p className="lv2-s-sub" style={{ marginTop: 16 }}>{t.caseStudy.body2}</p>
+              <div style={{ marginTop: 24, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+                <span className="lv2-label" style={{ margin: 0 }}>{t.caseStudy.promise}</span>
+                <a href="/commande" className="lv2-btn lv2-btn-accent">{t.caseStudy.cta}</a>
+              </div>
+            </div>
+            <div>
+              <button
+                type="button"
+                onClick={() => setOpenVideo('exemple4')}
+                style={{
+                  display: 'block', width: '100%',
+                  aspectRatio: '1/1', borderRadius: 14, overflow: 'hidden',
+                  background: 'var(--surface)', border: '1px solid var(--bdr-md)',
+                  position: 'relative', cursor: 'pointer', padding: 0,
+                }}
+                aria-label={t.caseStudy.videoAria}
+              >
+                <video
+                  autoPlay muted loop playsInline preload="none"
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }}
+                >
+                  <source src={showcaseUrl('exemple4')} type="video/mp4" />
+                </video>
+                <div style={{
+                  position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  opacity: 0, transition: 'opacity 0.2s',
+                }} className="play-overlay">
+                  <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(124,92,252,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <svg viewBox="0 0 16 16" fill="white" width="16" height="16"><polygon points="4,2 14,8 4,14"/></svg>
+                  </div>
+                </div>
+              </button>
+            </div>
           </div>
         </div>
       </section>
