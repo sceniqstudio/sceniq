@@ -14,31 +14,57 @@ interface ShowcaseClipProps {
   ariaLabel:      string
 }
 
+// ── Limiteur de concurrence global ─────────────────────────────────────────
+// La landing monte ~87 <video> en même temps (hero multi-colonnes + carrousel).
+// Si toutes lancent leur fetch simultanément, on sature le pool de connexions
+// du navigateur et on déclenche le rate-limit du CDN (catastrophique sur mobile
+// et sur l'endpoint r2.dev). On limite donc le nombre de vidéos qui chargent
+// EN MÊME TEMPS ; les autres attendent qu'un créneau se libère.
+// Le slot se libère dès que la vidéo a ses premières frames (loadeddata) ou
+// échoue/temporise — la suite du buffering se fait en arrière-plan.
+const MAX_CONCURRENT_LOADS = 4
+let activeLoads = 0
+const waitQueue: Array<() => void> = []
+
+function acquireLoadSlot(): Promise<void> {
+  if (activeLoads < MAX_CONCURRENT_LOADS) {
+    activeLoads++
+    return Promise.resolve()
+  }
+  return new Promise<void>((resolve) => {
+    waitQueue.push(() => { activeLoads++; resolve() })
+  })
+}
+
+function releaseLoadSlot(): void {
+  activeLoads = Math.max(0, activeLoads - 1)
+  const next = waitQueue.shift()
+  if (next) next()
+}
+
 /**
- * Vidéo showcase avec lazy loading + fallback gracieux.
+ * Vidéo showcase avec lazy loading + limiteur de concurrence + fallback gracieux.
  *
  * Optimisations performance :
- * - **IntersectionObserver** : la vidéo n'est ajoutée au DOM qu'au moment où
- *   le composant entre dans le viewport (avec une marge de 200px pour
- *   précharger juste à temps). Les vidéos invisibles ne consomment 0 bande passante.
- * - **preload="none"** côté navigateur — on contrôle nous-mêmes le chargement.
- * - Fallback gradient si le fichier .mp4 n'existe pas ou échoue.
- *
- * Quand le composant entre dans le viewport :
- * - autoplay + muted + loop = lecture continue sans interaction
- * - playsInline = pas de fullscreen forcé sur iOS
+ * - **IntersectionObserver** : la vidéo n'entre dans le DOM qu'à l'approche du
+ *   viewport (marge 200px). Les vidéos invisibles ne consomment 0 bande passante.
+ * - **Limiteur de concurrence** : au plus MAX_CONCURRENT_LOADS fetchs vidéo en
+ *   parallèle. Évite le stampede des dizaines de clips de la landing.
+ * - **preload="none"** : on contrôle nous-mêmes le déclenchement du chargement.
+ * - Fallback gradient si le .mp4 n'existe pas ou échoue.
  *
  * iOS Safari note :
- * - `autoPlay` attribute is ignored for dynamically-inserted videos (not in initial HTML).
- * - Fix: explicit `.play()` call in useEffect after mount, with readyState=0 guard.
+ * - `autoPlay` est ignoré pour les <video> insérées dynamiquement → on appelle
+ *   explicitement `.play()` après que le créneau de chargement est obtenu.
  */
 export function ShowcaseClip({ slug, fallbackBg, fallbackEmoji, ariaLabel }: ShowcaseClipProps) {
   const [videoFailed, setVideoFailed] = useState(false)
-  const [shouldLoad, setShouldLoad]   = useState(false)
+  const [shouldLoad, setShouldLoad]   = useState(false)  // entré dans le viewport
+  const [canFetch, setCanFetch]       = useState(false)  // créneau de chargement obtenu
   const containerRef = useRef<HTMLDivElement>(null)
   const videoRef     = useRef<HTMLVideoElement>(null)
 
-  // ── 1. IntersectionObserver : lazy mount de la <video> ─────────────────────
+  // ── 1. IntersectionObserver : lazy mount ───────────────────────────────────
   useEffect(() => {
     const el = containerRef.current
     if (!el || shouldLoad) return
@@ -53,42 +79,57 @@ export function ShowcaseClip({ slug, fallbackBg, fallbackEmoji, ariaLabel }: Sho
           }
         }
       },
-      {
-        rootMargin: '200px 0px',
-        threshold: 0.01,
-      },
+      { rootMargin: '200px 0px', threshold: 0.01 },
     )
 
     observer.observe(el)
     return () => observer.disconnect()
   }, [shouldLoad])
 
-  // ── 2. iOS-safe autoplay : explicit play() après mount ──────────────────────
-  // iOS Safari ignore autoPlay sur les éléments insérés dynamiquement.
-  // Pattern : readyState=0 → load() → canplay → play()
+  // ── 2. Acquisition d'un créneau de chargement (limiteur de concurrence) ─────
   useEffect(() => {
-    if (!shouldLoad) return
+    if (!shouldLoad || canFetch) return
+    let cancelled = false
+    acquireLoadSlot().then(() => {
+      if (cancelled) { releaseLoadSlot(); return }  // démonté avant d'obtenir le slot
+      setCanFetch(true)
+    })
+    return () => { cancelled = true }
+  }, [shouldLoad, canFetch])
+
+  // ── 3. Lecture iOS-safe + libération du créneau ─────────────────────────────
+  // Le slot se libère dès que la vidéo a ses premières frames (loadeddata), ou
+  // en cas d'erreur, ou après un timeout de garde (anti-deadlock si le CDN stalle).
+  useEffect(() => {
+    if (!canFetch) return
     const vid = videoRef.current
     if (!vid) return
 
-    let cancelled = false
+    let released = false
+    const release = () => { if (!released) { released = true; releaseLoadSlot() } }
 
-    const doPlay = () => {
-      if (!cancelled) vid.play().catch(() => {})
+    const onReady = () => {
+      release()
+      vid.play().catch(() => {})
     }
+    const onError = () => { release(); setVideoFailed(true) }
 
-    if (vid.readyState === 0) {
-      vid.addEventListener('canplay', doPlay, { once: true })
-      vid.load()
-    } else if (vid.paused) {
-      doPlay()
-    }
+    vid.addEventListener('loadeddata', onReady, { once: true })
+    vid.addEventListener('error', onError, { once: true })
+    // Garde anti-deadlock : si rien ne se passe en 12s, on libère le créneau
+    // pour ne pas bloquer les vidéos suivantes (le buffering continue côté nav).
+    const guard = setTimeout(release, 12_000)
+
+    if (vid.readyState >= 2) onReady()  // déjà prête (cache)
+    else vid.load()
 
     return () => {
-      cancelled = true
-      vid.removeEventListener('canplay', doPlay)
+      clearTimeout(guard)
+      vid.removeEventListener('loadeddata', onReady)
+      vid.removeEventListener('error', onError)
+      release()  // démontage → rendre le créneau
     }
-  }, [shouldLoad])
+  }, [canFetch])
 
   if (videoFailed) {
     return (
@@ -101,7 +142,7 @@ export function ShowcaseClip({ slug, fallbackBg, fallbackEmoji, ariaLabel }: Sho
 
   return (
     <div ref={containerRef} style={{ width: '100%', height: '100%', position: 'relative' }}>
-      {shouldLoad ? (
+      {canFetch ? (
         <video
           ref={videoRef}
           className="vc-video"
@@ -116,7 +157,7 @@ export function ShowcaseClip({ slug, fallbackBg, fallbackEmoji, ariaLabel }: Sho
           <source src={showcaseUrl(slug)} type="video/mp4" />
         </video>
       ) : (
-        // Placeholder gradient pendant que la vidéo attend d'être dans le viewport
+        // Placeholder gradient tant que la vidéo attend le viewport / un créneau
         <div
           className="vc-video"
           style={{
