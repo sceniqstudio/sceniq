@@ -236,7 +236,7 @@ export default function HomePage() {
   const [questionLoading, setQuestionLoading] = useState(false)
   const [qForm, setQForm]                   = useState({ name: '', email: '', phone: '', message: '' })
   const [pricingModel, setPricingModel]     = useState(false)
-  const [studioTab, setStudioTab]           = useState<'case' | 'team'>('case')
+  const [studioTab, setStudioTab]           = useState<'case' | 'team' | 'seedance'>('case')
   const [portfolioRows, setPortfolioRows]   = useState<[PortfolioItem[], PortfolioItem[]]>([
     PORTFOLIO_ITEMS.slice(0, 11), PORTFOLIO_ITEMS.slice(11),
   ])
@@ -754,7 +754,7 @@ export default function HomePage() {
           {/* Onglets */}
           <div className="rv" role="tablist" aria-label={t.caseStudy.sectionLabel}
             style={{ display: 'flex', justifyContent: 'center', gap: 8, margin: '32px 0 48px' }}>
-            {([['case', t.caseStudy.tabCase], ['team', t.caseStudy.tabTeam]] as const).map(([key, label]) => {
+            {([['case', t.caseStudy.tabCase], ['team', t.caseStudy.tabTeam], ['seedance', t.caseStudy.tabSeedance]] as const).map(([key, label]) => {
               const active = studioTab === key
               return (
                 <button
@@ -790,7 +790,7 @@ export default function HomePage() {
                     <a href="/commande" className="lv2-btn lv2-btn-accent">{t.caseStudy.cta}</a>
                   </div>
                 </>
-              ) : (
+              ) : studioTab === 'team' ? (
                 <>
                   <h2>{t.studio.h2a}<br />{t.studio.h2b}</h2>
                   <p className="lv2-s-sub" style={{ marginTop: 16 }}>{t.studio.sub}</p>
@@ -810,151 +810,103 @@ export default function HomePage() {
                     ))}
                   </ul>
                 </>
+              ) : (
+                <>
+                  <div className="lv2-label">{t.seedance.label}</div>
+                  <h2>{t.seedance.h2a}<br />{t.seedance.h2b}</h2>
+                  <p className="lv2-s-sub" style={{ marginTop: 16 }}>{t.seedance.sub}</p>
+                  <ul className="lv2-feat-list">
+                    {t.seedance.features.map((desc) => (
+                      <li key={desc} className="lv2-feat-item">
+                        <span className="lv2-feat-check">
+                          <svg viewBox="0 0 12 12" fill="none" stroke="#7C5CFC" strokeWidth="2" width="10" height="10">
+                            <polyline points="2,6 5,9 10,3"/>
+                          </svg>
+                        </span>
+                        <span>{desc}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </>
               )}
             </div>
             <div>
-              <button
-                type="button"
-                onClick={() => setOpenVideo(studioTab === 'case' ? 'exemple2' : 'volt')}
-                style={{
-                  display: 'block', width: '100%',
-                  aspectRatio: studioTab === 'case' ? '1/1' : '16/9', borderRadius: 14, overflow: 'hidden',
-                  background: 'var(--surface)', border: '1px solid var(--bdr-md)',
-                  position: 'relative', cursor: 'pointer', padding: 0,
-                }}
-                aria-label={studioTab === 'case' ? t.caseStudy.videoAria : t.studio.videoAria}
-              >
-                <video
-                  key={studioTab}
-                  autoPlay muted loop playsInline preload="none"
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }}
-                >
-                  <source src={showcaseUrl(studioTab === 'case' ? 'exemple2' : 'volt')} type="video/mp4" />
-                </video>
-                <div style={{
-                  position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  opacity: 0, transition: 'opacity 0.2s',
-                }} className="play-overlay">
-                  <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(124,92,252,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <svg viewBox="0 0 16 16" fill="white" width="16" height="16"><polygon points="4,2 14,8 4,14"/></svg>
-                  </div>
+              {studioTab === 'seedance' ? (
+                /* Composition vidéo Seedance : 16:9 + 9:16 superposés */
+                <div style={{ position: 'relative', paddingBottom: '38%' }}>
+                  <button
+                    type="button"
+                    onClick={() => setOpenVideo('exemple19')}
+                    style={{
+                      display: 'block', width: '100%',
+                      aspectRatio: '16/9', borderRadius: 14, overflow: 'hidden',
+                      background: 'var(--surface)', border: '1px solid var(--bdr-md)',
+                      position: 'relative', cursor: 'pointer', padding: 0,
+                    }}
+                    aria-label={t.seedance.aria169}
+                  >
+                    <video autoPlay muted loop playsInline preload="none" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', pointerEvents:'none' }}>
+                      <source src={showcaseUrl('exemple19')} type="video/mp4" />
+                    </video>
+                    <div style={{ position: 'absolute', top: 10, left: 12, padding: '3px 8px', borderRadius: 5, background: 'rgba(7,7,15,0.78)', border: '1px solid rgba(255,255,255,0.1)', fontSize: 10, fontWeight: 700, letterSpacing: '0.07em', color: 'rgba(255,255,255,0.55)' }}>16:9</div>
+                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0, transition: 'opacity 0.2s' }} className="play-overlay">
+                      <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(124,92,252,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <svg viewBox="0 0 16 16" fill="white" width="16" height="16"><polygon points="4,2 14,8 4,14"/></svg>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setOpenVideo('exemple18')}
+                    style={{
+                      position: 'absolute', bottom: 0, right: 0,
+                      width: '36%', aspectRatio: '9/16', borderRadius: 14, overflow: 'hidden',
+                      background: 'var(--surface)', border: '1px solid rgba(124,92,252,0.4)',
+                      boxShadow: '0 24px 64px rgba(0,0,0,0.55), 0 0 0 1px rgba(124,92,252,0.1)',
+                      cursor: 'pointer', padding: 0,
+                    }}
+                    aria-label={t.seedance.aria916}
+                  >
+                    <video autoPlay muted loop playsInline preload="none" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', pointerEvents:'none' }}>
+                      <source src={showcaseUrl('exemple18')} type="video/mp4" />
+                    </video>
+                    <div style={{ position: 'absolute', top: 10, left: 10, padding: '3px 8px', borderRadius: 5, background: 'rgba(7,7,15,0.78)', border: '1px solid rgba(124,92,252,0.3)', fontSize: 10, fontWeight: 700, letterSpacing: '0.07em', color: 'rgba(165,180,252,0.7)' }}>9:16</div>
+                  </button>
+                  <p style={{ position: 'absolute', bottom: -28, left: 0, fontSize: 11, color: 'var(--g6)', letterSpacing: '0.04em', margin: 0 }}>
+                    {t.seedance.note}
+                  </p>
                 </div>
-              </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setOpenVideo(studioTab === 'case' ? 'exemple2' : 'volt')}
+                  style={{
+                    display: 'block', width: '100%',
+                    aspectRatio: studioTab === 'case' ? '1/1' : '16/9', borderRadius: 14, overflow: 'hidden',
+                    background: 'var(--surface)', border: '1px solid var(--bdr-md)',
+                    position: 'relative', cursor: 'pointer', padding: 0,
+                  }}
+                  aria-label={studioTab === 'case' ? t.caseStudy.videoAria : t.studio.videoAria}
+                >
+                  <video
+                    key={studioTab}
+                    autoPlay muted loop playsInline preload="none"
+                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }}
+                  >
+                    <source src={showcaseUrl(studioTab === 'case' ? 'exemple2' : 'volt')} type="video/mp4" />
+                  </video>
+                  <div style={{
+                    position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    opacity: 0, transition: 'opacity 0.2s',
+                  }} className="play-overlay">
+                    <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(124,92,252,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <svg viewBox="0 0 16 16" fill="white" width="16" height="16"><polygon points="4,2 14,8 4,14"/></svg>
+                    </div>
+                  </div>
+                </button>
+              )}
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* ── QUALITÉ — 2 splits ───────────────────────────────────────────── */}
-      <section
-        className="lv2-s alt"
-        id="qualite"
-        style={{ background: 'linear-gradient(180deg, var(--bg) 0%, rgba(124,92,252,0.03) 50%, var(--bg) 100%)' }}
-      >
-        <div className="lv2-si">
-
-          {/* Split : génération vidéo (Seedance) */}
-          <div className="lv2-split lv2-split-reverse rv">
-            <div>
-              <div className="lv2-label">{t.seedance.label}</div>
-              <h2>{t.seedance.h2a}<br />{t.seedance.h2b}</h2>
-              <p className="lv2-s-sub" style={{ marginTop: 16 }}>{t.seedance.sub}</p>
-              <ul className="lv2-feat-list">
-                {t.seedance.features.map((desc) => (
-                  <li key={desc} className="lv2-feat-item">
-                    <span className="lv2-feat-check">
-                      <svg viewBox="0 0 12 12" fill="none" stroke="#7C5CFC" strokeWidth="2" width="10" height="10">
-                        <polyline points="2,6 5,9 10,3"/>
-                      </svg>
-                    </span>
-                    <span>{desc}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            {/* Composition vidéo : 16:9 + 9:16 superposés */}
-            <div style={{ position: 'relative', paddingBottom: '38%' }}>
-
-              {/* ── Carte 16:9 ── */}
-              <button
-                type="button"
-                onClick={() => setOpenVideo('exemple19')}
-                style={{
-                  display: 'block', width: '100%',
-                  aspectRatio: '16/9', borderRadius: 14, overflow: 'hidden',
-                  background: 'var(--surface)', border: '1px solid var(--bdr-md)',
-                  position: 'relative', cursor: 'pointer', padding: 0,
-                }}
-                aria-label={t.seedance.aria169}
-              >
-                <video
-                  autoPlay muted loop playsInline preload="none"
-                  style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', pointerEvents:'none' }}
-                >
-                  <source src={showcaseUrl('exemple19')} type="video/mp4" />
-                </video>
-                {/* Label format */}
-                <div style={{
-                  position: 'absolute', top: 10, left: 12,
-                  padding: '3px 8px', borderRadius: 5,
-                  background: 'rgba(7,7,15,0.78)', border: '1px solid rgba(255,255,255,0.1)',
-                  fontSize: 10, fontWeight: 700, letterSpacing: '0.07em', color: 'rgba(255,255,255,0.55)',
-                }}>16:9</div>
-                {/* Play hint */}
-                <div style={{
-                  position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  opacity: 0, transition: 'opacity 0.2s',
-                }}
-                  className="play-overlay"
-                >
-                  <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(124,92,252,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <svg viewBox="0 0 16 16" fill="white" width="16" height="16"><polygon points="4,2 14,8 4,14"/></svg>
-                  </div>
-                </div>
-              </button>
-
-              {/* ── Carte 9:16 — flottante en bas à droite ── */}
-              <button
-                type="button"
-                onClick={() => setOpenVideo('exemple18')}
-                style={{
-                  position: 'absolute', bottom: 0, right: 0,
-                  width: '36%', aspectRatio: '9/16',
-                  borderRadius: 14, overflow: 'hidden',
-                  background: 'var(--surface)',
-                  border: '1px solid rgba(124,92,252,0.4)',
-                  boxShadow: '0 24px 64px rgba(0,0,0,0.55), 0 0 0 1px rgba(124,92,252,0.1)',
-                  cursor: 'pointer', padding: 0,
-                }}
-                aria-label={t.seedance.aria916}
-              >
-                <video
-                  autoPlay muted loop playsInline preload="none"
-                  style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', pointerEvents:'none' }}
-                >
-                  <source src={showcaseUrl('exemple18')} type="video/mp4" />
-                </video>
-                {/* Label format */}
-                <div style={{
-                  position: 'absolute', top: 10, left: 10,
-                  padding: '3px 8px', borderRadius: 5,
-                  background: 'rgba(7,7,15,0.78)', border: '1px solid rgba(124,92,252,0.3)',
-                  fontSize: 10, fontWeight: 700, letterSpacing: '0.07em', color: 'rgba(165,180,252,0.7)',
-                }}>9:16</div>
-              </button>
-
-              {/* ── Note bas ── */}
-              <p style={{
-                position: 'absolute', bottom: -28, left: 0,
-                fontSize: 11, color: 'var(--g6)', letterSpacing: '0.04em',
-                margin: 0,
-              }}>
-                {t.seedance.note}
-              </p>
-
-            </div>
-          </div>
-
         </div>
       </section>
 
