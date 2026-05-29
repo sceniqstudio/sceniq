@@ -815,7 +815,7 @@ export default function HomePage() {
             <div>
               <button
                 type="button"
-                onClick={() => setOpenVideo(studioTab === 'case' ? 'exemple4' : 'volt')}
+                onClick={() => setOpenVideo(studioTab === 'case' ? 'exemple2' : 'volt')}
                 style={{
                   display: 'block', width: '100%',
                   aspectRatio: studioTab === 'case' ? '1/1' : '16/9', borderRadius: 14, overflow: 'hidden',
@@ -829,7 +829,7 @@ export default function HomePage() {
                   autoPlay muted loop playsInline preload="none"
                   style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }}
                 >
-                  <source src={showcaseUrl(studioTab === 'case' ? 'exemple4' : 'volt')} type="video/mp4" />
+                  <source src={showcaseUrl(studioTab === 'case' ? 'exemple2' : 'volt')} type="video/mp4" />
                 </video>
                 <div style={{
                   position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
