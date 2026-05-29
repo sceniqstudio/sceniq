@@ -25,7 +25,10 @@ function baseHeaders(contentType, etag, contentLength) {
   const h = new Headers(CORS)
   h.set('content-type', contentType)
   h.set('accept-ranges', 'bytes')
-  h.set('cache-control', 'public, max-age=31536000, immutable')
+  // Cache 1h : assez pour d'excellents taux de hit, mais un remplacement de
+  // vidéo (même nom de fichier) réapparaît automatiquement en < 1h, sans purge.
+  // Pour forcer un rafraîchissement immédiat d'un fichier : ajouter ?v=2 à l'URL.
+  h.set('cache-control', 'public, max-age=3600')
   if (etag) h.set('etag', etag)
   h.set('content-length', String(contentLength))
   return h
@@ -53,7 +56,9 @@ export default {
 
     // Cache edge indexé par URL sans query (le 200 plein sert de base aux Range)
     const cache    = caches.default
-    const cacheKey = new Request(`${url.origin}/${key}`)
+    // La query fait partie de la clé de cache → ajouter ?v=2 force une entrée
+    // neuve (rafraîchissement immédiat après remplacement d'une vidéo).
+    const cacheKey = new Request(`${url.origin}/${key}${url.search}`)
 
     let data           // ArrayBuffer du fichier complet
     let contentType = key.endsWith('.mp4') ? 'video/mp4' : 'application/octet-stream'
