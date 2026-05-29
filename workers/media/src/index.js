@@ -1,14 +1,35 @@
 // Cloudflare Worker — sceniq-media
 // ─────────────────────────────────────────────────────────────────────────────
-// Sert les objets du bucket R2 `sceniq-showcase` (lié en BUCKET) via *.workers.dev.
-// Objectif : remplacer l'endpoint public r2.dev (rate-limited, sans cache CDN,
-// déconseillé en production par Cloudflare) par un vrai service edge avec cache
-// et support des Range requests — indispensable pour l'autoplay vidéo sur iOS.
+// Sert les objets du bucket R2 `sceniq-showcase` (lié en BUCKET) via *.workers.dev,
+// en remplacement de l'endpoint public r2.dev (rate-limited, sans cache, déconseillé
+// en prod). Cache edge Cloudflare + Range requests complètes (autoplay vidéo iOS).
 //
-// URL d'accès : https://sceniq-media.<sous-domaine>.workers.dev/exemple1.mp4
+// Implémentation : on lit l'objet ENTIÈREMENT en mémoire (ArrayBuffer) puis on sert
+// le 200 ou le 206 tranché depuis ce buffer. Évite tout souci de flux/tee qui
+// pouvait stopper la fin du téléchargement (et donc le moov atom des MP4).
+// Les vidéos showcase font < 8 Mo → buffer parfaitement OK dans un Worker.
+//
+// URL : https://sceniq-media.<sous-domaine>.workers.dev/exemple1.mp4
 // → à mettre dans NEXT_PUBLIC_R2_BASE_URL (sans slash final).
 
 const ALLOWED_EXT = /\.(mp4|webm|ogg|jpg|jpeg|png|webp|gif)$/i
+
+const CORS = {
+  'access-control-allow-origin': '*',
+  'access-control-allow-methods': 'GET, HEAD, OPTIONS',
+  'access-control-allow-headers': 'Range, Content-Type',
+  'access-control-expose-headers': 'Content-Length, Content-Range, Accept-Ranges, ETag',
+}
+
+function baseHeaders(contentType, etag, contentLength) {
+  const h = new Headers(CORS)
+  h.set('content-type', contentType)
+  h.set('accept-ranges', 'bytes')
+  h.set('cache-control', 'public, max-age=31536000, immutable')
+  if (etag) h.set('etag', etag)
+  h.set('content-length', String(contentLength))
+  return h
+}
 
 export default {
   /**
@@ -17,82 +38,72 @@ export default {
    * @param {ExecutionContext} ctx
    */
   async fetch(request, env, ctx) {
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { status: 204, headers: CORS })
+    }
     if (request.method !== 'GET' && request.method !== 'HEAD') {
-      return new Response('Method Not Allowed', { status: 405 })
+      return new Response('Method Not Allowed', { status: 405, headers: CORS })
     }
 
     const url = new URL(request.url)
     const key = decodeURIComponent(url.pathname.replace(/^\/+/, ''))
-
-    // Garde-fous : pas de clé vide, pas de traversée, extensions média seulement
     if (!key || key.includes('..') || !ALLOWED_EXT.test(key)) {
-      return new Response('Not found', { status: 404 })
+      return new Response('Not found', { status: 404, headers: CORS })
     }
 
-    // ── Cache edge : on indexe la réponse PLEINE (200) par URL (sans la query) ──
-    // Les requêtes Range sont ensuite servies en tranchant cette réponse pleine,
-    // ce qui garantit un comportement correct quel que soit le navigateur.
+    // Cache edge indexé par URL sans query (le 200 plein sert de base aux Range)
     const cache    = caches.default
     const cacheKey = new Request(`${url.origin}/${key}`)
 
-    let full = await cache.match(cacheKey)
+    let data           // ArrayBuffer du fichier complet
+    let contentType = key.endsWith('.mp4') ? 'video/mp4' : 'application/octet-stream'
+    let etag
 
-    if (!full) {
+    const cached = await cache.match(cacheKey)
+    if (cached) {
+      data        = await cached.arrayBuffer()
+      contentType = cached.headers.get('content-type') || contentType
+      etag        = cached.headers.get('etag') || undefined
+    } else {
       const object = await env.BUCKET.get(key)
-      if (!object || !object.body) {
-        return new Response('Not found', { status: 404 })
-      }
-
-      const headers = new Headers()
-      object.writeHttpMetadata(headers)
-      headers.set('etag', object.httpEtag)
-      headers.set('accept-ranges', 'bytes')
-      headers.set('cache-control', 'public, max-age=31536000, immutable')
-      headers.set('access-control-allow-origin', '*')
-      if (!headers.get('content-type')) {
-        headers.set('content-type', key.endsWith('.mp4') ? 'video/mp4' : 'application/octet-stream')
-      }
-
-      full = new Response(object.body, { status: 200, headers })
-      // Stocke la version pleine au edge pour les prochains visiteurs
-      ctx.waitUntil(cache.put(cacheKey, full.clone()))
+      if (!object) return new Response('Not found', { status: 404, headers: CORS })
+      data = await object.arrayBuffer()
+      const meta = new Headers()
+      object.writeHttpMetadata(meta)
+      contentType = meta.get('content-type') || contentType
+      etag        = object.httpEtag
+      // Met en cache la réponse PLEINE (200) — corps entièrement bufferisé
+      ctx.waitUntil(
+        cache.put(cacheKey, new Response(data, { status: 200, headers: baseHeaders(contentType, etag, data.byteLength) })),
+      )
     }
 
+    const total = data.byteLength
     const range = request.headers.get('range')
+
+    // Requête sans Range → 200 complet
     if (!range) {
-      // HEAD : pas de corps
-      if (request.method === 'HEAD') {
-        return new Response(null, { status: 200, headers: full.headers })
-      }
-      return full
+      const headers = baseHeaders(contentType, etag, total)
+      return new Response(request.method === 'HEAD' ? null : data, { status: 200, headers })
     }
 
-    // ── Réponse partielle (206) pour les Range requests vidéo ──
-    const buf   = await full.arrayBuffer()
-    const total = buf.byteLength
-    const m     = /bytes=(\d*)-(\d*)/.exec(range)
-
+    // Requête Range → 206 tranché depuis le buffer
+    const m   = /bytes=(\d*)-(\d*)/.exec(range)
     let start = m && m[1] ? parseInt(m[1], 10) : 0
     let end   = m && m[2] ? parseInt(m[2], 10) : total - 1
     if (isNaN(start) || start < 0)   start = 0
     if (isNaN(end)   || end >= total) end = total - 1
 
-    // Range non satisfaisable
     if (start > end || start >= total) {
       return new Response('Range Not Satisfiable', {
         status: 416,
-        headers: { 'content-range': `bytes */${total}`, 'access-control-allow-origin': '*' },
+        headers: { ...CORS, 'content-range': `bytes */${total}` },
       })
     }
 
-    const slice   = buf.slice(start, end + 1)
-    const headers = new Headers(full.headers)
+    const slice   = data.slice(start, end + 1)
+    const headers = baseHeaders(contentType, etag, slice.byteLength)
     headers.set('content-range', `bytes ${start}-${end}/${total}`)
-    headers.set('content-length', String(slice.byteLength))
-
-    if (request.method === 'HEAD') {
-      return new Response(null, { status: 206, headers })
-    }
-    return new Response(slice, { status: 206, headers })
+    return new Response(request.method === 'HEAD' ? null : slice, { status: 206, headers })
   },
 }
