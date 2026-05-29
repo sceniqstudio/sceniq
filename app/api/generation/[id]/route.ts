@@ -1,4 +1,7 @@
-// app/api/generation/[sceneId]/route.ts
+// app/api/generation/[id]/route.ts
+// NOTE routing : ce segment dynamique partage le nom `[id]` avec la route unifiée
+// (app/api/generation/[id]/unified/). Next.js interdit deux noms de slug différents
+// au même niveau de chemin — ici `[id]` porte un sceneId. URL appelée inchangée.
 import { auth } from '@clerk/nextjs/server'
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
@@ -12,10 +15,10 @@ const sb = () => createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
 )
 
-// POST /api/generation/[sceneId] — génère un clip Seedance 2.0
+// POST /api/generation/[id] — génère un clip Seedance 2.0 ([id] = sceneId)
 export async function POST(
   _req: Request,
-  { params }: { params: { sceneId: string } }
+  { params }: { params: { id: string } }
 ) {
   const { userId } = auth()
   if (!userId) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
@@ -34,7 +37,7 @@ export async function POST(
   const { data: scene } = await sb()
     .from('scenes')
     .select('id, project_id, duration_sec, seedance_prompt, status, projects!inner(user_id, brand_id, format)')
-    .eq('id', params.sceneId)
+    .eq('id', params.id)
     .eq('projects.user_id', user.id)
     .single()
 

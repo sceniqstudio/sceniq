@@ -27,7 +27,7 @@ const RATIO_MAP: Record<string, string> = {
 // ── POST /api/generation/[projectId]/unified ─────────────────────────────────
 export async function POST(
   _req: Request,
-  { params }: { params: { projectId: string } },
+  { params }: { params: { id: string } },  // [id] = projectId (slug partagé avec ../route.ts)
 ) {
   const { userId } = auth()
   if (!userId) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
@@ -40,7 +40,7 @@ export async function POST(
     const { data: project } = await sb
       .from('projects')
       .select('id, format, duration_sec, ref_image_urls, video_job_id, status')
-      .eq('id', params.projectId)
+      .eq('id', params.id)
       .eq('user_id', dbUserId)
       .single()
     if (!project) return NextResponse.json({ error: 'project_not_found' }, { status: 404 })
@@ -57,7 +57,7 @@ export async function POST(
     const { data: storyboarderOutput } = await sb
       .from('agent_outputs')
       .select('content')
-      .eq('project_id', params.projectId)
+      .eq('project_id', params.id)
       .eq('agent', 'storyboarder')
       .single()
 
@@ -104,7 +104,7 @@ export async function POST(
         status:       'generation',
         updated_at:   new Date().toISOString(),
       })
-      .eq('id', params.projectId)
+      .eq('id', params.id)
 
     return NextResponse.json({ jobId })
   } catch (e) {
@@ -117,7 +117,7 @@ export async function POST(
 // Retourne { status, videoUrl, error }
 export async function GET(
   _req: Request,
-  { params }: { params: { projectId: string } },
+  { params }: { params: { id: string } },  // [id] = projectId (slug partagé avec ../route.ts)
 ) {
   const { userId } = auth()
   if (!userId) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
@@ -129,7 +129,7 @@ export async function GET(
     const { data: project } = await sb
       .from('projects')
       .select('id, video_job_id, final_video_url, status')
-      .eq('id', params.projectId)
+      .eq('id', params.id)
       .eq('user_id', dbUserId)
       .single()
     if (!project) return NextResponse.json({ error: 'project_not_found' }, { status: 404 })
@@ -160,7 +160,7 @@ export async function GET(
           status:          'export',
           updated_at:      new Date().toISOString(),
         })
-        .eq('id', params.projectId)
+        .eq('id', params.id)
     }
 
     if (
@@ -176,7 +176,7 @@ export async function GET(
           status:       'production',
           updated_at:   new Date().toISOString(),
         })
-        .eq('id', params.projectId)
+        .eq('id', params.id)
     }
 
     return NextResponse.json({
