@@ -241,6 +241,7 @@ export default function HomePage() {
   ])
   const [lang, setLang] = useState<Lang>('fr')
   const [faqOpen, setFaqOpen] = useState<string | null>(null)
+  const [reels, setReels] = useState(SHOWCASE_VIDEOS)   // bento réalisations (ordre mélangé au mount)
 
   // ── Promo banner + modal ─────────────────────────────────────────────────
   const [promoBannerVisible, setPromoBannerVisible] = useState(false) // false until hydration
@@ -337,6 +338,33 @@ export default function HomePage() {
       clearTimeout(t1)
     }
   }, [])
+
+  // Réalisations bento — ordre mélangé à chaque chargement
+  useEffect(() => {
+    setReels(prev => {
+      const a = [...prev]
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[a[i], a[j]] = [a[j], a[i]]
+      }
+      return a
+    })
+  }, [])
+
+  // Réalisations bento — ne joue que les vidéos visibles (perfs)
+  useEffect(() => {
+    const tiles = Array.from(document.querySelectorAll<HTMLVideoElement>('.lv2-bento-tile video'))
+    if (!tiles.length) return
+    const io = new IntersectionObserver(
+      es => es.forEach(e => {
+        const v = e.target as HTMLVideoElement
+        if (e.isIntersecting) v.play().catch(() => {}); else v.pause()
+      }),
+      { threshold: 0.12 },
+    )
+    tiles.forEach(v => io.observe(v))
+    return () => io.disconnect()
+  }, [reels])
   const toggleLang = () => {
     const next: Lang = lang === 'fr' ? 'en' : 'fr'
     setLang(next)
@@ -1207,18 +1235,24 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="portfolio-rows-container">
-          <div className="portfolio-scroll-hint" aria-hidden="true">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7 }}><path d="M18 8L22 12L18 16"/><path d="M6 8L2 12L6 16"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
-            {t.portfolio.hint}
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <div className="portfolio-row-wrap">
-              <PortfolioRow items={portfolioRows[0]} direction="left"  rowHeight={640} speed={0.5}  onCardClick={setOpenVideo} />
-            </div>
-            <div className="portfolio-row-wrap">
-              <PortfolioRow items={portfolioRows[1]} direction="right" rowHeight={640} speed={0.42} onCardClick={setOpenVideo} />
-            </div>
+        <div className="lv2-si">
+          <div className="lv2-bento">
+            {reels.map((v) => (
+              <button
+                key={v.slug}
+                type="button"
+                className="lv2-bento-tile"
+                onClick={() => setOpenVideo(v.slug)}
+                aria-label="Voir un exemple de vidéo"
+              >
+                <video muted loop playsInline preload="none" style={{ aspectRatio: String(v.ratio) }}>
+                  <source src={showcaseUrl(v.slug)} type="video/mp4" />
+                </video>
+                <span className="lv2-bento-play" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" fill="#fff" width="17" height="17"><polygon points="4,2 14,8 4,14"/></svg>
+                </span>
+              </button>
+            ))}
           </div>
         </div>
 
