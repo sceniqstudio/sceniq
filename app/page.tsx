@@ -1190,7 +1190,7 @@ export default function HomePage() {
                   <div className="lv2-price-num">
                     <sup>€</sup>{total}
                     {pricingModel && (
-                      <span style={{ fontSize: 11, fontWeight: 500, color: 'var(--accent)', marginLeft: 6, verticalAlign: 'middle' }}>
+                      <span style={{ fontSize: 11, fontWeight: 600, color: '#c4b5fd', marginLeft: 6, verticalAlign: 'middle' }}>
                         {t.pricing.perks.modelIncluded}
                       </span>
                     )}
@@ -1203,7 +1203,7 @@ export default function HomePage() {
                     <li className="lv2-price-perk">{t.pricing.perks.lipsync} <span style={{ color: 'var(--g6)', fontWeight: 400 }}>🇫🇷 🇺🇸 🇯🇵 🇪🇸 🇧🇷 🇮🇩 🇨🇳</span></li>
                     <li className="lv2-price-perk">{t.pricing.perks.subs}</li>
                     {p.voix && <li className="lv2-price-perk">{t.pricing.perks.voix}</li>}
-                    {pricingModel && <li className="lv2-price-perk" style={{ color: 'var(--accent)' }}>{t.pricing.perks.model}</li>}
+                    {pricingModel && <li className="lv2-price-perk" style={{ color: '#c4b5fd' }}>{t.pricing.perks.model}</li>}
                   </ul>
                   <a
                     href={`/commande?duree=${parseInt(p.dur)}${pricingModel ? '&modele=1' : ''}`}
