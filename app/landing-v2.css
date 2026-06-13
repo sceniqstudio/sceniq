@@ -299,25 +299,29 @@ body:has(.lv2) {
 /* BG animated columns — 2 gauche · centre vide · 2 droite */
 .lv2-hbg {
   position: absolute; inset: 0;
-  display: flex; flex-direction: row;
   pointer-events: none; overflow: hidden;
-  align-items: flex-start;
+  perspective: 1200px; perspective-origin: 50% 42%;
 }
-.lv2-hbg-side {
-  display: flex; flex-direction: row; gap: 10px;
-  overflow: hidden; flex-shrink: 0;
-  padding: 0 5px;
+/* Mur 3D incliné plein cadre */
+.lv2-wall {
+  position: absolute; inset: -16% -10%;
+  display: flex; gap: 14px; justify-content: center; align-items: flex-start;
+  transform: rotateX(9deg) rotateZ(-7deg) scale(1.3);
+  transform-style: preserve-3d; will-change: transform;
 }
-.lv2-hbg-left  { flex: 3; }
-.lv2-hbg-center{ flex: 3; }   /* espace vide — texte hero */
-.lv2-hbg-right { flex: 3; }
 .lv2-hcol {
   flex: 1; min-width: 0;
-  display: flex; flex-direction: column; gap: 10px;
+  display: flex; flex-direction: column; gap: 14px;
   animation: lv2Up 30s linear infinite;
   will-change: transform;
 }
 .lv2-hcol.down { animation-name: lv2Down; }
+@media (max-width: 820px) {
+  .lv2-wall { transform: rotateX(8deg) rotateZ(-5deg) scale(1.55); gap: 10px; inset: -20% -25%; }
+}
+@media (max-width: 520px) {
+  .lv2-wall { transform: rotateX(7deg) rotateZ(-4deg) scale(1.9); inset: -24% -48%; }
+}
 
 @keyframes lv2Up {
   from { transform: translateY(0); }
@@ -353,8 +357,9 @@ body:has(.lv2) {
 .lv2-hover {
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background:
-    linear-gradient(to bottom, rgba(7,7,15,0.80) 0%, rgba(7,7,15,0) 18%, rgba(7,7,15,0) 72%, rgba(7,7,15,0.82) 100%),
-    linear-gradient(to right, rgba(7,7,15,0.62) 0%, rgba(7,7,15,0.08) 26%, rgba(7,7,15,0) 33%, rgba(7,7,15,0) 67%, rgba(7,7,15,0.08) 74%, rgba(7,7,15,0.62) 100%);
+    radial-gradient(ellipse 58% 52% at 50% 46%, rgba(7,7,15,0.88) 0%, rgba(7,7,15,0.5) 46%, rgba(7,7,15,0.04) 78%),
+    radial-gradient(ellipse 85% 46% at 50% 120%, rgba(124,92,252,0.30), transparent 60%),
+    linear-gradient(180deg, rgba(7,7,15,0.72) 0%, rgba(7,7,15,0.10) 24%, rgba(7,7,15,0.30) 66%, rgba(7,7,15,0.94) 100%);
 }
 
 /* Hero content */
@@ -404,13 +409,21 @@ body:has(.lv2) {
   .lv2-ticker-track { animation: none; }
 }
 .lv2-h1 {
-  font-size: clamp(44px, 6.5vw, 82px); font-weight: 800;
-  line-height: 1.1; letter-spacing: -0.03em;
-  margin-bottom: 22px; max-width: 840px;
+  font-family: 'Clash Display', 'Inter', -apple-system, sans-serif;
+  font-size: clamp(44px, 6.6vw, 80px); font-weight: 600;
+  line-height: 1.04; letter-spacing: -0.02em;
+  margin-bottom: 22px; max-width: 880px;
   color: var(--white);  /* force blanc — globals.css h1{color:var(--ink)} écrase l'héritage */
-  text-shadow: 0 4px 40px rgba(7,7,15,0.9), 0 2px 12px rgba(7,7,15,0.6);
+  text-shadow: 0 6px 50px rgba(7,7,15,0.7);
 }
-.lv2-h1 em { font-style: normal; color: var(--accent); }
+.lv2-h1 em {
+  font-style: normal;
+  background: linear-gradient(108deg, #d7caff, #9b7dff 38%, #7C5CFC 70%, #8aa0ff);
+  background-size: 220% auto;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: lv2Shine 7s linear infinite reverse;
+}
+@keyframes lv2Shine { to { background-position: 220% center; } }
 .lv2-sub {
   font-size: clamp(16px, 2vw, 19px); line-height: 1.7;
   color: rgba(255,255,255,0.88); max-width: 580px; margin-bottom: 38px;
@@ -1041,16 +1054,12 @@ body:has(.lv2) {
   .lv2-nav-right { display: none; }
   .lv2-burger    { display: flex; }
 
-  /* Hero mobile — on cache la colonne droite entière, garde 3 gauche */
-  .lv2-hbg-right { display: none; }
-  .lv2-hbg-center { flex: 2; }
-  .lv2-hbg-left { flex: 3; }
+  /* Hero mobile — mur 3D conservé, voile central renforcé pour lisibilité */
   .lv2-hcontent { padding: 90px 20px 52px; }
-  /* Hero overlay renforcé mobile — gradient central opaque pour lisibilité */
   .lv2-hover {
     background:
-      linear-gradient(to bottom, rgba(7,7,15,0.92) 0%, rgba(7,7,15,0.30) 20%, rgba(7,7,15,0.30) 70%, rgba(7,7,15,0.92) 100%),
-      linear-gradient(to right, rgba(7,7,15,0) 0%, rgba(7,7,15,0.72) 40%, rgba(7,7,15,0.88) 60%, rgba(7,7,15,0) 100%);
+      radial-gradient(ellipse 82% 50% at 50% 46%, rgba(7,7,15,0.90) 0%, rgba(7,7,15,0.55) 50%, rgba(7,7,15,0.08) 82%),
+      linear-gradient(180deg, rgba(7,7,15,0.78) 0%, rgba(7,7,15,0.22) 24%, rgba(7,7,15,0.40) 66%, rgba(7,7,15,0.95) 100%);
   }
   /* Portfolio rows — zoom proportionnel mobile */
   .portfolio-row-wrap { zoom: 0.46; }
@@ -1085,9 +1094,8 @@ body:has(.lv2) {
    RESPONSIVE — Small mobile 480px
    ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 480px) {
-  /* Hero 480px — 2 colonnes gauche seulement */
-  .lv2-hbg-left  .lv2-hcol:nth-child(3) { display: none; }
-  .lv2-hbg-center { flex: 3; }
+  /* Hero 480px — on réduit le mur à 5 colonnes (perfs mobile) */
+  .lv2-wall .lv2-hcol:nth-child(n+6) { display: none; }
   /* Portfolio encore plus petit sur petit mobile */
   .portfolio-row-wrap { zoom: 0.36; }
 

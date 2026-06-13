@@ -220,12 +220,11 @@ function PortfolioRow({
   )
 }
 
-// ── Hero animated columns — 2 left + empty center + 2 right ───────────────
-// 4 columns: index 0,1 → left side  |  index 2,3 → right side
-const COL_DURATIONS = [32, 26, 28, 36]
-const COL_DELAYS    = [-6, -14, -18, -4]
-const COL_SLUGS     = Array.from({ length: 4 }, (_, c) =>
-  Array.from({ length: 4 }, (_, i) => SHOWCASE_SLUGS[(c * 4 + i) % SHOWCASE_SLUGS.length])
+// ── Hero animated columns — mur 3D plein cadre (7 colonnes) ───────────────
+const COL_DURATIONS = [32, 26, 30, 36, 28, 34, 27]
+const COL_DELAYS    = [-6, -14, -18, -4, -10, -20, -8]
+const COL_SLUGS     = Array.from({ length: 7 }, (_, c) =>
+  Array.from({ length: 3 }, (_, i) => SHOWCASE_SLUGS[(c * 3 + i) % SHOWCASE_SLUGS.length])
 )
 
 export default function HomePage() {
@@ -634,10 +633,9 @@ export default function HomePage() {
       {/* ── HERO — 2 cols gauche · centre vide · 2 cols droite ──────────── */}
       <section className="lv2-hero" id="main-content" aria-label="Hero ScenIQ">
         <div className="lv2-hbg" aria-hidden="true">
-
-          {/* ── 2 colonnes gauche ── */}
-          <div className="lv2-hbg-side lv2-hbg-left">
-            {[0, 1].map((c) => (
+          {/* ── Mur 3D plein cadre — 7 colonnes ── */}
+          <div className="lv2-wall">
+            {COL_SLUGS.map((slugs, c) => (
               <div
                 key={c}
                 className={`lv2-hcol${c % 2 === 1 ? ' down' : ''}`}
@@ -646,7 +644,7 @@ export default function HomePage() {
                   animationDelay:    `${COL_DELAYS[c]}s`,
                 }}
               >
-                {[...COL_SLUGS[c], ...COL_SLUGS[c]].map((slug, i) => (
+                {[...slugs, ...slugs].map((slug, i) => (
                   <div key={`${slug}-${c}-${i}`} className="lv2-hcard">
                     <video autoPlay muted loop playsInline preload="none">
                       <source src={showcaseUrl(slug)} type="video/mp4" />
@@ -656,32 +654,6 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-
-          {/* ── Centre vide — lisibilité du texte ── */}
-          <div className="lv2-hbg-center" />
-
-          {/* ── 2 colonnes droite ── */}
-          <div className="lv2-hbg-side lv2-hbg-right">
-            {[2, 3].map((c) => (
-              <div
-                key={c}
-                className={`lv2-hcol${c % 2 === 1 ? ' down' : ''}`}
-                style={{
-                  animationDuration: `${COL_DURATIONS[c]}s`,
-                  animationDelay:    `${COL_DELAYS[c]}s`,
-                }}
-              >
-                {[...COL_SLUGS[c], ...COL_SLUGS[c]].map((slug, i) => (
-                  <div key={`${slug}-${c}-${i}`} className="lv2-hcard">
-                    <video autoPlay muted loop playsInline preload="none">
-                      <source src={showcaseUrl(slug)} type="video/mp4" />
-                    </video>
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-
         </div>
         <div className="lv2-hover" aria-hidden="true" />
         <div className="lv2-hcontent">
@@ -706,7 +678,7 @@ export default function HomePage() {
           <p className="lv2-sub">{t.hero.sub}</p>
           <div className="lv2-ctas">
             <a href="/commande" className="lv2-btn lv2-btn-accent lv2-btn-lg">{t.hero.cta1}</a>
-            <a href="#reels" className="lv2-btn lv2-btn-ghost lv2-btn-lg">{t.hero.cta2}</a>
+            <a href="#process" className="lv2-btn lv2-btn-ghost lv2-btn-lg">{t.hero.cta2}</a>
           </div>
           <p className="lv2-footnote">{t.hero.footnote}</p>
         </div>
