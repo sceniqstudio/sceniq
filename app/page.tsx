@@ -1244,17 +1244,14 @@ export default function HomePage() {
                 className="lv2-bento-tile"
                 onClick={() => setOpenVideo(v.slug)}
                 aria-label="Voir un exemple de vidéo"
+                style={{ aspectRatio: String(v.ratio) }}
               >
-                <video
-                  autoPlay muted loop playsInline preload="none"
-                  style={{ aspectRatio: String(v.ratio) }}
-                  onLoadedMetadata={(e) => {
-                    const vid = e.currentTarget
-                    if (vid.videoWidth && vid.videoHeight) vid.style.aspectRatio = `${vid.videoWidth} / ${vid.videoHeight}`
-                  }}
-                >
-                  <source src={showcaseUrl(v.slug)} type="video/mp4" />
-                </video>
+                <ShowcaseClip
+                  slug={v.slug}
+                  fallbackBg="linear-gradient(135deg,#17103a,#0e0e1a)"
+                  fallbackEmoji="🎬"
+                  ariaLabel="Exemple de vidéo ScenIQ"
+                />
                 <span className="lv2-bento-play" aria-hidden="true">
                   <svg viewBox="0 0 16 16" fill="#fff" width="17" height="17"><polygon points="4,2 14,8 4,14"/></svg>
                 </span>
