@@ -17,7 +17,7 @@ const ALLOWED_EXT = /\.(mp4|webm|ogg|jpg|jpeg|png|webp|gif)$/i
 // Namespace du cache edge. Incrémenter cette valeur (v2 → v3 …) puis redéployer
 // = purge globale instantanée : toutes les anciennes entrées deviennent
 // inaccessibles et chaque fichier est re-téléchargé frais depuis R2.
-const CACHE_VERSION = 'v3'
+const CACHE_VERSION = 'v4'
 
 const CORS = {
   'access-control-allow-origin': '*',
