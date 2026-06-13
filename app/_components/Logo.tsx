@@ -53,8 +53,9 @@ export function LogoMark({ size = 34, className = '', decorative = true }: LogoM
         filter={`url(#${shadowId})`}
       />
 
-      {/* GEM — carré arrondi tourné 14° avec dégradé indigo */}
+      {/* GEM — carré arrondi tourné 14° avec dégradé indigo (pivote en continu via .lv2-gem) */}
       <rect
+        className="lv2-gem"
         x="10" y="10" width="40" height="40" rx="9"
         fill={`url(#${gradId})`}
         transform="rotate(14 30 30)"
