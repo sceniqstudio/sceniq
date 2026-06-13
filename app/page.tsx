@@ -259,6 +259,33 @@ export default function HomePage() {
     const dismissed = localStorage.getItem('sceniq-promo-dismissed')
     if (!dismissed) setPromoBannerVisible(true)
   }, [])
+
+  // Hero — parallaxe du mur 3D à la souris + boutons magnétiques (comme la démo validée)
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const wall = document.querySelector<HTMLElement>('.lv2-wall')
+    const btns = Array.from(document.querySelectorAll<HTMLElement>('.lv2-hcontent .lv2-btn'))
+    const onMove = (e: PointerEvent) => {
+      if (!wall) return
+      const dx = e.clientX / window.innerWidth - 0.5
+      const dy = e.clientY / window.innerHeight - 0.5
+      const sc = window.innerWidth < 520 ? 1.9 : window.innerWidth < 820 ? 1.55 : 1.3
+      wall.style.transform = `rotateX(${9 - dy * 5}deg) rotateZ(-7deg) rotateY(${dx * 6}deg) scale(${sc})`
+    }
+    const onBtnMove = (e: PointerEvent) => {
+      const b = e.currentTarget as HTMLElement
+      const r = b.getBoundingClientRect()
+      b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * 0.25}px, ${(e.clientY - r.top - r.height / 2) * 0.35}px)`
+    }
+    const onBtnLeave = (e: PointerEvent) => { (e.currentTarget as HTMLElement).style.transform = 'translate(0,0)' }
+    window.addEventListener('pointermove', onMove, { passive: true })
+    btns.forEach(b => { b.addEventListener('pointermove', onBtnMove); b.addEventListener('pointerleave', onBtnLeave) })
+    return () => {
+      window.removeEventListener('pointermove', onMove)
+      btns.forEach(b => { b.removeEventListener('pointermove', onBtnMove); b.removeEventListener('pointerleave', onBtnLeave) })
+    }
+  }, [])
   const toggleLang = () => {
     const next: Lang = lang === 'fr' ? 'en' : 'fr'
     setLang(next)
@@ -682,6 +709,7 @@ export default function HomePage() {
           </div>
           <p className="lv2-footnote">{t.hero.footnote}</p>
         </div>
+        <div className="lv2-cue" aria-hidden="true"><i /></div>
       </section>
 
       {/* ── TRUST STRIP ──────────────────────────────────────────────────── */}
