@@ -173,6 +173,10 @@ export const translations = {
       orderFeatured: 'Commander →',
       orderDefault:  'Commander',
       footer: 'MP4 livré par e-mail · Paiement sécurisé Stripe',
+      quoteLabel: 'Sur-mesure',
+      quoteTitle: 'Un projet qui sort de la grille ?',
+      quoteText:  'Vidéo plus longue que 15s, série de clips, format spécifique ou volume pour une campagne — décrivez votre besoin, je reviens vers vous avec un devis sous 4h ouvrées.',
+      quoteCta:   'Demander un devis',
     },
 
     // ── Portfolio ────────────────────────────────────────────────────────────
@@ -580,6 +584,10 @@ export const translations = {
       orderFeatured: 'Order →',
       orderDefault:  'Order',
       footer: 'MP4 delivered by email · Secure Stripe payment',
+      quoteLabel: 'Custom',
+      quoteTitle: 'A project beyond the grid?',
+      quoteText:  'A longer video than 15s, a series of clips, a specific format or campaign volume — describe your need and I\'ll get back to you with a quote within 4 business hours.',
+      quoteCta:   'Request a quote',
     },
 
     portfolio: {

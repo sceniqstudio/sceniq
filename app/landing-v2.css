@@ -556,6 +556,16 @@ body:has(.lv2) {
 @keyframes lv2CtaF2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-40px,-30px); } }
 @media (prefers-reduced-motion: reduce) { .lv2-cta-orb { animation: none; } }
 
+/* ── Devis sur-mesure (Tarifs) ────────────────────────────────── */
+.lv2-quote { max-width: 920px; margin: 40px auto 0; display: flex; align-items: center; justify-content: space-between; gap: 28px;
+  padding: 28px 32px; border-radius: 20px; border: 1px solid rgba(124,92,252,0.3);
+  background: linear-gradient(120deg, rgba(124,92,252,0.10), rgba(124,92,252,0.03)); }
+.lv2-quote-label { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #c4b5fd; margin-bottom: 8px; }
+.lv2-quote-title { font-family: 'Clash Display','Inter',sans-serif; font-weight: 600; font-size: 22px; color: #fff; letter-spacing: -0.01em; margin-bottom: 8px; }
+.lv2-quote-text { color: var(--g4); font-size: 15px; line-height: 1.55; max-width: 60ch; margin: 0; }
+.lv2-quote .lv2-btn { flex-shrink: 0; }
+@media (max-width: 680px) { .lv2-quote { flex-direction: column; align-items: flex-start; padding: 24px; } .lv2-quote .lv2-btn { width: 100%; justify-content: center; } }
+
 /* ── MISSION (video BG) ─────────────────────────────────────── */
 .lv2-mission {
   position: relative; overflow: hidden; padding: 120px 24px;

@@ -1187,14 +1187,12 @@ export default function HomePage() {
                     {p.fmt}
                   </div>
                   <hr style={{ border: 'none', borderTop: '1px solid var(--bdr)', margin: '0 0 14px' }} />
-                  <div className="lv2-price-num">
-                    <sup>€</sup>{total}
-                    {pricingModel && (
-                      <span style={{ fontSize: 11, fontWeight: 600, color: '#c4b5fd', marginLeft: 6, verticalAlign: 'middle' }}>
-                        {t.pricing.perks.modelIncluded}
-                      </span>
-                    )}
-                  </div>
+                  <div className="lv2-price-num"><sup>€</sup>{total}</div>
+                  {pricingModel && (
+                    <div style={{ fontSize: 12.5, fontWeight: 600, color: '#c4b5fd', marginTop: 2, marginBottom: 6 }}>
+                      ✓ {t.pricing.perks.modelIncluded}
+                    </div>
+                  )}
                   <ul className="lv2-price-perks">
                     <li className="lv2-price-perk">{t.pricing.perks.shots(p.shots)}</li>
                     <li className="lv2-price-perk" style={{ color:'var(--g6)', fontWeight:400, fontSize:'0.9em' }}>{t.pricing.perks.formats}</li>
@@ -1220,6 +1218,22 @@ export default function HomePage() {
           <p className="rv" style={{ textAlign: 'center', marginTop: 24, fontSize: 13, color: 'var(--g6)' }}>
             {t.pricing.footer}
           </p>
+
+          {/* Devis sur-mesure — besoin hors grille */}
+          <div className="rv lv2-quote">
+            <div>
+              <div className="lv2-quote-label">{t.pricing.quoteLabel}</div>
+              <h3 className="lv2-quote-title">{t.pricing.quoteTitle}</h3>
+              <p className="lv2-quote-text">{t.pricing.quoteText}</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => { setQuestionOpen(true); setQuestionSent(false) }}
+              className="lv2-btn lv2-btn-accent lv2-btn-lg"
+            >
+              {t.pricing.quoteCta}
+            </button>
+          </div>
         </div>
       </section>
 
