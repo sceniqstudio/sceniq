@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ScenIQ — Comédiens IA (démo)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#07070F; --surface:#0E0E1A; --surface2:#141427;
+    --bdr:rgba(255,255,255,.08); --bdr-md:rgba(255,255,255,.14);
+    --accent:#7C5CFC; --accent-h:#6B4AED; --glow:rgba(124,92,252,.22);
+    --white:#fff; --g4:#94A3B8; --g6:#475569; --max:1120px;
+    --ease:cubic-bezier(.22,1,.36,1); --display:'Clash Display','Inter',sans-serif; --body:'Inter',sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  body{background:var(--bg); color:#fff; font-family:var(--body); -webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--max); margin:0 auto; padding:90px 24px 110px}
+
+  .layout{display:grid; grid-template-columns:1.08fr .92fr; gap:50px; align-items:start}
+  @media(max-width:880px){.layout{grid-template-columns:1fr; gap:38px}}
+
+  .seclabel{font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:#c4b5fd; margin-bottom:14px}
+  h2{font-family:var(--display); font-weight:600; font-size:clamp(30px,4.2vw,48px); letter-spacing:-.02em; line-height:1.05}
+  .g{background:linear-gradient(100deg,#d7caff,#7C5CFC 60%,#8aa0ff); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .sub{color:var(--g4); margin-top:16px; max-width:52ch; font-size:17px; line-height:1.55}
+
+  .feats{display:flex; flex-direction:column; gap:16px; margin:32px 0 28px}
+  .feat{display:flex; gap:12px; align-items:flex-start}
+  .feat .tick{flex:0 0 auto; width:24px;height:24px;border-radius:50%; background:rgba(124,92,252,.16); border:1px solid rgba(124,92,252,.4);
+    display:flex; align-items:center; justify-content:center; margin-top:2px}
+  .feat .tick svg{width:12px;height:12px}
+  .feat b{font-weight:600; color:#fff; font-size:15.5px} .feat span{color:var(--g4); font-size:14.5px; line-height:1.5}
+
+  .ctas{display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin-bottom:24px}
+  .btn{display:inline-flex; align-items:center; gap:8px; padding:13px 26px; border-radius:999px; font-size:15px; font-weight:600;
+    text-decoration:none; cursor:pointer; border:none; transition:.25s var(--ease)}
+  .btn-accent{background:var(--accent); color:#fff; box-shadow:0 0 24px var(--glow)} .btn-accent:hover{background:var(--accent-h); box-shadow:0 0 40px var(--glow)}
+  .btn-link{color:#c4b5fd; font-weight:600; text-decoration:none} .btn-link:hover{color:#fff}
+  .note{color:var(--g6); font-size:13px; line-height:1.5; max-width:54ch}
+  .note b{color:#c4b5fd; font-weight:600}
+
+  /* Colonne cartes (droite) : Mivael à gauche (haute), Marcus+Sofia à droite (carrés) */
+  .col-cards{display:flex; flex-direction:column; gap:16px}
+  .cards-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  .card{position:relative; border-radius:20px; overflow:hidden; border:1px solid var(--bdr-md); background:var(--surface2);
+    aspect-ratio:1/1; box-shadow:0 22px 54px rgba(0,0,0,.5); transition:transform .3s var(--ease), box-shadow .3s var(--ease); will-change:transform}
+  .cards-grid .card.lg{grid-column:1; grid-row:1 / span 2; aspect-ratio:auto}  /* Mivael : hauteur = 2 cartes empilées */
+  .card img{width:100%; height:100%; object-fit:cover; display:block; object-position:center top}  /* garde la tête */
+  .card::after{content:''; position:absolute; inset:0; background:linear-gradient(180deg,transparent 50%,rgba(7,7,15,.85)); pointer-events:none}
+  .card:hover{box-shadow:0 30px 70px rgba(124,92,252,.42)}
+  .badge-ia{position:absolute; top:12px; left:12px; z-index:2; font-size:11px; font-weight:700; letter-spacing:.06em; color:#fff;
+    background:rgba(10,10,20,.6); border:1px solid rgba(255,255,255,.16); padding:5px 10px; border-radius:9px; backdrop-filter:blur(6px)}
+  .card .info{position:absolute; left:16px; right:16px; bottom:15px; z-index:2}
+  .card .lab{font-family:var(--display); font-weight:600; font-size:15px; letter-spacing:.03em; text-transform:uppercase}
+  .card .ty{color:#cbd5e1; font-size:12.5px; margin-top:3px}
+  .card .ig{color:#c4b5fd; font-size:13px; margin-top:3px; text-decoration:none; display:inline-block}
+
+  .partner{display:flex; gap:12px; align-items:flex-start; padding:16px 18px; border:1px solid rgba(124,92,252,.3); border-radius:16px; background:rgba(124,92,252,.06)}
+  .partner .spark{color:#c4b5fd; font-size:15px; margin-top:1px}
+  .partner p{color:var(--g4); font-size:13.5px; line-height:1.5}
+
+  @media(max-width:560px){
+    .cards-grid{grid-template-columns:1fr}
+    .cards-grid .card.lg{grid-column:auto; grid-row:auto; aspect-ratio:3/4}
+    .card{aspect-ratio:4/3}
+  }
+  .reveal{opacity:0; transform:translateY(24px); transition:opacity .7s var(--ease), transform .7s var(--ease)}
+  .reveal.in{opacity:1; transform:none}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}}
+
+  .demo-tag{position:fixed; z-index:50; bottom:14px; right:14px; font-size:11px; color:var(--g4);
+    background:rgba(14,14,26,.85); border:1px solid var(--bdr); padding:6px 12px; border-radius:999px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="layout">
+      <!-- Texte (gauche) -->
+      <div class="reveal" id="head">
+        <div class="seclabel">Comédiens IA</div>
+        <h2>Un comédien IA.<br><span class="g">Créé pour votre marque.</span></h2>
+        <p class="sub">Un brief suffit. ScenIQ génère le comédien, l'intègre au clip et vous livre la mention légale obligatoire. Rien d'autre à gérer.</p>
+
+        <div class="feats" id="feats">
+          <div class="feat"><span class="tick"><svg viewBox="0 0 14 14" fill="none" stroke="#c4b5fd" stroke-width="2.4"><path d="M2 7.5l3.2 3.2L12 4"/></svg></span><div><b>Pas de casting, pas de cachet</b><br><span>aucun contrat modèle, aucun droit à l'image à négocier</span></div></div>
+          <div class="feat"><span class="tick"><svg viewBox="0 0 14 14" fill="none" stroke="#c4b5fd" stroke-width="2.4"><path d="M2 7.5l3.2 3.2L12 4"/></svg></span><div><b>Pas de tarif agence</b><br><span>800–3 000 € de casting en agence — 49 € ici, dans votre forfait</span></div></div>
+          <div class="feat"><span class="tick"><svg viewBox="0 0 14 14" fill="none" stroke="#c4b5fd" stroke-width="2.4"><path d="M2 7.5l3.2 3.2L12 4"/></svg></span><div><b>Disponible à volonté</b><br><span>ajusté, retravaillé ou changé autant de fois que nécessaire — sans surcoût</span></div></div>
+          <div class="feat"><span class="tick"><svg viewBox="0 0 14 14" fill="none" stroke="#c4b5fd" stroke-width="2.4"><path d="M2 7.5l3.2 3.2L12 4"/></svg></span><div><b>Mention légale fournie</b><br><span>conforme EU AI Act + loi influenceurs FR — livrée par écrit avec le MP4</span></div></div>
+        </div>
+
+        <div class="ctas">
+          <a href="#" class="btn btn-accent">Ajouter l'option · +49 €</a>
+          <a href="#" class="btn-link">Voir les clips →</a>
+        </div>
+        <p class="note">Personnages entièrement fictifs — aucune ressemblance avec une personne réelle. La mention <b>« Image générée par IA »</b> est obligatoire sur vos publications (EU AI Act art. 50 · loi FR 9 juin 2023). ScenIQ vous la fournit dans chaque livraison.</p>
+      </div>
+
+      <!-- Cartes modèles (droite) -->
+      <div class="col-cards" id="cards">
+        <div class="cards-grid">
+          <div class="card lg">
+            <div class="badge-ia">IA</div>
+            <img src="https://www.sceniq.studio/models/kaelys.jpg" alt="Influenceuse IA" loading="lazy" />
+            <div class="info"><div class="lab">Influenceuse IA</div><a class="ig" href="#">@bymivael</a><div class="ty">créée avec l'IA</div></div>
+          </div>
+          <div class="card">
+            <div class="badge-ia">IA</div>
+            <img src="https://www.sceniq.studio/models/modele-1.jpg" alt="Comédien IA Tech" loading="lazy" />
+            <div class="info"><div class="lab">Comédien·ne IA</div><div class="ty">Tech · Urbain</div></div>
+          </div>
+          <div class="card">
+            <div class="badge-ia">IA</div>
+            <img src="https://www.sceniq.studio/models/modele-2.jpg" alt="Comédien IA Business" loading="lazy" />
+            <div class="info"><div class="lab">Comédien·ne IA</div><div class="ty">Business</div></div>
+          </div>
+        </div>
+        <div class="partner"><span class="spark">✦</span><p>Mivael n'est pas un personnage jetable — elle a une présence Instagram réelle. Elle peut représenter votre marque en continu : intégrée à vos clips, vos stories, vos campagnes. Tarif sur devis.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-tag">Démo · Comédiens IA</div>
+
+<script>
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.16});
+  io.observe(document.getElementById('head'));
+  [...document.querySelectorAll('#feats .feat'),...document.querySelectorAll('#cards .card'),...document.querySelectorAll('.partner')].forEach((el,i)=>{
+    el.classList.add('reveal'); el.style.transitionDelay=(i%4)*0.09+'s'; io.observe(el);
+  });
+
+  if(!matchMedia('(prefers-reduced-motion:reduce)').matches){
+    document.querySelectorAll('.card').forEach(c=>{
+      c.addEventListener('pointermove',e=>{
+        const r=c.getBoundingClientRect();
+        const x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
+        c.style.transform=`perspective(800px) rotateY(${x*6}deg) rotateX(${-y*6}deg) translateY(-5px)`;
+      });
+      c.addEventListener('pointerleave',()=>c.style.transform='');
+    });
+  }
+</script>
+</body>
+</html>

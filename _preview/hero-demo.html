@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ScenIQ — Hero immersif (démo v5 · raffiné)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#07070F; --surface:#0E0E1A; --surface2:#141427;
+    --bdr:rgba(255,255,255,.08); --bdr-md:rgba(255,255,255,.14);
+    --accent:#7C5CFC; --accent-h:#6B4AED; --glow:rgba(124,92,252,.22);
+    --white:#fff; --g4:#94A3B8; --g6:#475569; --max:1160px;
+    --ease:cubic-bezier(.22,1,.36,1);
+    --display:'Clash Display','Inter',-apple-system,sans-serif;
+    --body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  body{background:var(--bg); color:var(--white); font-family:var(--body);
+    line-height:1.6; -webkit-font-smoothing:antialiased; overflow-x:hidden}
+
+  .hero{position:relative; height:100vh; min-height:640px; overflow:hidden; display:flex; flex-direction:column}
+
+  /* Mur vidéo 3D */
+  .stage{position:absolute; inset:0; z-index:0; overflow:hidden; perspective:1200px; perspective-origin:50% 42%}
+  .wall{position:absolute; inset:-16% -10%; display:flex; gap:20px; justify-content:center;
+    align-items:flex-start; transform-style:preserve-3d;
+    transform:rotateX(9deg) rotateZ(-7deg) scale(1.32); will-change:transform}
+  .col{flex:0 0 auto; width:184px; transform-style:preserve-3d; will-change:transform}
+  .col-track{display:flex; flex-direction:column; gap:20px; animation:up 22s linear infinite}
+  .col.dn .col-track{animation-name:down; animation-duration:28s}
+  @keyframes up{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+  @keyframes down{from{transform:translateY(-50%)}to{transform:translateY(0)}}
+  .hero:hover .col-track{animation-play-state:paused}
+  .tile{width:184px; aspect-ratio:9/16; border-radius:16px; overflow:hidden;
+    border:1px solid var(--bdr-md); background:var(--surface2); box-shadow:0 24px 60px rgba(0,0,0,.6)}
+  .tile video{width:100%; height:100%; object-fit:cover; display:block}
+
+  /* Éclairage cinéma + voile lisibilité */
+  .scrim{position:absolute; inset:0; z-index:1; pointer-events:none;
+    background:
+      radial-gradient(ellipse 56% 50% at 50% 46%, rgba(7,7,15,.88) 0%, rgba(7,7,15,.52) 46%, rgba(7,7,15,.03) 78%),
+      radial-gradient(ellipse 85% 46% at 50% 122%, rgba(124,92,252,.32), transparent 60%),
+      linear-gradient(180deg, rgba(7,7,15,.72) 0%, rgba(7,7,15,.1) 24%, rgba(7,7,15,.3) 66%, rgba(7,7,15,.94) 100%)}
+  /* Grain cinéma */
+  .grain{position:absolute; inset:0; z-index:2; pointer-events:none; opacity:.06; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+  /* ── Nav ────────────────────────────────────────────────────────── */
+  nav{position:relative; z-index:5; display:flex; justify-content:center; padding:20px 24px 0}
+  .nav-pill{display:flex; align-items:center; max-width:calc(100vw - 48px);
+    padding:13px 10px 13px 22px; background:rgba(10,10,20,.82);
+    backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); border-radius:100px;
+    box-shadow:0 4px 32px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.09) inset}
+  .logo{display:flex; align-items:center; flex-shrink:0; padding-right:20px;
+    border-right:1px solid rgba(255,255,255,.08); margin-right:6px; text-decoration:none}
+  .logo svg{display:block; height:52px; width:auto; overflow:visible; filter:drop-shadow(0 4px 14px var(--glow))}
+  .gem{transform-box:fill-box; transform-origin:center; animation:gemspin 9s linear infinite}
+  @keyframes gemspin{to{transform:rotate(360deg)}}
+  .nav-links{display:flex; align-items:center; gap:2px}
+  .nav-links a{padding:8px 13px; border-radius:100px; font-size:14px; font-weight:500;
+    color:#fff; white-space:nowrap; text-decoration:none; transition:background .15s}
+  .nav-links a:hover{background:rgba(255,255,255,.08)}
+  .nav-right{display:flex; align-items:center; gap:8px; flex-shrink:0; padding-left:8px}
+  .lang{color:#fff; font-size:13px; font-weight:600; opacity:.75; letter-spacing:.03em; text-decoration:none; padding:0 6px}
+  .lang:hover{opacity:1}
+  /* Burger (mobile) */
+  .burger{display:none; flex-direction:column; gap:5px; align-items:center; justify-content:center;
+    width:42px; height:42px; margin-left:4px; background:transparent; border:none; cursor:pointer}
+  .burger span{width:20px; height:2px; background:#fff; border-radius:2px; transition:transform .25s var(--ease),opacity .2s}
+  .burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .burger.open span:nth-child(2){opacity:0}
+  .burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+  .mobile-menu{position:fixed; top:92px; left:16px; right:16px; z-index:40; display:none;
+    flex-direction:column; gap:2px; background:rgba(10,10,20,.96);
+    backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); border-radius:22px; padding:14px;
+    box-shadow:0 14px 44px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.09) inset}
+  .mobile-menu.open{display:flex; animation:rise .4s var(--ease)}
+  .mobile-menu a{color:#fff; text-decoration:none; padding:13px 14px; border-radius:13px; font-size:16px; font-weight:500}
+  .mobile-menu a:hover{background:rgba(255,255,255,.08)}
+  .mobile-menu .btn{margin-top:8px; width:100%}
+  @media(max-width:1040px){
+    .nav-links{display:none}
+    .nav-right .btn-ghost,.lang{display:none}
+    .burger{display:flex}
+  }
+
+  /* ── Boutons ────────────────────────────────────────────────────── */
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:14px 28px; border-radius:999px; font-size:15px; font-weight:600; font-family:var(--body);
+    cursor:pointer; border:none; text-decoration:none; line-height:1;
+    transition:transform .25s var(--ease),background .2s,box-shadow .25s,border-color .2s}
+  .btn-accent{background:var(--accent); color:#fff; box-shadow:0 0 26px var(--glow)}
+  .btn-accent:hover{background:var(--accent-h); box-shadow:0 0 48px var(--glow)}
+  .btn-accent .arr{transition:transform .25s var(--ease)}
+  .btn-accent:hover .arr{transform:translateX(4px)}
+  .btn-ghost{background:rgba(255,255,255,.05); color:#fff; border:1px solid var(--bdr-md); backdrop-filter:blur(8px)}
+  .btn-ghost:hover{border-color:rgba(255,255,255,.32); background:rgba(255,255,255,.1)}
+  .btn-sm{padding:9px 18px; font-size:13px}
+
+  /* ── Contenu hero ───────────────────────────────────────────────── */
+  .hero-content{position:relative; z-index:4; margin:auto; padding:0 24px 4vh;
+    text-align:center; max-width:940px; display:flex; flex-direction:column; align-items:center}
+  .badge{display:inline-flex; align-items:center; gap:9px; padding:7px 16px 7px 13px;
+    border:1px solid var(--bdr-md); border-radius:999px; font-size:12.5px; font-weight:500;
+    letter-spacing:.02em; color:#e2e8f0; background:rgba(14,14,26,.55); backdrop-filter:blur(8px); margin-bottom:30px}
+  .pulse{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 0 0 rgba(52,211,153,.6); animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,.6)}70%{box-shadow:0 0 0 8px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
+
+  h1{font-family:var(--display); font-size:clamp(40px,6.4vw,78px); line-height:1.0; font-weight:600;
+    letter-spacing:-.02em; max-width:15ch; margin-bottom:24px; text-shadow:0 6px 50px rgba(0,0,0,.6)}
+  .grad{background:linear-gradient(108deg,#d7caff,#9b7dff 38%,#7C5CFC 70%,#8aa0ff);
+    background-size:220% auto; -webkit-background-clip:text; background-clip:text; color:transparent; animation:shine 7s linear infinite reverse}
+  @keyframes shine{to{background-position:220% center}}
+
+  .sub{font-size:clamp(15px,1.9vw,18.5px); color:#dbe2ea; max-width:52ch; margin-bottom:34px;
+    line-height:1.62; text-shadow:0 2px 26px rgba(0,0,0,.75)}
+  .sub b{color:#fff; font-weight:600}
+  .cta-row{display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin-bottom:20px}
+  .micro{font-size:13.5px; color:#aab4c2; letter-spacing:.01em} .micro span{color:#e2e8f0; font-weight:500}
+
+  .cue{position:absolute; left:50%; bottom:22px; transform:translateX(-50%); z-index:4;
+    width:24px;height:40px;border:1px solid var(--bdr-md);border-radius:14px;
+    display:flex; justify-content:center; padding-top:7px; background:rgba(14,14,26,.4); backdrop-filter:blur(6px)}
+  .cue i{width:3px;height:8px;border-radius:2px;background:var(--accent); animation:cue 1.6s ease-in-out infinite}
+  @keyframes cue{0%{opacity:0;transform:translateY(-3px)}40%{opacity:1}80%{opacity:0;transform:translateY(9px)}100%{opacity:0}}
+
+  /* Révélation raffinée : montée + sortie de flou */
+  .rise{opacity:0; transform:translateY(26px); filter:blur(7px); animation:rise 1.05s var(--ease) forwards}
+  .d1{animation-delay:.05s}.d2{animation-delay:.18s}.d3{animation-delay:.34s}
+  .d4{animation-delay:.5s}.d5{animation-delay:.66s}.d6{animation-delay:.82s}
+  @keyframes rise{to{opacity:1;transform:none;filter:blur(0)}}
+  .magnetic{will-change:transform}
+  .demo-tag{position:fixed; z-index:50; bottom:14px; right:14px; font-size:11px; color:var(--g4);
+    background:rgba(14,14,26,.8); border:1px solid var(--bdr); padding:6px 12px; border-radius:999px; backdrop-filter:blur(8px)}
+
+  /* ── RESPONSIVE ─────────────────────────────────────────────────── */
+  @media(max-width:820px){
+    .wall{gap:14px; transform:rotateX(8deg) rotateZ(-5deg) scale(1.55); inset:-20% -30%}
+    .col{width:140px} .tile{width:140px}
+    .col:nth-child(n+6){display:none}
+    .hero-content{padding-bottom:8vh}
+  }
+  @media(max-width:520px){
+    .wall{gap:12px; transform:rotateX(7deg) rotateZ(-4deg) scale(1.9); inset:-24% -55%}
+    .col{width:120px} .tile{width:120px}
+    .col:nth-child(n+5){display:none}
+    nav{padding:16px}
+    .scrim{background:
+      radial-gradient(ellipse 78% 48% at 50% 46%, rgba(7,7,15,.88) 0%, rgba(7,7,15,.52) 50%, rgba(7,7,15,.06) 80%),
+      linear-gradient(180deg, rgba(7,7,15,.74) 0%, rgba(7,7,15,.2) 26%, rgba(7,7,15,.4) 64%, rgba(7,7,15,.96) 100%)}
+  }
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.rise{opacity:1;transform:none;filter:none}}
+</style>
+</head>
+<body>
+  <section class="hero">
+    <div class="stage"><div class="wall" id="wall"></div></div>
+    <div class="scrim"></div>
+    <div class="grain"></div>
+
+    <nav>
+      <div class="nav-pill rise d1">
+      <a href="#" class="logo" aria-label="ScenIQ">
+        <svg height="52" viewBox="0 0 234 86" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path opacity="0.35" d="M42.5303 85.5312C61.308 85.5312 76.5303 82.845 76.5303 79.5312C76.5303 76.2175 61.308 73.5312 42.5303 73.5312C23.7526 73.5312 8.53027 76.2175 8.53027 79.5312C8.53027 82.845 23.7526 85.5312 42.5303 85.5312Z" fill="#5055C0"/>
+          <path opacity="0.25" d="M41.5303 81.5312C55.8897 81.5312 67.5303 79.7404 67.5303 77.5312C67.5303 75.3221 55.8897 73.5312 41.5303 73.5312C27.1709 73.5312 15.5303 75.3221 15.5303 77.5312C15.5303 79.7404 27.1709 81.5312 41.5303 81.5312Z" fill="#5055C0"/>
+          <path class="gem" d="M51.4939 2.50519L17.8248 7.23707C7.98045 8.62061 1.12158 17.7226 2.50512 27.567L7.237 61.2361C8.62054 71.0805 17.7226 77.9394 27.5669 76.5558L61.2361 71.8239C71.0804 70.4404 77.9393 61.3384 76.5558 51.494L71.8239 17.8249C70.4403 7.98052 61.3383 1.12165 51.4939 2.50519Z" fill="url(#lg)"/>
+          <path d="M35.6337 11.8034C37.4429 24.6769 52.404 37.7216 65.2775 35.9124C52.404 37.7216 41.6181 54.3849 43.4274 67.2584C41.6181 54.3849 26.6571 41.3401 13.7836 43.1494C26.6571 41.3401 37.4429 24.6769 35.6337 11.8034Z" fill="white"/>
+          <path d="M216.886 39.9121H222.375L225.134 43.4618L227.849 46.6238L232.964 53.0371H226.939L223.419 48.7118L221.614 46.1465L216.886 39.9121ZM233.427 35.2587C233.427 38.5897 232.795 41.4235 231.533 43.7601C230.28 46.0968 228.57 47.8816 226.402 49.1145C224.244 50.3375 221.818 50.949 219.124 50.949C216.409 50.949 213.973 50.3326 211.815 49.0996C209.658 47.8667 207.952 46.0819 206.7 43.7452C205.447 41.4086 204.82 38.5797 204.82 35.2587C204.82 31.9277 205.447 29.0939 206.7 26.7573C207.952 24.4206 209.658 22.6408 211.815 21.4178C213.973 20.1848 216.409 19.5684 219.124 19.5684C221.818 19.5684 224.244 20.1848 226.402 21.4178C228.57 22.6408 230.28 24.4206 231.533 26.7573C232.795 29.0939 233.427 31.9277 233.427 35.2587ZM226.879 35.2587C226.879 33.101 226.556 31.2814 225.91 29.7999C225.273 28.3184 224.374 27.1948 223.21 26.4292C222.047 25.6635 220.685 25.2807 219.124 25.2807C217.562 25.2807 216.2 25.6635 215.037 26.4292C213.874 27.1948 212.969 28.3184 212.322 29.7999C211.686 31.2814 211.368 33.101 211.368 35.2587C211.368 37.4164 211.686 39.236 212.322 40.7175C212.969 42.199 213.874 43.3226 215.037 44.0882C216.2 44.8539 217.562 45.2367 219.124 45.2367C220.685 45.2367 222.047 44.8539 223.21 44.0882C224.374 43.3226 225.273 42.199 225.91 40.7175C226.556 39.236 226.879 37.4164 226.879 35.2587Z" fill="#9090F8"/>
+          <path d="M200.044 19.9863V50.5318H193.586V19.9863H200.044Z" fill="#9090F8"/>
+          <path d="M173.693 37.2873V50.5316H167.339V27.6225H173.394V31.6644H173.663C174.17 30.332 175.02 29.2781 176.213 28.5025C177.406 27.717 178.853 27.3242 180.553 27.3242C182.144 27.3242 183.531 27.6722 184.715 28.3683C185.898 29.0643 186.818 30.0586 187.474 31.3512C188.13 32.6339 188.458 34.1651 188.458 35.945V50.5316H182.104V37.0785C182.114 35.6765 181.756 34.5827 181.031 33.7972C180.305 33.0018 179.305 32.604 178.033 32.604C177.178 32.604 176.422 32.788 175.766 33.1559C175.119 33.5238 174.612 34.0607 174.244 34.7667C173.886 35.4627 173.703 36.3029 173.693 37.2873Z" fill="white"/>
+          <path d="M152.678 50.979C150.321 50.979 148.293 50.5018 146.592 49.5472C144.902 48.5827 143.599 47.2205 142.685 45.4606C141.77 43.6907 141.312 41.5977 141.312 39.1815C141.312 36.8249 141.77 34.7567 142.685 32.9769C143.599 31.1971 144.887 29.81 146.548 28.8157C148.218 27.8214 150.177 27.3242 152.424 27.3242C153.935 27.3242 155.342 27.5678 156.645 28.055C157.957 28.5323 159.101 29.2532 160.075 30.2177C161.06 31.1822 161.825 32.3952 162.372 33.8569C162.919 35.3086 163.192 37.0089 163.192 38.9577V40.7028H143.848V36.7653H157.212C157.212 35.8505 157.013 35.0401 156.615 34.3342C156.217 33.6282 155.665 33.0763 154.96 32.6786C154.263 32.271 153.453 32.0671 152.528 32.0671C151.564 32.0671 150.709 32.2908 149.963 32.7383C149.227 33.1758 148.651 33.7674 148.233 34.5131C147.815 35.2489 147.602 36.0692 147.592 36.9741V40.7177C147.592 41.8512 147.8 42.8306 148.218 43.6559C148.646 44.4812 149.247 45.1175 150.023 45.565C150.798 46.0124 151.718 46.2361 152.782 46.2361C153.488 46.2361 154.134 46.1367 154.721 45.9379C155.308 45.739 155.81 45.4407 156.227 45.043C156.645 44.6452 156.963 44.158 157.182 43.5813L163.058 43.9691C162.76 45.381 162.148 46.614 161.224 47.668C160.309 48.712 159.126 49.5273 157.674 50.114C156.232 50.6907 154.567 50.979 152.678 50.979Z" fill="white"/>
+          <path d="M127.938 50.979C125.591 50.979 123.573 50.4819 121.882 49.4876C120.202 48.4833 118.909 47.0913 118.004 45.3114C117.11 43.5316 116.662 41.4833 116.662 39.1665C116.662 36.82 117.115 34.7617 118.019 32.9918C118.934 31.212 120.232 29.8249 121.912 28.8306C123.593 27.8263 125.591 27.3242 127.908 27.3242C129.906 27.3242 131.656 27.6871 133.158 28.413C134.659 29.1388 135.847 30.158 136.722 31.4705C137.597 32.783 138.08 34.3242 138.169 36.0941H132.173C132.004 34.9506 131.557 34.0309 130.831 33.3349C130.115 32.6289 129.176 32.2759 128.012 32.2759C127.028 32.2759 126.168 32.5444 125.432 33.0813C124.706 33.6083 124.139 34.3789 123.732 35.3931C123.324 36.4073 123.12 37.6353 123.12 39.0771C123.12 40.5387 123.319 41.7816 123.717 42.8058C124.124 43.8299 124.696 44.6104 125.432 45.1474C126.168 45.6843 127.028 45.9528 128.012 45.9528C128.738 45.9528 129.389 45.8036 129.966 45.5053C130.553 45.207 131.035 44.7745 131.413 44.2077C131.801 43.631 132.054 42.94 132.173 42.1346H138.169C138.07 43.8846 137.593 45.4258 136.737 46.7582C135.892 48.0806 134.724 49.1147 133.232 49.8604C131.741 50.6062 129.976 50.979 127.938 50.979Z" fill="white"/>
+          <path d="M106.756 28.7708C106.637 27.5676 106.124 26.633 105.22 25.9668C104.315 25.3006 103.087 24.9675 101.536 24.9675C100.482 24.9675 99.5918 25.1167 98.8659 25.415C98.1401 25.7033 97.5833 26.106 97.1955 26.623C96.8176 27.1401 96.6287 27.7267 96.6287 28.383C96.6088 28.9299 96.7232 29.4071 96.9718 29.8148C97.2303 30.2225 97.5833 30.5755 98.0307 30.8738C98.4782 31.1621 98.9952 31.4157 99.5819 31.6344C100.169 31.8432 100.795 32.0222 101.461 32.1713L104.205 32.8276C105.538 33.1259 106.761 33.5236 107.874 34.0208C108.988 34.5179 109.953 35.1294 110.768 35.8553C111.583 36.5811 112.215 37.4363 112.662 38.4206C113.119 39.405 113.353 40.5336 113.363 41.8063C113.353 43.6756 112.876 45.2963 111.931 46.6685C110.997 48.0307 109.644 49.0897 107.874 49.8453C106.115 50.5911 103.992 50.964 101.506 50.964C99.04 50.964 96.8922 50.5861 95.0627 49.8304C93.2431 49.0748 91.8212 47.9561 90.7971 46.4746C89.7828 44.9831 89.2509 43.1387 89.2012 40.9412H95.4505C95.5201 41.9654 95.8134 42.8205 96.3304 43.5066C96.8574 44.1827 97.5584 44.6948 98.4334 45.0428C99.3184 45.3809 100.318 45.5499 101.431 45.5499C102.525 45.5499 103.475 45.3908 104.28 45.0726C105.095 44.7544 105.727 44.312 106.174 43.7452C106.622 43.1784 106.845 42.5272 106.845 41.7914C106.845 41.1053 106.642 40.5286 106.234 40.0613C105.836 39.5939 105.249 39.1962 104.474 38.8681C103.708 38.54 102.769 38.2417 101.655 37.9732L98.329 37.138C95.7537 36.5115 93.7203 35.5321 92.2289 34.1998C90.7374 32.8674 89.9966 31.0726 90.0066 28.8155C89.9966 26.9661 90.4888 25.3503 91.4831 23.9682C92.4874 22.5861 93.8645 21.5073 95.6145 20.7317C97.3645 19.9561 99.3532 19.5684 101.58 19.5684C103.847 19.5684 105.826 19.9561 107.517 20.7317C109.217 21.5073 110.539 22.5861 111.484 23.9682C112.428 25.3503 112.916 26.9512 112.945 28.7708H106.756Z" fill="white"/>
+          <defs><linearGradient id="lg" x1="0" y1="9.74219" x2="79.0609" y2="69.3188" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#8485F8"/><stop offset="1" stop-color="#4F52D8"/></linearGradient></defs>
+        </svg>
+      </a>
+      <div class="nav-links">
+        <a href="#">Comment ça marche</a><a href="#">Studio IA</a><a href="#">Comédiens IA</a><a href="#">Tarifs</a><a href="#">Comparaison</a><a href="#">Réalisations</a>
+      </div>
+      <div class="nav-right">
+        <a href="#" class="btn btn-ghost btn-sm">Une question ?</a>
+        <a href="#" class="btn btn-accent btn-sm magnetic">Commander →</a>
+        <a href="#" class="lang">EN</a>
+        <button class="burger" id="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+      </div>
+      </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="#">Comment ça marche</a><a href="#">Studio IA</a><a href="#">Comédiens IA</a>
+      <a href="#">Tarifs</a><a href="#">Comparaison</a><a href="#">Réalisations</a>
+      <a href="#">Une question ?</a><a href="#">EN · English</a>
+      <a href="#" class="btn btn-accent">Commander ma vidéo →</a>
+    </div>
+
+    <div class="hero-content">
+      <div class="badge rise d2"><span class="pulse"></span>Livraison garantie en 48h ouvrées</div>
+      <h1 class="rise d3">Ce que vous imaginez,<br><span class="grad">en vidéo. En 48h.</span></h1>
+      <p class="sub rise d4">Décrivez une ambiance, une scène, une marque. En 48h ouvrées,
+        c'est un <b>clip 1080p prêt à diffuser</b>. Zéro réunion. Zéro agence.</p>
+      <div class="cta-row rise d5">
+        <a href="#" class="btn btn-accent magnetic">Commander ma vidéo <span class="arr">→</span></a>
+        <a href="#" class="btn btn-ghost magnetic">Voir les réalisations</a>
+      </div>
+      <p class="micro rise d6">À partir de <span>69 €</span> · 5 à 15 secondes · 10 itérations incluses</p>
+    </div>
+
+    <div class="cue rise d6"><i></i></div>
+  </section>
+
+  <div class="demo-tag">Démo hero · raffiné (typo display + grain)</div>
+
+<script>
+  const BASE='https://sceniq-media.sceniq.workers.dev/';
+  // Pool de clips portrait — mélangé à chaque refresh (ordre aléatoire)
+  const POOL=['exemple1','exemple2','exemple3','exemple5','exemple6','exemple7','exemple8',
+    'exemple9','exemple10','exemple11','exemple12','exemple13','exemple14','exemple15',
+    'exemple16','exemple17','exemple18','exemple20','exemple21','exemple22'];
+  for(let i=POOL.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[POOL[i],POOL[j]]=[POOL[j],POOL[i]];}
+  const NCOL=7;
+  const cols=Array.from({length:NCOL},(_,i)=>[POOL[i*2],POOL[i*2+1]]);
+  const wall=document.getElementById('wall');
+  const N=cols.length, c=(N-1)/2;
+  function tile(slug){
+    const t=document.createElement('div'); t.className='tile';
+    const v=document.createElement('video');
+    v.src=BASE+slug+'.mp4'; v.muted=true; v.loop=true; v.autoplay=true;
+    v.playsInline=true; v.setAttribute('playsinline',''); v.preload='auto';
+    v.addEventListener('loadeddata',()=>v.play().catch(()=>{}));
+    t.appendChild(v); return t;
+  }
+  cols.forEach((slugs,i)=>{
+    const col=document.createElement('div'); col.className='col'+(i%2?' dn':'');
+    // colonnes parallèles (pas de rotateY/translateZ) → aucun chevauchement ;
+    // l'effet 3D vient du tilt global du mur + du défilement.
+    const track=document.createElement('div'); track.className='col-track';
+    [...slugs,...slugs].forEach(s=>track.appendChild(tile(s)));
+    col.appendChild(track); wall.appendChild(col);
+  });
+
+  // Burger mobile
+  const burger=document.getElementById('burger'), mm=document.getElementById('mobileMenu');
+  burger.addEventListener('click',()=>{
+    const open=burger.classList.toggle('open'); mm.classList.toggle('open',open);
+    burger.setAttribute('aria-expanded',open);
+  });
+  mm.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+    burger.classList.remove('open'); mm.classList.remove('open'); burger.setAttribute('aria-expanded','false');
+  }));
+
+  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(!reduce){
+    addEventListener('pointermove',e=>{
+      const dx=(e.clientX/innerWidth-.5), dy=(e.clientY/innerHeight-.5);
+      const sc=innerWidth<520?1.9:innerWidth<820?1.55:1.32;
+      wall.style.transform=`rotateX(${9-dy*5}deg) rotateZ(-7deg) rotateY(${dx*6}deg) scale(${sc})`;
+    },{passive:true});
+    document.querySelectorAll('.magnetic').forEach(btn=>{
+      btn.addEventListener('pointermove',e=>{const r=btn.getBoundingClientRect();
+        btn.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.25}px,${(e.clientY-r.top-r.height/2)*.35}px)`});
+      btn.addEventListener('pointerleave',()=>btn.style.transform='translate(0,0)');
+    });
+  }
+</script>
+</body>
+</html>

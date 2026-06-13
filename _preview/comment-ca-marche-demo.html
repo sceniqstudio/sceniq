@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ScenIQ — Comment ça marche (démo)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#07070F; --surface:#0E0E1A; --surface2:#141427;
+    --bdr:rgba(255,255,255,.08); --bdr-md:rgba(255,255,255,.14);
+    --accent:#7C5CFC; --accent-h:#6B4AED; --glow:rgba(124,92,252,.22);
+    --white:#fff; --g4:#94A3B8; --g6:#475569; --max:900px;
+    --ease:cubic-bezier(.22,1,.36,1); --display:'Clash Display','Inter',sans-serif; --body:'Inter',sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  body{background:var(--bg); color:#fff; font-family:var(--body); -webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--max); margin:0 auto; padding:90px 24px 120px}
+
+  .seclabel{font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:#c4b5fd; margin-bottom:14px}
+  h2{font-family:var(--display); font-weight:600; font-size:clamp(30px,4.6vw,54px); letter-spacing:-.02em; line-height:1.04}
+  h2 .g{background:linear-gradient(100deg,#d7caff,#7C5CFC 60%,#8aa0ff); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .intro{color:var(--g4); margin-top:16px; max-width:60ch; font-size:17px; line-height:1.55}
+
+  /* Timeline */
+  .timeline{position:relative; margin-top:64px; padding-left:8px}
+  .rail{position:absolute; left:31px; top:14px; bottom:60px; width:2px; background:rgba(255,255,255,.1); border-radius:2px}
+  .rail-fill{position:absolute; left:31px; top:14px; width:2px; height:0; border-radius:2px;
+    background:linear-gradient(180deg,#9b7dff,#7C5CFC); box-shadow:0 0 16px var(--glow); transition:height .15s linear}
+
+  .step{position:relative; display:grid; grid-template-columns:64px 1fr; gap:8px; padding-bottom:54px;
+    opacity:0; transform:translateY(22px); transition:opacity .7s var(--ease), transform .7s var(--ease)}
+  .step:last-child{padding-bottom:0}
+  .step.in{opacity:1; transform:none}
+  .node{position:relative; z-index:2; width:48px; height:48px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-family:var(--display); font-weight:600; font-size:20px;
+    background:var(--surface2); border:1px solid var(--bdr-md); color:var(--g4);
+    transition:background .4s var(--ease), color .4s, box-shadow .4s, border-color .4s, transform .4s var(--ease)}
+  .step.on .node{background:var(--accent); border-color:var(--accent); color:#fff; box-shadow:0 0 26px var(--glow); transform:scale(1.06)}
+  .step-c{padding-top:6px}
+  .step-c h3{font-family:var(--display); font-weight:600; font-size:22px; letter-spacing:-.01em; margin-bottom:8px}
+  .step-c p{color:var(--g4); font-size:16px; line-height:1.6; max-width:54ch}
+  .step.on .step-c h3{color:#fff}
+
+  @media(max-width:560px){
+    .wrap{padding:70px 20px 90px}
+    .rail,.rail-fill{left:27px}
+    .step{grid-template-columns:56px 1fr}
+    .node{width:42px;height:42px;font-size:18px}
+  }
+  @media(prefers-reduced-motion:reduce){.step{opacity:1;transform:none}.rail-fill{transition:none}}
+
+  .demo-tag{position:fixed; z-index:50; bottom:14px; right:14px; font-size:11px; color:var(--g4);
+    background:rgba(14,14,26,.85); border:1px solid var(--bdr); padding:6px 12px; border-radius:999px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="seclabel">Comment ça marche</div>
+    <h2>Du brief au MP4. <span class="g">Cinq étapes.</span></h2>
+    <p class="intro">Vous décrivez ce que vous imaginez. ScenIQ fait le reste — aucun outil à maîtriser, aucune interface à apprivoiser, aucune réunion.</p>
+
+    <div class="timeline" id="tl">
+      <div class="rail"></div>
+      <div class="rail-fill" id="fill"></div>
+
+      <div class="step"><div class="node">1</div><div class="step-c">
+        <h3>Brief</h3>
+        <p>Décrivez ce que vous avez en tête — une ambiance, une scène, une envie. Ajoutez des références visuelles ou audio pour aller plus loin.</p>
+      </div></div>
+
+      <div class="step"><div class="node">2</div><div class="step-c">
+        <h3>Commande</h3>
+        <p>Choisissez la durée. Paiement 100 % sécurisé par Stripe. Confirmation par email immédiate.</p>
+      </div></div>
+
+      <div class="step"><div class="node">3</div><div class="step-c">
+        <h3>Appel</h3>
+        <p>On vous rappelle sous 4h ouvrées pour aligner la direction créative avant de lancer les agents.</p>
+      </div></div>
+
+      <div class="step"><div class="node">4</div><div class="step-c">
+        <h3>Pré-prod</h3>
+        <p>Director, Scriptwriter, Storyboarder, Music et Visual travaillent en parallèle. Pré-prod livrée sans intermédiaire.</p>
+      </div></div>
+
+      <div class="step"><div class="node">5</div><div class="step-c">
+        <h3>Livraison</h3>
+        <p>MP4 1080p envoyé par e-mail sous 48h ouvrées. Pas d'espace client, pas de compte. 10 itérations incluses.</p>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="demo-tag">Démo · Comment ça marche</div>
+
+<script>
+  const tl=document.getElementById('tl'), fill=document.getElementById('fill');
+  const steps=[...document.querySelectorAll('.step')];
+
+  // Révélation au scroll
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.25});
+  steps.forEach(s=>io.observe(s));
+
+  // Le rail s'arrête pile au centre du dernier nœud (pas de trait sous l'étape 5)
+  const rail=document.querySelector('.rail');
+  let topPx=0, span=0;
+  function layoutRail(){
+    const tlTop=tl.getBoundingClientRect().top+scrollY;
+    const ns=steps.map(s=>s.querySelector('.node'));
+    const f=ns[0].getBoundingClientRect(), l=ns[ns.length-1].getBoundingClientRect();
+    topPx=(f.top+scrollY+f.height/2)-tlTop;
+    span =((l.top+scrollY+l.height/2)-tlTop)-topPx;
+    rail.style.top=topPx+'px'; rail.style.bottom='auto'; rail.style.height=span+'px';
+    fill.style.top=topPx+'px'; fill.style.bottom='auto';
+  }
+  function trace(){
+    const tlTop=tl.getBoundingClientRect().top+scrollY;
+    const centerPage=scrollY+innerHeight*0.6;
+    const firstY=tlTop+topPx, lastY=tlTop+topPx+span;
+    const atBottom=(innerHeight+scrollY)>=(document.documentElement.scrollHeight-4);
+    let p=atBottom?1:Math.min(1,Math.max(0,(centerPage-firstY)/((lastY-firstY)||1)));
+    fill.style.height=(p*span)+'px';
+    steps.forEach(s=>{
+      const n=s.querySelector('.node').getBoundingClientRect();
+      s.classList.toggle('on', atBottom || (n.top+scrollY+n.height/2) < centerPage);
+    });
+  }
+  function relayout(){layoutRail();trace();}
+  addEventListener('scroll',trace,{passive:true});
+  addEventListener('resize',relayout);
+  addEventListener('load',relayout);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(relayout);
+  setTimeout(relayout,400);          // filet de sécurité après chargement police
+  relayout();
+</script>
+</body>
+</html>

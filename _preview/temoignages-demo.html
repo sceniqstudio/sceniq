@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ScenIQ — Témoignages (démo)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#07070F; --surface:#0E0E1A; --surface2:#141427;
+    --bdr:rgba(255,255,255,.08); --bdr-md:rgba(255,255,255,.14);
+    --accent:#7C5CFC; --accent-h:#6B4AED; --glow:rgba(124,92,252,.22);
+    --white:#fff; --g4:#94A3B8; --g6:#475569; --star:#FBBF24; --max:1080px;
+    --ease:cubic-bezier(.22,1,.36,1); --display:'Clash Display','Inter',sans-serif; --body:'Inter',sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  body{background:var(--bg); color:#fff; font-family:var(--body); -webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--max); margin:0 auto; padding:90px 24px 110px}
+
+  .seclabel{font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:#c4b5fd; margin-bottom:14px}
+  h2{font-family:var(--display); font-weight:600; font-size:clamp(30px,4.4vw,52px); letter-spacing:-.02em; line-height:1.05}
+  .g{background:linear-gradient(100deg,#d7caff,#7C5CFC 60%,#8aa0ff); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .head{margin-bottom:42px}
+
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+  @media(max-width:760px){.grid{grid-template-columns:1fr}}
+
+  .tcard{display:flex; flex-direction:column; background:var(--surface); border:1px solid var(--bdr);
+    border-radius:18px; padding:26px 24px; transition:transform .35s var(--ease), box-shadow .35s, border-color .35s}
+  .tcard:hover{transform:translateY(-5px); border-color:var(--bdr-md); box-shadow:0 24px 56px rgba(0,0,0,.5)}
+  .stars{display:flex; gap:3px; margin-bottom:16px}
+  .stars span{color:var(--star); font-size:17px; opacity:0; transform:scale(.4); transition:opacity .3s var(--ease), transform .3s var(--ease)}
+  .tcard.in .stars span{opacity:1; transform:scale(1)}
+  .quote{font-size:16.5px; line-height:1.6; color:var(--g4); flex:1}
+  .quote em{font-style:normal; color:#fff; font-weight:500}
+  .author{display:flex; align-items:center; gap:13px; margin-top:22px}
+  .avatar{width:42px;height:42px;border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-family:var(--display); font-weight:600; font-size:17px; color:#fff; flex:0 0 auto}
+  .nm{font-weight:600; font-size:14.5px} .role{color:var(--g6); font-size:13px; margin-top:1px}
+  .verified{margin-top:8px; display:inline-flex; align-items:center; gap:6px; font-size:12px; color:#34d399}
+  .verified svg{width:13px;height:13px}
+
+  .reveal{opacity:0; transform:translateY(26px); transition:opacity .6s var(--ease), transform .6s var(--ease)}
+  .reveal.in{opacity:1; transform:none}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}.stars span{opacity:1;transform:none}}
+
+  .demo-tag{position:fixed; z-index:50; bottom:14px; right:14px; font-size:11px; color:var(--g4);
+    background:rgba(14,14,26,.85); border:1px solid var(--bdr); padding:6px 12px; border-radius:999px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="head reveal" id="head">
+      <div class="seclabel">Témoignages</div>
+      <h2>Ce que disent <span class="g">les marques.</span></h2>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <div class="demo-tag">Démo · Témoignages</div>
+
+<script>
+  const T=[
+    {q:`"Brief en 3 lignes. <em>Reçu en 36h, exactement ce qu'on voulait.</em> Une itération sur le texte, c'était réglé. On refait."`,
+      nm:'Marie D.', role:'Responsable marketing · Bloom Studio', av:'M', c:'#7C5CFC', verified:true},
+    {q:`"Je croyais qu'il fallait un budget agence. <em>109 € pour une pub 10s prête pour Meta Ads.</em> Meilleur CPM qu'on ait eu ce trimestre."`,
+      nm:'Thomas L.', role:'Fondateur · Kōda', av:'T', c:'#6366F1', verified:true},
+    {q:`"Quatre étapes, zéro friction. <em>Brief, paiement, call créa, livraison.</em> On intègre ça dans chaque lancement produit."`,
+      nm:'Sophie R.', role:'CMO · Maison Velours', av:'S', c:'#a855f7', verified:true},
+    {q:`"On était sceptiques sur l'IA pour la vidéo. <em>La question n'est plus là.</em> Le client a demandé une deuxième vidéo avant même la livraison."`,
+      nm:'Alexis M.', role:'Directeur créatif · Studio Arkhe', av:'A', c:'#818CF8', verified:false},
+  ];
+  const grid=document.getElementById('grid');
+  const vsvg='<svg viewBox="0 0 14 14" fill="none" stroke="#34d399" stroke-width="2.4"><path d="M2 7.5l3.2 3.2L12 4"/></svg>';
+
+  T.forEach((t,i)=>{
+    const el=document.createElement('div'); el.className='tcard reveal'; el.style.transitionDelay=(i%2)*0.1+'s';
+    el.innerHTML=
+      '<div class="stars">'+Array.from({length:5},(_,k)=>`<span style="transition-delay:${0.15+k*0.08}s">★</span>`).join('')+'</div>'+
+      `<p class="quote">${t.q}</p>`+
+      '<div class="author">'+
+        `<div class="avatar" style="background:${t.c}">${t.av}</div>`+
+        `<div><div class="nm">${t.nm}</div><div class="role">${t.role}</div>`+
+          (t.verified?`<div class="verified">${vsvg} Commande vérifiée</div>`:'')+
+        '</div>'+
+      '</div>';
+    grid.appendChild(el);
+  });
+
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.2});
+  io.observe(document.getElementById('head'));
+  document.querySelectorAll('.tcard').forEach(c=>io.observe(c));
+</script>
+</body>
+</html>

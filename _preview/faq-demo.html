@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ScenIQ — FAQ (démo)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#07070F; --surface:#0E0E1A; --surface2:#141427;
+    --bdr:rgba(255,255,255,.08); --bdr-md:rgba(255,255,255,.14);
+    --accent:#7C5CFC; --accent-h:#6B4AED; --glow:rgba(124,92,252,.22);
+    --white:#fff; --g4:#94A3B8; --g6:#475569; --max:820px;
+    --ease:cubic-bezier(.22,1,.36,1); --display:'Clash Display','Inter',sans-serif; --body:'Inter',sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  body{background:var(--bg); color:#fff; font-family:var(--body); -webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--max); margin:0 auto; padding:90px 24px 110px}
+
+  .seclabel{font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:#c4b5fd; margin-bottom:14px}
+  h2{font-family:var(--display); font-weight:600; font-size:clamp(30px,4.4vw,52px); letter-spacing:-.02em; line-height:1.05}
+  .g{background:linear-gradient(100deg,#d7caff,#7C5CFC 60%,#8aa0ff); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .intro{color:var(--g4); margin-top:14px; font-size:16.5px}
+
+  .faq{margin-top:40px; display:flex; flex-direction:column; gap:12px}
+  .item{border:1px solid var(--bdr); border-radius:16px; background:var(--surface); overflow:hidden;
+    transition:border-color .3s, background .3s}
+  .item.open{border-color:rgba(124,92,252,.4); background:linear-gradient(180deg,rgba(124,92,252,.06),var(--surface) 60%)}
+  .q{display:flex; align-items:center; gap:16px; width:100%; text-align:left; cursor:pointer;
+    background:transparent; border:none; color:#fff; font-family:var(--body); font-size:16.5px; font-weight:500;
+    padding:20px 22px; line-height:1.4}
+  .q .qx{flex:0 0 auto; width:26px; height:26px; position:relative; margin-left:auto}
+  .q .qx::before,.q .qx::after{content:''; position:absolute; top:50%; left:50%; width:13px; height:2px; border-radius:2px;
+    background:var(--g4); transform:translate(-50%,-50%); transition:transform .3s var(--ease), background .3s}
+  .q .qx::after{transform:translate(-50%,-50%) rotate(90deg)}
+  .item.open .q{color:#fff}
+  .item.open .qx::before{background:var(--accent)} .item.open .qx::after{background:var(--accent); transform:translate(-50%,-50%) rotate(0)}
+  .ans{display:grid; grid-template-rows:0fr; transition:grid-template-rows .35s var(--ease)}
+  .item.open .ans{grid-template-rows:1fr}
+  .ans-in{overflow:hidden}
+  .ans p{color:var(--g4); font-size:15.5px; line-height:1.65; padding:0 22px 22px; max-width:64ch}
+
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .55s var(--ease), transform .55s var(--ease)}
+  .reveal.in{opacity:1; transform:none}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}.ans{transition:none}}
+
+  .demo-tag{position:fixed; z-index:50; bottom:14px; right:14px; font-size:11px; color:var(--g4);
+    background:rgba(14,14,26,.85); border:1px solid var(--bdr); padding:6px 12px; border-radius:999px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="reveal" id="head">
+      <div class="seclabel">FAQ</div>
+      <h2>Questions <span class="g">fréquentes.</span></h2>
+      <p class="intro">Tout ce qu'il faut savoir avant de commander.</p>
+    </div>
+    <div class="faq" id="faq"></div>
+  </div>
+
+  <div class="demo-tag">Démo · FAQ</div>
+
+<script>
+  const FAQ=[
+    ['Comment se déroule le processus exactement ?',
+     "Vous commandez en ligne et décrivez ce que vous avez en tête — une ambiance, une scène, un message. On vous rappelle sous 4h ouvrées pour aligner la direction créative. Les 5 agents IA génèrent la pré-prod en parallèle. La vidéo finale vous est envoyée par e-mail sous 48h ouvrées."],
+    ["Qu'est-ce qui est livré exactement ?",
+     "Un fichier MP4 1080p envoyé directement par e-mail. Pas d'espace client, pas de compte à créer. Les formats 9:16, 1:1 et 16:9 sont inclus selon la durée choisie — prêts pour Meta Ads, TikTok, YouTube et Instagram."],
+    ['Combien de temps pour recevoir ma vidéo ?',
+     "48h ouvrées après validation de la direction créative lors de l'appel. Le délai court à partir de cet appel, pas du paiement. En pratique, la plupart des livraisons se font en moins de 48h ouvrées."],
+    ['Puis-je fournir des références visuelles ou musicales ?',
+     "Oui, c'est même recommandé. Lors de la commande vous pouvez uploader des images, vidéos ou fichiers audio. Plus vos références sont précises, plus la cohérence visuelle de la vidéo est forte."],
+    ['Qui est propriétaire de la vidéo finale ?',
+     "Vous. À partir du moment où le paiement est validé, la vidéo vous appartient intégralement — utilisation commerciale incluse. Aucune licence à renouveler, aucune restriction de plateforme. ScenIQ ne conserve aucun droit d'exploitation sur les vidéos livrées."],
+    ['Mon secteur est spécifique — luxe, B2B, alimentaire, santé. Vous pouvez faire ça ?',
+     "Oui. ScenIQ a déjà produit des clips pour la mode, la food, la tech, le gaming, le B2B et le luxe. Donnez-nous votre brief, vos références visuelles et vos contraintes de marque — les agents s'adaptent au secteur, au ton et aux codes visuels de votre univers."],
+    ['Puis-je inclure un modèle ou une influenceuse IA dans ma vidéo ?',
+     "Oui — c'est une option à +49 € sur votre forfait. Vous décrivez le profil (âge, style, ambiance), ScenIQ génère le personnage IA sur mesure. Tous les personnages sont entièrement fictifs. Conformément au EU AI Act et à la loi française sur les influenceurs (juin 2023), une mention « Image générée par IA » est obligatoire sur vos publications. ScenIQ vous fournit cette mention dans chaque livraison."],
+    ['Pourquoi ScenIQ et pas Veo, Kling, Runway ou les apps mobiles ?',
+     "Ces outils génèrent des images impressionnantes. Ce qu'ils ne font pas : écrire votre scénario, choisir l'angle narratif, composer la bande sonore, synchroniser la voix-off, formater pour chaque réseau. Résultat : vous itérez sur des prompts pendant des heures, assemblez des clips bruts dans un outil, ajoutez la musique dans un autre, la voix dans un troisième — et la facture finale dépasse largement le tarif affiché. ScenIQ prend en charge toute la chaîne créative. Un brief. Direction créative, storyboard, ambiance sonore. Livraison MP4 1080p en 48h ouvrées."],
+    ['Pourquoi Seedance 2.0 et pas Runway, Veo 3 ou Sora ?',
+     "Seedance 2.0 est le moteur vidéo de ByteDance — la même entreprise que TikTok, donc optimisé pour les formats courts et les cuts dynamiques. Trois avantages concrets : (1) rendu 1080p natif avec audio intégré dans le même appel ; (2) architecture multi-shot en un seul prompt — la cohérence visuelle entre les plans est meilleure qu'en assemblant des clips séparés ; (3) vitesse de rendu : un clip 10s est généré en moins de 3 minutes."],
+    ['Que se passe-t-il si le résultat ne me convient pas ?',
+     "10 itérations sont incluses dans chaque commande. Si après 10 allers-retours nous n'arrivons pas à un résultat satisfaisant, vous êtes intégralement remboursé. C'est rare — ça ne nous est pas encore arrivé."],
+    ['Quelle durée choisir pour ma publicité ?',
+     "5–8s pour des accroches Reels/Stories sans narration. 10s pour une pub Meta classique avec voix-off courte. 12–15s pour un format avec storytelling ou démonstration produit. En cas de doute, le 10s est le plus polyvalent."],
+    ['La vidéo peut-elle inclure une voix-off ?',
+     "Oui, à partir du format 10s. Le Scriptwriter calibre le script à 2,2 mots par seconde. Pour les voix-off françaises, une couche dédiée est ajoutée au montage final, sans surcoût."],
+    ['Les vidéos passent-elles la modération Meta Ads ?',
+     "Oui — c'est un critère de production, pas une chance. Les formats 9:16, 1:1 et 16:9 sont livrés prêts à uploader. Les clips ne contiennent pas de texte superposé non conforme ni de musique non licensée. Pour les campagnes avec comédien IA, la mention « Image générée par IA » fournie par ScenIQ est conforme aux exigences de Meta."],
+    ['Quel mode de paiement est accepté ?',
+     "Paiement 100 % à la commande via Stripe (CB, Apple Pay, Google Pay). Pas d'acompte, pas de paiement différé. Une facture est générée automatiquement après le paiement."],
+  ];
+  const faq=document.getElementById('faq');
+  FAQ.forEach(([q,a])=>{
+    const it=document.createElement('div'); it.className='item reveal';
+    it.innerHTML=`<button class="q"><span>${q}</span><span class="qx"></span></button>`+
+      `<div class="ans"><div class="ans-in"><p>${a}</p></div></div>`;
+    it.querySelector('.q').addEventListener('click',()=>it.classList.toggle('open'));
+    faq.appendChild(it);
+  });
+
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
+  io.observe(document.getElementById('head'));
+  document.querySelectorAll('.item').forEach((it,i)=>{it.style.transitionDelay=Math.min(i*0.04,0.3)+'s'; io.observe(it);});
+</script>
+</body>
+</html>

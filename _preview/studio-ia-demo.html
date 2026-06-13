@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ScenIQ — Studio IA (démo)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#07070F; --surface:#0E0E1A; --surface2:#141427;
+    --bdr:rgba(255,255,255,.08); --bdr-md:rgba(255,255,255,.14);
+    --accent:#7C5CFC; --accent-h:#6B4AED; --glow:rgba(124,92,252,.22);
+    --white:#fff; --g4:#94A3B8; --g6:#475569; --max:1120px;
+    --ease:cubic-bezier(.22,1,.36,1); --display:'Clash Display','Inter',sans-serif; --body:'Inter',sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  body{background:var(--bg); color:#fff; font-family:var(--body); -webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--max); margin:0 auto; padding:90px 24px 110px}
+  .center{text-align:center}
+
+  .seclabel{font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:#c4b5fd; margin-bottom:14px}
+  .intro{color:var(--g4); margin:0 auto; max-width:50ch; font-size:16px}
+  h2{font-family:var(--display); font-weight:600; font-size:clamp(28px,3.8vw,46px); letter-spacing:-.02em; line-height:1.06}
+  .g{background:linear-gradient(100deg,#d7caff,#7C5CFC 60%,#8aa0ff); -webkit-background-clip:text; background-clip:text; color:transparent}
+
+  /* Onglets */
+  .tabs{display:flex; gap:6px; justify-content:center; margin:30px auto 44px; padding:6px;
+    background:var(--surface); border:1px solid var(--bdr); border-radius:999px; width:fit-content; max-width:100%; flex-wrap:wrap}
+  .tabs button{font-family:var(--body); font-size:14px; font-weight:600; color:var(--g4);
+    background:transparent; border:none; padding:10px 20px; border-radius:999px; cursor:pointer; transition:.25s var(--ease); white-space:nowrap}
+  .tabs button:hover{color:#fff}
+  .tabs button.on{color:#fff; background:var(--accent); box-shadow:0 0 22px var(--glow)}
+
+  /* Panneaux */
+  .panel{display:none; grid-template-columns:1.05fr .95fr; gap:48px; align-items:center}
+  .panel.on{display:grid; animation:panelIn .55s var(--ease)}
+  @keyframes panelIn{from{opacity:0; transform:translateY(18px)}to{opacity:1; transform:none}}
+  @media(max-width:840px){.panel,.panel.on{grid-template-columns:1fr; gap:30px}}
+
+  .p-label{font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--g6); margin-bottom:14px}
+  .panel h2{margin-bottom:18px}
+  .panel p{color:var(--g4); font-size:16px; line-height:1.62; margin-bottom:14px; max-width:52ch}
+  .promise-row{display:flex; align-items:center; gap:18px; flex-wrap:wrap; margin-top:24px}
+  .promise{font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#c4b5fd}
+  .btn{display:inline-flex; align-items:center; gap:8px; padding:13px 26px; border-radius:999px; font-size:15px; font-weight:600;
+    text-decoration:none; cursor:pointer; border:none; transition:.25s var(--ease)}
+  .btn-accent{background:var(--accent); color:#fff; box-shadow:0 0 24px var(--glow)} .btn-accent:hover{background:var(--accent-h); box-shadow:0 0 40px var(--glow)}
+
+  /* Listes (agents / features) */
+  .list{list-style:none; margin:8px 0 0; display:flex; flex-direction:column; gap:13px}
+  .list li{display:flex; gap:12px; align-items:flex-start; color:var(--g4); font-size:15.5px; line-height:1.5}
+  .list .k{color:#fff; font-weight:600}
+  .tick{flex:0 0 auto; width:22px;height:22px;border-radius:50%; background:rgba(124,92,252,.16); border:1px solid rgba(124,92,252,.4);
+    display:flex; align-items:center; justify-content:center; margin-top:1px}
+  .tick svg{width:11px;height:11px}
+
+  /* Média */
+  .media{position:relative}
+  .frame{position:relative; border-radius:18px; overflow:hidden; border:1px solid var(--bdr-md); background:var(--surface2);
+    box-shadow:0 26px 64px rgba(0,0,0,.55); cursor:pointer; transition:transform .35s var(--ease), box-shadow .35s}
+  .frame video{width:100%; height:100%; object-fit:cover; display:block}
+  .frame::after{content:'▶'; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:56px;height:56px;border-radius:50%; background:rgba(124,92,252,.92); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:18px; padding-left:3px;
+    opacity:0; transition:opacity .25s; box-shadow:0 0 32px var(--glow); pointer-events:none}
+  .frame:hover{box-shadow:0 30px 72px rgba(124,92,252,.4)}
+  .frame:hover::after{opacity:1}
+  .ar-1{aspect-ratio:1/1} .ar-169{aspect-ratio:16/9}
+  .media-stack{display:flex; gap:14px; align-items:flex-end}
+  .media-stack .main{flex:1} .media-stack .side{flex:0 0 34%}
+  .side .frame{aspect-ratio:9/16}
+
+  /* ── Mobile ──────────────────────────────────────────────── */
+  @media(max-width:560px){
+    .wrap{padding:62px 18px 84px}
+    .intro{font-size:15px}
+    .tabs{width:100%; max-width:100%; flex-wrap:nowrap; overflow-x:auto; justify-content:flex-start;
+      border-radius:16px; -webkit-overflow-scrolling:touch; scrollbar-width:none}
+    .tabs::-webkit-scrollbar{display:none}
+    .tabs button{padding:9px 15px; font-size:13px; flex:0 0 auto}
+    .panel h2{font-size:25px}
+    .panel p{font-size:15px}
+    .promise-row{gap:14px}
+    .promise-row .btn{width:100%; justify-content:center}
+    .list li{font-size:15px}
+    .media-stack{flex-direction:column}
+    .media-stack .side{display:none}   /* on garde le clip principal, plus lisible sur petit écran */
+  }
+  @media(prefers-reduced-motion:reduce){.panel.on{animation:none}}
+
+  /* Modale plein écran (centrée) */
+  .lb{position:fixed; inset:0; z-index:90; display:none; align-items:center; justify-content:center;
+    background:rgba(4,4,9,.88); backdrop-filter:blur(12px); padding:24px}
+  .lb.open{display:flex}
+  .lb video{max-height:88vh; max-width:min(86vw,1200px); border-radius:20px; border:1px solid var(--bdr-md); box-shadow:0 30px 90px rgba(0,0,0,.7)}
+  .lb .x{position:absolute; top:22px; right:24px; width:44px;height:44px;border-radius:50%; border:1px solid var(--bdr-md);
+    background:rgba(14,14,26,.7); color:#fff; font-size:20px; cursor:pointer}
+
+  .demo-tag{position:fixed; z-index:50; bottom:14px; right:14px; font-size:11px; color:var(--g4);
+    background:rgba(14,14,26,.85); border:1px solid var(--bdr); padding:6px 12px; border-radius:999px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="center">
+      <div class="seclabel">Studio IA</div>
+      <p class="intro">Le studio où ScenIQ produit tes vidéos, de l'idée au livrable. Trois façons de le voir.</p>
+      <div class="tabs" id="tabs">
+        <button class="on" data-i="0">Le cas concret</button>
+        <button data-i="1">L'équipe créa</button>
+        <button data-i="2">Seedance 2.0</button>
+      </div>
+    </div>
+
+    <!-- Onglet 1 — Cas concret -->
+    <div class="panel on" data-panel="0">
+      <div>
+        <div class="p-label">Cas concret</div>
+        <h2>Lancer un produit,<br><span class="g">sans monter une équipe.</span></h2>
+        <p>Une marque sort un nouveau produit physique. Il lui faut une vidéo courte pour le présenter et le montrer en situation : entre les mains de quelqu'un, dans son décor, en usage réel. D'habitude ça veut dire un brief, un tournage, une équipe à coordonner et des jours d'allers-retours.</p>
+        <p>Avec ScenIQ, le produit entre dans le Studio IA et j'orchestre tout de A à Z : concept, mise en scène, lumière, plans. Tu récupères une vidéo prête à diffuser, ton produit mis en avant et en situation, sans réunion ni équipe à gérer.</p>
+        <div class="promise-row">
+          <span class="promise">Brief en 2 lignes → vidéo en 48 h</span>
+          <a href="#" class="btn btn-accent">Lancer ma vidéo →</a>
+        </div>
+      </div>
+      <div class="media"><div class="frame ar-1"><video data-src="exemple12" muted loop playsinline></video></div></div>
+    </div>
+
+    <!-- Onglet 2 — L'équipe créa -->
+    <div class="panel" data-panel="1">
+      <div>
+        <div class="p-label">Le studio</div>
+        <h2>Cinq agents IA.<br><span class="g">Une équipe créa complète.</span></h2>
+        <p>Chaque agent est spécialisé. Ensemble, ils couvrent tout ce qu'une équipe créa fait habituellement en plusieurs jours de réunions — sans que vous n'ouvriez aucune interface.</p>
+        <ul class="list">
+          <li><span class="k">Director</span> — direction créative, axe publicitaire, prise de position défendable</li>
+          <li><span class="k">Scriptwriter</span> — script calibré à 2,2 mots/sec, voix-off structurée</li>
+          <li><span class="k">Storyboarder</span> — découpage shot par shot, prompts multi-shot pour Seedance</li>
+          <li><span class="k">Music</span> — direction musicale avec BPM précis et références licenciables réelles</li>
+          <li><span class="k">Visual</span> — palette hex, typographie, ambiance lumière — spec exécutable directement</li>
+        </ul>
+      </div>
+      <div class="media"><div class="frame ar-169"><video data-src="volt" muted loop playsinline></video></div></div>
+    </div>
+
+    <!-- Onglet 3 — Seedance -->
+    <div class="panel" data-panel="2">
+      <div>
+        <div class="p-label">Seedance 2.0 by ByteDance</div>
+        <h2>Génération vidéo.<br><span class="g">Un prompt. Un clip livré.</span></h2>
+        <p>Le Storyboarder produit un prompt multi-shot unifié. Un seul appel Seedance 2.0 génère la vidéo déjà montée — cohérence visuelle garantie entre chaque plan, sans post-prod ni assemblage manuel.</p>
+        <ul class="list">
+          <li><span class="tick"><svg viewBox="0 0 14 14" fill="none" stroke="#c4b5fd" stroke-width="2.4"><path d="M2 7.5l3.2 3.2L12 4"/></svg></span>Résolution 1080p native — qualité broadcast, pas du 720p upscalé</li>
+          <li><span class="tick"><svg viewBox="0 0 14 14" fill="none" stroke="#c4b5fd" stroke-width="2.4"><path d="M2 7.5l3.2 3.2L12 4"/></svg></span>Audio natif intégré — ambiance sonore et voix off dans le même rendu</li>
+          <li><span class="tick"><svg viewBox="0 0 14 14" fill="none" stroke="#c4b5fd" stroke-width="2.4"><path d="M2 7.5l3.2 3.2L12 4"/></svg></span>Multi-shot en un seul appel — 2 à 4 plans selon la durée, déjà montés</li>
+          <li><span class="tick"><svg viewBox="0 0 14 14" fill="none" stroke="#c4b5fd" stroke-width="2.4"><path d="M2 7.5l3.2 3.2L12 4"/></svg></span>Formats 9:16, 1:1 et 16:9 inclus — prêts pour Meta Ads, TikTok et YouTube</li>
+        </ul>
+      </div>
+      <div class="media"><div class="frame ar-169"><video data-src="exemple19" muted loop playsinline></video></div></div>
+    </div>
+  </div>
+
+  <div class="lb" id="lb"><button class="x" id="lbx">✕</button><video id="lbv" controls playsinline loop></video></div>
+  <div class="demo-tag">Démo · Studio IA (onglets)</div>
+
+<script>
+  const BASE='https://sceniq-media.sceniq.workers.dev/';
+  const panels=[...document.querySelectorAll('.panel')];
+  const tabs=[...document.querySelectorAll('#tabs button')];
+
+  function loadVids(panel){
+    panel.querySelectorAll('video[data-src]').forEach(v=>{
+      if(!v.src){v.src=BASE+v.dataset.src+'.mp4'; v.preload='auto';}
+      v.play().catch(()=>{});
+    });
+  }
+  function pauseVids(panel){ panel.querySelectorAll('video').forEach(v=>v.pause()); }
+
+  function setTab(i){
+    tabs.forEach((t,k)=>t.classList.toggle('on',k===i));
+    panels.forEach((p,k)=>{
+      if(k===i){p.classList.add('on'); loadVids(p);}
+      else{p.classList.remove('on'); pauseVids(p);}
+    });
+  }
+  tabs.forEach(t=>t.addEventListener('click',()=>setTab(+t.dataset.i)));
+  loadVids(panels[0]);   // démarre l'onglet actif
+
+  // Modale plein écran au clic sur une vidéo
+  const lb=document.getElementById('lb'), lbv=document.getElementById('lbv');
+  function openLB(slug){lbv.src=BASE+slug+'.mp4'; lbv.muted=false; lb.classList.add('open'); lbv.play().catch(()=>{});}
+  function closeLB(){lb.classList.remove('open'); lbv.pause(); lbv.src='';}
+  document.getElementById('lbx').onclick=closeLB;
+  lb.addEventListener('click',e=>{if(e.target===lb)closeLB()});
+  addEventListener('keydown',e=>{if(e.key==='Escape')closeLB()});
+  document.querySelectorAll('.frame').forEach(f=>{
+    f.addEventListener('click',()=>{const v=f.querySelector('video[data-src]'); if(v)openLB(v.dataset.src);});
+  });
+</script>
+</body>
+</html>

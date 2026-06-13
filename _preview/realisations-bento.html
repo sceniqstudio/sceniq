@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ScenIQ — Réalisations · Bento (démo)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#07070F; --surface:#0E0E1A; --surface2:#141427;
+    --bdr:rgba(255,255,255,.08); --bdr-md:rgba(255,255,255,.14);
+    --accent:#7C5CFC; --accent-h:#6B4AED; --glow:rgba(124,92,252,.22);
+    --white:#fff; --g4:#94A3B8; --g6:#475569; --max:1200px;
+    --ease:cubic-bezier(.22,1,.36,1); --display:'Clash Display','Inter',sans-serif; --body:'Inter',sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  body{background:var(--bg); color:#fff; font-family:var(--body); -webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--max); margin:0 auto; padding:80px 24px 90px}
+
+  .seclabel{font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:#c4b5fd; margin-bottom:14px}
+  h2{font-family:var(--display); font-weight:600; font-size:clamp(30px,4.4vw,52px); letter-spacing:-.02em; line-height:1.04}
+  h2 .g{background:linear-gradient(100deg,#d7caff,#7C5CFC 60%,#8aa0ff); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .lead{color:var(--g4); margin-top:14px; max-width:62ch; font-size:17px; line-height:1.55}
+  .head{margin-bottom:38px}
+
+  /* Masonry simple en colonnes — chaque vidéo garde son format réel */
+  .bento{column-count:4; column-gap:16px}
+  @media(max-width:1040px){.bento{column-count:3}}
+  @media(max-width:720px){.bento{column-count:2}}
+  @media(max-width:430px){.bento{column-count:1}}
+
+  .tile{position:relative; display:inline-block; width:100%; margin:0 0 16px; break-inside:avoid; -webkit-column-break-inside:avoid;
+    border-radius:18px; overflow:hidden; border:1px solid var(--bdr-md); background:var(--surface2);
+    box-shadow:0 16px 40px rgba(0,0,0,.5); cursor:pointer; transition:transform .35s var(--ease), box-shadow .35s var(--ease)}
+  .tile video{width:100%; height:auto; display:block}        /* hauteur = format réel de la vidéo */
+  .tile .play{position:absolute; inset:0; z-index:2; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .25s}
+  .tile .play span{width:50px;height:50px;border-radius:50%;background:rgba(124,92,252,.92); display:flex;align-items:center;justify-content:center; box-shadow:0 0 32px var(--glow)}
+  .tile:hover{transform:translateY(-6px); box-shadow:0 26px 58px rgba(124,92,252,.4)}
+  .tile:hover .play{opacity:1}
+
+  .foot{text-align:center; color:var(--g6); font-size:13px; margin-top:30px}
+  .reveal{opacity:0; transform:translateY(26px); transition:opacity .7s var(--ease), transform .7s var(--ease)}
+  .reveal.in{opacity:1; transform:none}
+
+  .lb{position:fixed; inset:0; z-index:90; display:none; align-items:center; justify-content:center;
+    background:rgba(4,4,9,.88); backdrop-filter:blur(12px); padding:24px}
+  .lb.open{display:flex}
+  .lb video{max-height:88vh; max-width:min(86vw,1200px); border-radius:20px; border:1px solid var(--bdr-md); box-shadow:0 30px 90px rgba(0,0,0,.7)}
+  .lb .x{position:absolute; top:22px; right:24px; width:44px;height:44px;border-radius:50%; border:1px solid var(--bdr-md);
+    background:rgba(14,14,26,.7); color:#fff; font-size:20px; cursor:pointer}
+
+  .demo-tag{position:fixed; z-index:50; bottom:14px; right:14px; font-size:11px; color:var(--g4);
+    background:rgba(14,14,26,.85); border:1px solid var(--bdr); padding:6px 12px; border-radius:999px}
+</style>
+</head>
+<body>
+  <div class="wrap reveal" id="sec">
+    <div class="head">
+      <div class="seclabel">Réalisations</div>
+      <h2>Créé avec ScenIQ <span class="g">+ Seedance 2.0</span></h2>
+      <p class="lead">Mode, food, tech, gaming, luxe, B2B. Tout ce que vous pouvez imaginer — produit en 48h ouvrées.</p>
+    </div>
+    <div class="bento" id="bento"></div>
+    <p class="foot">✦ Vidéos générées via Seedance 2.0 · cliquez pour lire avec le son</p>
+  </div>
+
+  <div class="lb" id="lb"><button class="x" id="lbx">✕</button><video id="lbv" controls playsinline loop></video></div>
+  <div class="demo-tag">Démo · Réalisations bento</div>
+
+<script>
+  const BASE='https://sceniq-media.sceniq.workers.dev/';
+  const SLUGS=['exemple1','exemple2','exemple3','exemple4','exemple5','exemple6','exemple7','exemple8',
+    'exemple9','exemple10','exemple11','exemple12','exemple13','exemple14','exemple15','exemple16',
+    'exemple17','exemple18','exemple19','exemple20','exemple21','exemple22','exemple23','exemple24',
+    'exemple25','exemple26'];
+
+  const io=new IntersectionObserver(es=>es.forEach(e=>{
+    const v=e.target; if(e.isIntersecting){v.play&&v.play().catch(()=>{})}else{v.pause&&v.pause()}
+  }),{threshold:.12});
+
+  // ordre aléatoire à chaque refresh
+  for(let i=SLUGS.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[SLUGS[i],SLUGS[j]]=[SLUGS[j],SLUGS[i]];}
+
+  const bento=document.getElementById('bento');
+  SLUGS.forEach(s=>{
+    const t=document.createElement('div'); t.className='tile';
+    const v=document.createElement('video');
+    v.src=BASE+s+'.mp4'; v.muted=true; v.loop=true; v.playsInline=true; v.setAttribute('playsinline',''); v.preload='metadata';
+    // réserve la bonne hauteur dès que le format réel est connu
+    v.addEventListener('loadedmetadata',()=>{ if(v.videoWidth&&v.videoHeight) v.style.aspectRatio=v.videoWidth+'/'+v.videoHeight; });
+    t.appendChild(v); io.observe(v);
+    const p=document.createElement('div'); p.className='play';
+    p.innerHTML='<span><svg width="17" height="17" viewBox="0 0 16 16" fill="#fff"><polygon points="4,2 14,8 4,14"/></svg></span>';
+    t.appendChild(p);
+    t.addEventListener('click',()=>openLB(s));
+    bento.appendChild(t);
+  });
+
+  const lb=document.getElementById('lb'), lbv=document.getElementById('lbv');
+  function openLB(slug){lbv.src=BASE+slug+'.mp4'; lbv.muted=false; lb.classList.add('open'); lbv.play().catch(()=>{});}
+  function closeLB(){lb.classList.remove('open'); lbv.pause(); lbv.src='';}
+  document.getElementById('lbx').onclick=closeLB;
+  lb.addEventListener('click',e=>{if(e.target===lb)closeLB()});
+  addEventListener('keydown',e=>{if(e.key==='Escape')closeLB()});
+
+  new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.05})
+    .observe(document.getElementById('sec'));
+</script>
+</body>
+</html>

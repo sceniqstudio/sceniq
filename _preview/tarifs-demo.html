@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ScenIQ — Tarifs (démo)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#07070F; --surface:#0E0E1A; --surface2:#141427;
+    --bdr:rgba(255,255,255,.08); --bdr-md:rgba(255,255,255,.14);
+    --accent:#7C5CFC; --accent-h:#6B4AED; --glow:rgba(124,92,252,.22);
+    --white:#fff; --g4:#94A3B8; --g6:#475569; --max:1180px;
+    --ease:cubic-bezier(.22,1,.36,1); --display:'Clash Display','Inter',sans-serif; --body:'Inter',sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  body{background:var(--bg); color:#fff; font-family:var(--body); -webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--max); margin:0 auto; padding:90px 24px 110px}
+  .center{text-align:center}
+
+  .seclabel{font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:#c4b5fd; margin-bottom:14px}
+  h2{font-family:var(--display); font-weight:600; font-size:clamp(30px,4.4vw,52px); letter-spacing:-.02em; line-height:1.05}
+  .g{background:linear-gradient(100deg,#d7caff,#7C5CFC 60%,#8aa0ff); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .sub{color:var(--g4); margin:16px auto 0; max-width:62ch; font-size:16.5px; line-height:1.55}
+  .sub b{color:#fff; font-weight:600}
+  .langline{margin:18px auto 0; color:var(--g4); font-size:13.5px}
+
+  /* Toggle comédien IA (fonctionnel : +49 €) */
+  .toggle{display:flex; align-items:center; gap:18px; justify-content:center; flex-wrap:wrap;
+    margin:34px auto 0; padding:14px 20px; width:fit-content; max-width:100%; cursor:pointer; user-select:none;
+    background:var(--surface); border:1px solid var(--bdr); border-radius:16px; transition:border-color .25s, box-shadow .25s}
+  .toggle.active{border-color:var(--accent); box-shadow:0 0 26px var(--glow)}
+  .toggle .tl{display:flex; align-items:center; gap:13px; text-align:left}
+  .toggle .ic{font-size:22px}
+  .toggle .tt{font-weight:600} .toggle .td{color:var(--g4); font-size:13px}
+  .toggle .pr{font-weight:700; color:#c4b5fd; white-space:nowrap}
+  .switch{width:48px; height:27px; border-radius:999px; background:rgba(255,255,255,.14); position:relative; transition:background .25s; flex:0 0 auto}
+  .switch.on{background:var(--accent)}
+  .switch i{position:absolute; top:3px; left:3px; width:21px; height:21px; border-radius:50%; background:#fff; transition:left .25s var(--ease)}
+  .switch.on i{left:24px}
+  .togglenote{margin:14px auto 0; color:#c4b5fd; font-size:13px; opacity:0; height:0; overflow:hidden; transition:opacity .3s}
+  .togglenote.show{opacity:1; height:auto}
+
+  /* Cartes prix */
+  .plans{display:grid; grid-template-columns:repeat(5,1fr); gap:14px; margin-top:42px; align-items:stretch}
+  @media(max-width:1040px){.plans{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:720px){.plans{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:480px){.plans{grid-template-columns:1fr}}
+
+  .plan{position:relative; display:flex; flex-direction:column; background:var(--surface);
+    border:1px solid var(--bdr); border-radius:18px; padding:22px 18px; transition:transform .35s var(--ease), box-shadow .35s, border-color .35s}
+  .plan:hover{transform:translateY(-6px); border-color:var(--bdr-md); box-shadow:0 24px 56px rgba(0,0,0,.5)}
+  .plan.feat{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent), 0 24px 60px rgba(124,92,252,.3); background:linear-gradient(180deg,rgba(124,92,252,.1),var(--surface) 40%)}
+  .plan.feat:hover{box-shadow:0 0 0 1px var(--accent), 0 30px 70px rgba(124,92,252,.42)}
+  .pbadge{position:absolute; top:-11px; left:50%; transform:translateX(-50%); white-space:nowrap;
+    background:var(--accent); color:#fff; font-size:11px; font-weight:700; letter-spacing:.04em; padding:5px 13px; border-radius:999px; box-shadow:0 0 22px var(--glow)}
+  .dur{font-family:var(--display); font-weight:600; font-size:22px}
+  .fmt{color:var(--g4); font-size:13px; margin-top:2px}
+  .price{font-family:var(--display); font-weight:600; font-size:40px; margin:16px 0 2px; line-height:1}
+  .price .c{color:var(--g6); font-size:22px; vertical-align:top}
+  .incl{color:var(--accent); font-size:12px; font-weight:600; height:0; opacity:0; overflow:hidden; transition:opacity .25s}
+  .incl.show{height:auto; opacity:1; margin-bottom:4px}
+  .pdivider{height:1px; background:var(--bdr); margin:14px 0}
+  .pf{list-style:none; display:flex; flex-direction:column; gap:9px; flex:1}
+  .pf li{display:flex; gap:9px; align-items:flex-start; color:var(--g4); font-size:13px; line-height:1.4}
+  .pf li.grey{color:var(--g6)} .pf li.model{color:var(--accent); font-weight:600}
+  .pf .tick{flex:0 0 auto; width:17px;height:17px;border-radius:50%; background:rgba(124,92,252,.16); border:1px solid rgba(124,92,252,.35);
+    display:flex; align-items:center; justify-content:center; margin-top:1px}
+  .pf .tick svg{width:9px;height:9px}
+  .order{margin-top:18px; display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:12px; border-radius:999px;
+    font-size:14px; font-weight:600; text-decoration:none; cursor:pointer; transition:.25s var(--ease)}
+  .order.def{background:rgba(255,255,255,.06); color:#fff; border:1px solid var(--bdr-md)}
+  .order.def:hover{background:rgba(255,255,255,.12)}
+  .order.acc{background:var(--accent); color:#fff; box-shadow:0 0 24px var(--glow)} .order.acc:hover{background:var(--accent-h); box-shadow:0 0 38px var(--glow)}
+
+  .foot{text-align:center; color:var(--g6); font-size:13px; margin-top:34px}
+  .reveal{opacity:0; transform:translateY(26px); transition:opacity .6s var(--ease), transform .6s var(--ease)}
+  .reveal.in{opacity:1; transform:none}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}}
+
+  .demo-tag{position:fixed; z-index:50; bottom:14px; right:14px; font-size:11px; color:var(--g4);
+    background:rgba(14,14,26,.85); border:1px solid var(--bdr); padding:6px 12px; border-radius:999px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="center reveal" id="head">
+      <div class="seclabel">Tarifs</div>
+      <h2>Vous ne payez pas <span class="g">pour essayer.</span></h2>
+      <p class="sub">Un brief. Un prix. <b>Ce que vous commandez, c'est ce que vous recevez</b> — pas d'abonnement, pas de crédits, pas d'interface à apprivoiser. Le tarif dépend d'une seule chose : la durée de votre vidéo (5 à 15 secondes).</p>
+      <p class="langline">Lip sync · voix off ou dialogue · sous-titres · 🇫🇷 🇺🇸 🇯🇵 🇪🇸 🇧🇷 🇮🇩 🇨🇳</p>
+
+      <div class="toggle" id="toggle" role="button" aria-pressed="false">
+        <div class="tl"><span class="ic">🎭</span><span><span class="tt">Ajouter un comédien IA</span><br><span class="td">Personnage généré sur mesure d'après votre description</span></span></div>
+        <span class="pr">+49 €</span>
+        <span class="switch" id="switch"><i></i></span>
+      </div>
+      <p class="togglenote" id="togglenote">✓ Mention légale "Image générée par IA" fournie · conforme EU AI Act</p>
+    </div>
+
+    <div class="plans" id="plans"></div>
+    <p class="foot reveal" id="foot">MP4 livré par e-mail · Paiement sécurisé Stripe</p>
+  </div>
+
+  <div class="demo-tag">Démo · Tarifs (toggle +49 €)</div>
+
+<script>
+  const PLANS=[
+    {dur:'5 sec', durN:5,  fmt:'Format court',     price:69,  shots:2, voix:false, feat:false},
+    {dur:'8 sec', durN:8,  fmt:'Format reel',      price:89,  shots:3, voix:false, feat:false},
+    {dur:'10 sec',durN:10, fmt:'Format pub',       price:109, shots:3, voix:true,  feat:true },
+    {dur:'12 sec',durN:12, fmt:'Format narration', price:129, shots:4, voix:true,  feat:false},
+    {dur:'15 sec',durN:15, fmt:'Format histoire',  price:159, shots:4, voix:true,  feat:false},
+  ];
+  const tick='<span class="tick"><svg viewBox="0 0 14 14" fill="none" stroke="#c4b5fd" stroke-width="2.6"><path d="M2 7.5l3.2 3.2L12 4"/></svg></span>';
+  const wrap=document.getElementById('plans');
+  let on=false;
+
+  PLANS.forEach((p,i)=>{
+    const el=document.createElement('div');
+    el.className='plan reveal'+(p.feat?' feat':''); el.style.transitionDelay=(i*0.07)+'s'; el.dataset.base=p.price; el.dataset.dur=p.durN;
+    el.innerHTML=
+      (p.feat?'<div class="pbadge">⭐ Populaire</div>':'')+
+      `<div class="dur">${p.dur}</div><div class="fmt">${p.fmt}</div>`+
+      `<div class="price" data-cur="0"><span class="c">€</span>0</div>`+
+      `<div class="incl">comédien inclus</div>`+
+      '<div class="pdivider"></div>'+
+      '<ul class="pf">'+
+        `<li>${tick}${p.shots} shots · 1 format au choix</li>`+
+        `<li class="grey">${tick}9:16 · 1:1 · 16:9 · 3:4 · 4:3 · 21:9</li>`+
+        `<li>${tick}Script IA + storyboard complet</li>`+
+        `<li>${tick}Musique de fond + bruitages</li>`+
+        `<li>${tick}Lip sync · voix off ou dialogue <span style="color:var(--g6)">🇫🇷 🇺🇸 🇯🇵 🇪🇸 🇧🇷 🇮🇩 🇨🇳</span></li>`+
+        `<li>${tick}Sous-titres inclus</li>`+
+        (p.voix?`<li>${tick}Voix-off au montage</li>`:'')+
+        `<li class="model" style="display:none">${tick}Comédien IA sur mesure</li>`+
+      '</ul>'+
+      `<a href="/commande?duree=${p.durN}" class="order ${p.feat?'acc':'def'}">Commander${p.feat?' →':''}</a>`;
+    wrap.appendChild(el);
+  });
+
+  function setPrice(node,to){
+    const from=+node.dataset.cur||0, dur=600, t0=performance.now();
+    (function step(t){const k=Math.min(1,(t-t0)/dur); const v=Math.round(from+(to-from)*(1-Math.pow(1-k,3)));
+      node.innerHTML='<span class="c">€</span>'+v; if(k<1)requestAnimationFrame(step); else node.dataset.cur=to;})(t0);
+    node.dataset.cur=to;
+  }
+  function apply(animate){
+    document.querySelectorAll('.plan').forEach(el=>{
+      const base=+el.dataset.base, total=base+(on?49:0);
+      const pn=el.querySelector('.price');
+      if(animate)setPrice(pn,total); else {pn.innerHTML='<span class="c">€</span>'+total; pn.dataset.cur=total;}
+      el.querySelector('.incl').classList.toggle('show',on);
+      el.querySelector('.model').style.display=on?'':'none';
+      const a=el.querySelector('.order'); a.href='/commande?duree='+el.dataset.dur+(on?'&modele=1':'');
+    });
+    document.getElementById('switch').classList.toggle('on',on);
+    document.getElementById('toggle').classList.toggle('active',on);
+    document.getElementById('toggle').setAttribute('aria-pressed',on);
+    document.getElementById('togglenote').classList.toggle('show',on);
+  }
+  document.getElementById('toggle').addEventListener('click',()=>{on=!on; apply(true);});
+
+  // Compteur initial + cascade au scroll
+  const io=new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting){e.target.classList.add('in');
+      const pr=e.target.querySelector&&e.target.querySelector('.price'); if(pr)setPrice(pr,+e.target.dataset.base);
+      io.unobserve(e.target);}
+  }),{threshold:.25});
+  io.observe(document.getElementById('head'));
+  io.observe(document.getElementById('foot'));
+  document.querySelectorAll('.plan').forEach(p=>io.observe(p));
+</script>
+</body>
+</html>
