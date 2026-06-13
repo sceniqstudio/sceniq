@@ -786,7 +786,7 @@ export default function HomePage() {
           </div>
           <p className="lv2-footnote">{t.hero.footnote}</p>
         </div>
-        <div className="lv2-cue" aria-hidden="true"><i /></div>
+        <a href="#reels" className="lv2-cue" aria-label="Voir les réalisations"><i /></a>
       </section>
 
       {/* ── TRUST STRIP ──────────────────────────────────────────────────── */}

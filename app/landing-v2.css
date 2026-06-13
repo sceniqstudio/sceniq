@@ -316,11 +316,13 @@ body:has(.lv2) {
 }
 /* Indicateur de scroll */
 .lv2-cue {
-  position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 2;
+  position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 4;
   width: 24px; height: 40px; border: 1px solid var(--bdr-md); border-radius: 14px;
   display: flex; justify-content: center; padding-top: 7px;
   background: rgba(14,14,26,0.4); backdrop-filter: blur(6px);
+  cursor: pointer; text-decoration: none; transition: border-color 0.2s;
 }
+.lv2-cue:hover { border-color: var(--accent); }
 .lv2-cue i { width: 3px; height: 8px; border-radius: 2px; background: var(--accent); animation: lv2Cue 1.6s ease-in-out infinite; }
 @keyframes lv2Cue {
   0% { opacity: 0; transform: translateY(-3px); }
