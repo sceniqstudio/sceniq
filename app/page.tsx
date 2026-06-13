@@ -351,20 +351,6 @@ export default function HomePage() {
     })
   }, [])
 
-  // Réalisations bento — ne joue que les vidéos visibles (perfs)
-  useEffect(() => {
-    const tiles = Array.from(document.querySelectorAll<HTMLVideoElement>('.lv2-bento-tile video'))
-    if (!tiles.length) return
-    const io = new IntersectionObserver(
-      es => es.forEach(e => {
-        const v = e.target as HTMLVideoElement
-        if (e.isIntersecting) v.play().catch(() => {}); else v.pause()
-      }),
-      { threshold: 0.12 },
-    )
-    tiles.forEach(v => io.observe(v))
-    return () => io.disconnect()
-  }, [reels])
   const toggleLang = () => {
     const next: Lang = lang === 'fr' ? 'en' : 'fr'
     setLang(next)
@@ -1260,7 +1246,7 @@ export default function HomePage() {
                 aria-label="Voir un exemple de vidéo"
               >
                 <video
-                  autoPlay muted loop playsInline preload="metadata"
+                  autoPlay muted loop playsInline preload="none"
                   style={{ aspectRatio: String(v.ratio) }}
                   onLoadedMetadata={(e) => {
                     const vid = e.currentTarget
