@@ -678,7 +678,7 @@ export default function HomePage() {
           <p className="lv2-sub">{t.hero.sub}</p>
           <div className="lv2-ctas">
             <a href="/commande" className="lv2-btn lv2-btn-accent lv2-btn-lg">{t.hero.cta1}</a>
-            <a href="#process" className="lv2-btn lv2-btn-ghost lv2-btn-lg">{t.hero.cta2}</a>
+            <a href="#reels" className="lv2-btn lv2-btn-ghost lv2-btn-lg">{t.hero.cta2}</a>
           </div>
           <p className="lv2-footnote">{t.hero.footnote}</p>
         </div>
