@@ -266,7 +266,7 @@ export default function HomePage() {
     if (typeof window === 'undefined') return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const wall = document.querySelector<HTMLElement>('.lv2-wall')
-    const btns = Array.from(document.querySelectorAll<HTMLElement>('.lv2-hcontent .lv2-btn'))
+    const btns = Array.from(document.querySelectorAll<HTMLElement>('.lv2-hcontent .lv2-btn, .lv2-final-cta-btns .lv2-btn'))
     const onMove = (e: PointerEvent) => {
       if (!wall) return
       const dx = e.clientX / window.innerWidth - 0.5
@@ -1300,7 +1300,7 @@ export default function HomePage() {
         <div className="lv2-si">
           <div className="cmp-label">{t.comparison.label}</div>
           <h2 className="cmp-h2">
-            {t.comparison.h2a}<br />{t.comparison.h2b}
+            {t.comparison.h2a}<br /><span className="gx">{t.comparison.h2b}</span>
           </h2>
           <p className="cmp-sub">{t.comparison.sub}</p>
           <div className="cmp-table">
@@ -1416,6 +1416,8 @@ export default function HomePage() {
 
       {/* ── FINAL CTA ────────────────────────────────────────────────────── */}
       <section className="lv2-final-cta">
+        <div className="lv2-cta-orb a" aria-hidden="true" />
+        <div className="lv2-cta-orb b" aria-hidden="true" />
         <div className="lv2-si">
           <div className="lv2-final-cta-inner">
             <div className="lv2-label" style={{ margin: '0 auto 20px' }}>{t.cta.label}</div>

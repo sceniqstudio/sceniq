@@ -546,6 +546,16 @@ body:has(.lv2) {
 @media (max-width: 720px)  { .lv2-bento { column-count: 2; } }
 @media (max-width: 430px)  { .lv2-bento { column-count: 1; } }
 
+/* ── CTA finale — halos violets animés ────────────────────────── */
+.lv2-final-cta { position: relative; overflow: hidden; }
+.lv2-final-cta .lv2-si { position: relative; z-index: 1; }
+.lv2-cta-orb { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; }
+.lv2-cta-orb.a { width: 420px; height: 420px; top: -160px; left: 6%; background: radial-gradient(circle, rgba(124,92,252,0.5), transparent 70%); animation: lv2CtaF1 16s ease-in-out infinite; }
+.lv2-cta-orb.b { width: 380px; height: 380px; bottom: -180px; right: 6%; background: radial-gradient(circle, rgba(99,102,241,0.45), transparent 70%); animation: lv2CtaF2 20s ease-in-out infinite; }
+@keyframes lv2CtaF1 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(50px,30px); } }
+@keyframes lv2CtaF2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-40px,-30px); } }
+@media (prefers-reduced-motion: reduce) { .lv2-cta-orb { animation: none; } }
+
 /* ── MISSION (video BG) ─────────────────────────────────────── */
 .lv2-mission {
   position: relative; overflow: hidden; padding: 120px 24px;
