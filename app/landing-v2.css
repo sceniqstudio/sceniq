@@ -22,7 +22,7 @@ body:has(.lv2) {
   --glow:      rgba(124,92,252,0.22);
   --white:     #FFFFFF;
   --g4:        #94A3B8;
-  --g6:        #475569;
+  --g6:        #8B96A8;   /* éclairci — l'ancien #475569 était illisible en texte */
   --max:       1160px;
   --r:         12px;
   --rl:        20px;
@@ -409,12 +409,13 @@ body:has(.lv2) {
 .lv2-ticker-wrap { position: relative; overflow: hidden; flex: 1; min-width: 0; }
 .lv2-ticker-track {
   display: flex; align-items: center; width: max-content;
-  animation: lv2-ticker 22s linear infinite;
+  animation: lv2-ticker 42s linear infinite;
 }
 .lv2-ticker-item {
   white-space: nowrap;
   padding: 0 16px;
-  font-size: 13px; font-weight: 400; color: var(--g4);
+  font-size: 13px; font-weight: 500; color: #d3dae3;
+  text-shadow: 0 1px 8px rgba(7,7,15,0.9);
 }
 .lv2-ticker-item:first-child { padding-left: 8px; }
 .lv2-ticker-fade {
@@ -453,7 +454,7 @@ body:has(.lv2) {
   display: flex; align-items: center; gap: 12px;
   margin-bottom: 16px; flex-wrap: wrap; justify-content: center;
 }
-.lv2-footnote { font-size: 13px; color: var(--g6); text-shadow: 0 1px 8px rgba(7,7,15,0.8); }
+.lv2-footnote { font-size: 13px; color: rgba(255,255,255,0.82); text-shadow: 0 1px 10px rgba(7,7,15,0.95); }
 
 /* ── TRUST STRIP ─────────────────────────────────────────────── */
 .lv2-trust {
