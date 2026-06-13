@@ -1131,7 +1131,7 @@ export default function HomePage() {
         <div className="lv2-si">
           <div className="rv" style={{ textAlign: 'center' }}>
             <div className="lv2-label">{t.pricing.label}</div>
-            <h2>{t.pricing.h2}</h2>
+            <h2><span className="gx">{t.pricing.h2}</span></h2>
             <p className="lv2-s-sub" style={{ maxWidth: 520, margin: '16px auto 0' }}>
               {t.pricing.sub.split(t.pricing.subHighlight).map((part, i, arr) =>
                 i < arr.length - 1
@@ -1339,7 +1339,7 @@ export default function HomePage() {
         <div className="lv2-si">
           <div className="rv" style={{ textAlign: 'center' }}>
             <div className="lv2-label">{t.faq.label}</div>
-            <h2>{t.faq.h2}</h2>
+            <h2><span className="gx">{t.faq.h2}</span></h2>
             <p className="lv2-s-sub" style={{ maxWidth: 480, margin: '16px auto 0' }}>
               {t.faq.sub}
             </p>
