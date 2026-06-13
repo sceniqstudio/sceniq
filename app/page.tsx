@@ -1245,7 +1245,14 @@ export default function HomePage() {
                 onClick={() => setOpenVideo(v.slug)}
                 aria-label="Voir un exemple de vidéo"
               >
-                <video autoPlay muted loop playsInline preload="metadata" style={{ aspectRatio: String(v.ratio) }}>
+                <video
+                  autoPlay muted loop playsInline preload="metadata"
+                  style={{ aspectRatio: String(v.ratio) }}
+                  onLoadedMetadata={(e) => {
+                    const vid = e.currentTarget
+                    if (vid.videoWidth && vid.videoHeight) vid.style.aspectRatio = `${vid.videoWidth} / ${vid.videoHeight}`
+                  }}
+                >
                   <source src={showcaseUrl(v.slug)} type="video/mp4" />
                 </video>
                 <span className="lv2-bento-play" aria-hidden="true">
