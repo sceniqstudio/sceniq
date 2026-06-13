@@ -286,6 +286,57 @@ export default function HomePage() {
       btns.forEach(b => { b.removeEventListener('pointermove', onBtnMove); b.removeEventListener('pointerleave', onBtnLeave) })
     }
   }, [])
+
+  // Timeline « Comment ça marche » — ligne qui se trace + numéros qui s'allument
+  useEffect(() => {
+    const tl = document.getElementById('lv2-tl')
+    const fill = document.getElementById('lv2-tl-fill')
+    const rail = document.querySelector<HTMLElement>('.lv2-tl-rail')
+    if (!tl || !fill || !rail) return
+    const steps = Array.from(tl.querySelectorAll<HTMLElement>('.lv2-tl-step'))
+    const io = new IntersectionObserver(
+      es => es.forEach(e => { if (e.isIntersecting) e.target.classList.add('in') }),
+      { threshold: 0.25 },
+    )
+    steps.forEach(s => io.observe(s))
+    let topPx = 0, span = 0
+    const layoutRail = () => {
+      const tlTop = tl.getBoundingClientRect().top + window.scrollY
+      const ns = steps.map(s => s.querySelector('.lv2-tl-node') as HTMLElement | null)
+      if (!ns[0] || !ns[ns.length - 1]) return
+      const f = ns[0]!.getBoundingClientRect(), l = ns[ns.length - 1]!.getBoundingClientRect()
+      topPx = (f.top + window.scrollY + f.height / 2) - tlTop
+      span = ((l.top + window.scrollY + l.height / 2) - tlTop) - topPx
+      rail.style.top = topPx + 'px'; rail.style.bottom = 'auto'; rail.style.height = span + 'px'
+      fill.style.top = topPx + 'px'; fill.style.bottom = 'auto'
+    }
+    const trace = () => {
+      const tlTop = tl.getBoundingClientRect().top + window.scrollY
+      const centerPage = window.scrollY + window.innerHeight * 0.6
+      const firstY = tlTop + topPx, lastY = tlTop + topPx + span
+      const atBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 4)
+      const p = atBottom ? 1 : Math.min(1, Math.max(0, (centerPage - firstY) / ((lastY - firstY) || 1)))
+      fill.style.height = (p * span) + 'px'
+      steps.forEach(s => {
+        const n = s.querySelector('.lv2-tl-node') as HTMLElement
+        const nr = n.getBoundingClientRect()
+        s.classList.toggle('on', atBottom || (nr.top + window.scrollY + nr.height / 2) < centerPage)
+      })
+    }
+    const relayout = () => { layoutRail(); trace() }
+    window.addEventListener('scroll', trace, { passive: true })
+    window.addEventListener('resize', relayout)
+    const fonts = (document as Document & { fonts?: { ready: Promise<unknown> } }).fonts
+    if (fonts?.ready) fonts.ready.then(relayout)
+    const t1 = window.setTimeout(relayout, 400)
+    relayout()
+    return () => {
+      window.removeEventListener('scroll', trace)
+      window.removeEventListener('resize', relayout)
+      io.disconnect()
+      clearTimeout(t1)
+    }
+  }, [])
   const toggleLang = () => {
     const next: Lang = lang === 'fr' ? 'en' : 'fr'
     setLang(next)
@@ -739,15 +790,19 @@ export default function HomePage() {
         <div className="lv2-si">
           <div className="rv" style={{ textAlign: 'center' }}>
             <div className="lv2-label">{t.process.label}</div>
-            <h2>{t.process.h2a}<br />{t.process.h2b}</h2>
+            <h2>{t.process.h2a}<br /><span className="gx">{t.process.h2b}</span></h2>
             <p className="lv2-s-sub" style={{ maxWidth: 480, margin: '16px auto 0' }}>{t.process.sub}</p>
           </div>
-          <div className="lv2-process-grid rv">
+          <div className="lv2-tl" id="lv2-tl">
+            <div className="lv2-tl-rail" />
+            <div className="lv2-tl-fill" id="lv2-tl-fill" />
             {t.process.steps.map((step) => (
-              <div key={step.n} className="lv2-process-step">
-                <div className="lv2-process-num">{step.n}</div>
-                <div className="lv2-process-title">{step.title}</div>
-                <div className="lv2-process-desc">{step.desc}</div>
+              <div key={step.n} className="lv2-tl-step">
+                <div className="lv2-tl-node">{step.n}</div>
+                <div className="lv2-tl-c">
+                  <h3 className="lv2-tl-title">{step.title}</h3>
+                  <p className="lv2-tl-desc">{step.desc}</p>
+                </div>
               </div>
             ))}
           </div>
