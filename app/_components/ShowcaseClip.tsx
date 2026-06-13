@@ -12,6 +12,8 @@ interface ShowcaseClipProps {
   fallbackEmoji:  string
   /** Texte alternatif pour l'accessibilité (lecteurs d'écran) */
   ariaLabel:      string
+  /** Remonte le ratio réel de la vidéo (ex: "1280 / 720") dès que les métadonnées sont chargées */
+  onAspect?:      (ratio: string) => void
 }
 
 // ── Limiteur de concurrence global ─────────────────────────────────────────
@@ -57,7 +59,7 @@ function releaseLoadSlot(): void {
  * - `autoPlay` est ignoré pour les <video> insérées dynamiquement → on appelle
  *   explicitement `.play()` après que le créneau de chargement est obtenu.
  */
-export function ShowcaseClip({ slug, fallbackBg, fallbackEmoji, ariaLabel }: ShowcaseClipProps) {
+export function ShowcaseClip({ slug, fallbackBg, fallbackEmoji, ariaLabel, onAspect }: ShowcaseClipProps) {
   const [videoFailed, setVideoFailed] = useState(false)
   const [shouldLoad, setShouldLoad]   = useState(false)  // entré dans le viewport
   const [canFetch, setCanFetch]       = useState(false)  // créneau de chargement obtenu
@@ -151,6 +153,10 @@ export function ShowcaseClip({ slug, fallbackBg, fallbackEmoji, ariaLabel }: Sho
           loop
           playsInline
           preload="metadata"
+          onLoadedMetadata={(e) => {
+            const v = e.currentTarget
+            if (onAspect && v.videoWidth && v.videoHeight) onAspect(`${v.videoWidth} / ${v.videoHeight}`)
+          }}
           onError={() => setVideoFailed(true)}
           aria-label={ariaLabel}
         >

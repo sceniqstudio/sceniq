@@ -227,6 +227,31 @@ const COL_SLUGS     = Array.from({ length: 7 }, (_, c) =>
   Array.from({ length: 3 }, (_, i) => SHOWCASE_SLUGS[(c * 3 + i) % SHOWCASE_SLUGS.length])
 )
 
+// Tuile bento — cale son ratio sur le format RÉEL de la vidéo (corrige les ratios déclarés faux)
+function BentoClip({ slug, ratio, onOpen }: { slug: string; ratio: number; onOpen: () => void }) {
+  const [ar, setAr] = useState(String(ratio))
+  return (
+    <button
+      type="button"
+      className="lv2-bento-tile"
+      onClick={onOpen}
+      aria-label="Voir un exemple de vidéo"
+      style={{ aspectRatio: ar }}
+    >
+      <ShowcaseClip
+        slug={slug}
+        fallbackBg="linear-gradient(135deg,#17103a,#0e0e1a)"
+        fallbackEmoji="🎬"
+        ariaLabel="Exemple de vidéo ScenIQ"
+        onAspect={setAr}
+      />
+      <span className="lv2-bento-play" aria-hidden="true">
+        <svg viewBox="0 0 16 16" fill="#fff" width="17" height="17"><polygon points="4,2 14,8 4,14"/></svg>
+      </span>
+    </button>
+  )
+}
+
 export default function HomePage() {
   const [openVideo, setOpenVideo]           = useState<string | null>(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -1238,24 +1263,7 @@ export default function HomePage() {
         <div className="lv2-si">
           <div className="lv2-bento">
             {reels.map((v) => (
-              <button
-                key={v.slug}
-                type="button"
-                className="lv2-bento-tile"
-                onClick={() => setOpenVideo(v.slug)}
-                aria-label="Voir un exemple de vidéo"
-                style={{ aspectRatio: String(v.ratio) }}
-              >
-                <ShowcaseClip
-                  slug={v.slug}
-                  fallbackBg="linear-gradient(135deg,#17103a,#0e0e1a)"
-                  fallbackEmoji="🎬"
-                  ariaLabel="Exemple de vidéo ScenIQ"
-                />
-                <span className="lv2-bento-play" aria-hidden="true">
-                  <svg viewBox="0 0 16 16" fill="#fff" width="17" height="17"><polygon points="4,2 14,8 4,14"/></svg>
-                </span>
-              </button>
+              <BentoClip key={v.slug} slug={v.slug} ratio={v.ratio} onOpen={() => setOpenVideo(v.slug)} />
             ))}
           </div>
         </div>
