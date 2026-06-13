@@ -1245,7 +1245,7 @@ export default function HomePage() {
                 onClick={() => setOpenVideo(v.slug)}
                 aria-label="Voir un exemple de vidéo"
               >
-                <video muted loop playsInline preload="none" style={{ aspectRatio: String(v.ratio) }}>
+                <video autoPlay muted loop playsInline preload="metadata" style={{ aspectRatio: String(v.ratio) }}>
                   <source src={showcaseUrl(v.slug)} type="video/mp4" />
                 </video>
                 <span className="lv2-bento-play" aria-hidden="true">
