@@ -849,7 +849,7 @@ export default function HomePage() {
             <div>
               {studioTab === 'case' ? (
                 <>
-                  <h2>{t.caseStudy.h2a}<br />{t.caseStudy.h2b}</h2>
+                  <h2>{t.caseStudy.h2a}<br /><span className="gx">{t.caseStudy.h2b}</span></h2>
                   <p className="lv2-s-sub" style={{ marginTop: 16 }}>{t.caseStudy.body1}</p>
                   <p className="lv2-s-sub" style={{ marginTop: 16 }}>{t.caseStudy.body2}</p>
                   <div style={{ marginTop: 24, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
@@ -859,7 +859,7 @@ export default function HomePage() {
                 </>
               ) : studioTab === 'team' ? (
                 <>
-                  <h2>{t.studio.h2a}<br />{t.studio.h2b}</h2>
+                  <h2>{t.studio.h2a}<br /><span className="gx">{t.studio.h2b}</span></h2>
                   <p className="lv2-s-sub" style={{ marginTop: 16 }}>{t.studio.sub}</p>
                   <ul className="lv2-feat-list">
                     {t.studio.agents.map((item) => (
@@ -880,7 +880,7 @@ export default function HomePage() {
               ) : (
                 <>
                   <div className="lv2-label">{t.seedance.label}</div>
-                  <h2>{t.seedance.h2a}<br />{t.seedance.h2b}</h2>
+                  <h2>{t.seedance.h2a}<br /><span className="gx">{t.seedance.h2b}</span></h2>
                   <p className="lv2-s-sub" style={{ marginTop: 16 }}>{t.seedance.sub}</p>
                   <ul className="lv2-feat-list">
                     {t.seedance.features.map((desc) => (
@@ -899,50 +899,27 @@ export default function HomePage() {
             </div>
             <div>
               {studioTab === 'seedance' ? (
-                /* Composition vidéo Seedance : 16:9 + 9:16 superposés */
-                <div style={{ position: 'relative', paddingBottom: '38%' }}>
-                  <button
-                    type="button"
-                    onClick={() => setOpenVideo('exemple19')}
-                    style={{
-                      display: 'block', width: '100%',
-                      aspectRatio: '16/9', borderRadius: 14, overflow: 'hidden',
-                      background: 'var(--surface)', border: '1px solid var(--bdr-md)',
-                      position: 'relative', cursor: 'pointer', padding: 0,
-                    }}
-                    aria-label={t.seedance.aria169}
-                  >
-                    <video autoPlay muted loop playsInline preload="none" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', pointerEvents:'none' }}>
-                      <source src={showcaseUrl('exemple19')} type="video/mp4" />
-                    </video>
-                    <div style={{ position: 'absolute', top: 10, left: 12, padding: '3px 8px', borderRadius: 5, background: 'rgba(7,7,15,0.78)', border: '1px solid rgba(255,255,255,0.1)', fontSize: 10, fontWeight: 700, letterSpacing: '0.07em', color: 'rgba(255,255,255,0.55)' }}>16:9</div>
-                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0, transition: 'opacity 0.2s' }} className="play-overlay">
-                      <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(124,92,252,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <svg viewBox="0 0 16 16" fill="white" width="16" height="16"><polygon points="4,2 14,8 4,14"/></svg>
-                      </div>
+                /* Seedance — un seul grand clip 16:9 (validé) */
+                <button
+                  type="button"
+                  onClick={() => setOpenVideo('exemple19')}
+                  style={{
+                    display: 'block', width: '100%',
+                    aspectRatio: '16/9', borderRadius: 14, overflow: 'hidden',
+                    background: 'var(--surface)', border: '1px solid var(--bdr-md)',
+                    position: 'relative', cursor: 'pointer', padding: 0,
+                  }}
+                  aria-label={t.seedance.aria169}
+                >
+                  <video autoPlay muted loop playsInline preload="none" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', pointerEvents:'none' }}>
+                    <source src={showcaseUrl('exemple19')} type="video/mp4" />
+                  </video>
+                  <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0, transition: 'opacity 0.2s' }} className="play-overlay">
+                    <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(124,92,252,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <svg viewBox="0 0 16 16" fill="white" width="16" height="16"><polygon points="4,2 14,8 4,14"/></svg>
                     </div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setOpenVideo('exemple18')}
-                    style={{
-                      position: 'absolute', bottom: 0, right: 0,
-                      width: '36%', aspectRatio: '9/16', borderRadius: 14, overflow: 'hidden',
-                      background: 'var(--surface)', border: '1px solid rgba(124,92,252,0.4)',
-                      boxShadow: '0 24px 64px rgba(0,0,0,0.55), 0 0 0 1px rgba(124,92,252,0.1)',
-                      cursor: 'pointer', padding: 0,
-                    }}
-                    aria-label={t.seedance.aria916}
-                  >
-                    <video autoPlay muted loop playsInline preload="none" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', pointerEvents:'none' }}>
-                      <source src={showcaseUrl('exemple18')} type="video/mp4" />
-                    </video>
-                    <div style={{ position: 'absolute', top: 10, left: 10, padding: '3px 8px', borderRadius: 5, background: 'rgba(7,7,15,0.78)', border: '1px solid rgba(124,92,252,0.3)', fontSize: 10, fontWeight: 700, letterSpacing: '0.07em', color: 'rgba(165,180,252,0.7)' }}>9:16</div>
-                  </button>
-                  <p style={{ position: 'absolute', bottom: -28, left: 0, fontSize: 11, color: 'var(--g6)', letterSpacing: '0.04em', margin: 0 }}>
-                    {t.seedance.note}
-                  </p>
-                </div>
+                  </div>
+                </button>
               ) : (
                 <button
                   type="button"
@@ -1001,7 +978,7 @@ export default function HomePage() {
             {/* Texte */}
             <div>
               <div className="lv2-label">{t.models.label}</div>
-              <h2>{t.models.h2a}<br />{t.models.h2b}</h2>
+              <h2>{t.models.h2a}<br /><span className="gx">{t.models.h2b}</span></h2>
               <p className="lv2-s-sub" style={{ marginTop: 16 }}>{t.models.sub}</p>
               <ul className="lv2-feat-list">
                 {t.models.features.map((item) => (
@@ -1223,7 +1200,7 @@ export default function HomePage() {
         <div className="lv2-si">
           <div className="rv" style={{ marginBottom: 40 }}>
             <div className="lv2-label">{t.portfolio.label}</div>
-            <h2>{t.portfolio.h2a} <span style={{ color: 'var(--g4)', fontWeight: 400 }}>+</span> {t.portfolio.h2b}</h2>
+            <h2>{t.portfolio.h2a} <span style={{ color: 'var(--g4)', fontWeight: 400 }}>+</span> <span className="gx">{t.portfolio.h2b}</span></h2>
             <p style={{ color: 'var(--g4)', fontSize: 17, marginTop: 10, maxWidth: 460 }}>
               {t.portfolio.sub}
             </p>
@@ -1255,7 +1232,7 @@ export default function HomePage() {
         <div className="lv2-si">
           <div className="rv" style={{ textAlign: 'center' }}>
             <div className="lv2-label">{t.testimonials.label}</div>
-            <h2>{t.testimonials.h2a}<br />{t.testimonials.h2b}</h2>
+            <h2>{t.testimonials.h2a}<br /><span className="gx">{t.testimonials.h2b}</span></h2>
           </div>
           <div className="lv2-testimonials rv">
             {t.testimonials.items.map((item) => (
@@ -1408,7 +1385,7 @@ export default function HomePage() {
         <div className="lv2-si">
           <div className="lv2-final-cta-inner">
             <div className="lv2-label" style={{ margin: '0 auto 20px' }}>{t.cta.label}</div>
-            <h2>{t.cta.h2a}<br />{t.cta.h2b}</h2>
+            <h2>{t.cta.h2a}<br /><span className="gx">{t.cta.h2b}</span></h2>
             <p className="lv2-final-cta-sub">
               {t.cta.sub}
             </p>
