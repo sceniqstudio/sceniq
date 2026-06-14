@@ -154,6 +154,8 @@ export const translations = {
       togglePrice: '+49 €',
       toggleNote:  '✓ Mention légale "Image générée par IA" fournie · conforme EU AI Act',
       badge:       '⭐ Populaire',
+      anchor:      'Agence : 800–2 000 € pour le même format',
+      featuredNote:'Format Meta Ads le plus diffusé',
       plans: [
         { dur: '5 sec',  fmt: 'Format court',     price: 69,  shots: 2, voix: false, featured: false },
         { dur: '8 sec',  fmt: 'Format reel',      price: 89,  shots: 3, voix: false, featured: false },
@@ -164,7 +166,7 @@ export const translations = {
       perks: {
         shots:   (n: number) => `${n} shots · 1 format au choix`,
         formats: '9:16 · 1:1 · 16:9 · 3:4 · 4:3 · 21:9',
-        script:  'Script IA + storyboard complet',
+        script:  'Script + storyboard (300–500 € en agence)',
         music:   'Musique de fond + bruitages',
         lipsync: 'Lip sync · voix off ou dialogue',
         subs:    'Sous-titres inclus',
@@ -222,7 +224,7 @@ export const translations = {
         { label: 'Abonnement',              sceniq: 'Aucun',                          tools: 'Mensuel obligatoire',          sceniqType: 'check', toolsType: 'cross' },
         { label: 'Crédits à surveiller',    sceniq: 'Aucun',                          tools: 'À chaque génération',          sceniqType: 'check', toolsType: 'cross' },
       ],
-      note: 'Ces outils sont excellents — on les utilise. La différence : vous n\'avez pas à les maîtriser.',
+      note: 'Ces outils génèrent des clips bruts. ScenIQ livre des publicités prêtes à diffuser.',
     },
 
     // ── FAQ ──────────────────────────────────────────────────────────────────
@@ -236,6 +238,7 @@ export const translations = {
       ctaBtn2: '📞 07 56 80 88 31',
       left: [
         { q: 'Comment se déroule le processus exactement ?',            a: 'Vous commandez en ligne et décrivez ce que vous avez en tête — une ambiance, une scène, un message. On vous rappelle sous 4h ouvrées pour aligner la direction créative. Les 5 agents IA génèrent la pré-prod en parallèle. La vidéo finale vous est envoyée par e-mail sous 48h ouvrées.' },
+        { q: 'Puis-je valider le script et le storyboard avant la vidéo finale ?', a: 'Oui. La pré-prod — script, storyboard, direction sonore — vous est présentée avant le lancement de la génération vidéo. C\'est le moment où on aligne la direction créative et où vous validez chaque choix avant l\'exécution. Aucune surprise à la livraison.' },
         { q: 'Qu\'est-ce qui est livré exactement ?',                   a: 'Un fichier MP4 1080p envoyé directement par e-mail. Pas d\'espace client, pas de compte à créer. Les formats 9:16, 1:1 et 16:9 sont inclus selon la durée choisie — prêts pour Meta Ads, TikTok, YouTube et Instagram.' },
         { q: 'Combien de temps pour recevoir ma vidéo ?',               a: '48h ouvrées après validation de la direction créative lors de l\'appel. Le délai court à partir de cet appel, pas du paiement. En pratique, la plupart des livraisons se font en moins de 48h ouvrées.' },
         { q: 'Puis-je fournir des références visuelles ou musicales ?', a: 'Oui, c\'est même recommandé. Lors de la commande vous pouvez uploader des images, vidéos ou fichiers audio. Plus vos références sont précises, plus la cohérence visuelle de la vidéo est forte.' },
@@ -286,7 +289,7 @@ export const translations = {
         cgv:      'CGV',
       },
       bottom1: '© 2026 ScenIQ · Tous droits réservés',
-      bottom2: 'Outil self-service prévu pour 2027',
+      bottom2: 'Version agence disponible maintenant',
     },
 
     // ── Modal question ───────────────────────────────────────────────────────
@@ -567,6 +570,8 @@ export const translations = {
       togglePrice: '+€49',
       toggleNote:  '✓ "AI-generated image" disclosure provided · EU AI Act compliant',
       badge:       '⭐ Popular',
+      anchor:      'Agency: €800–2,000 for the same format',
+      featuredNote:'The most-run Meta Ads format',
       plans: [
         { dur: '5 sec',  fmt: 'Short format',     price: 69,  shots: 2, voix: false, featured: false },
         { dur: '8 sec',  fmt: 'Reel format',      price: 89,  shots: 3, voix: false, featured: false },
@@ -577,7 +582,7 @@ export const translations = {
       perks: {
         shots:         (n: number) => `${n} shots · 1 format of your choice`,
         formats:       '9:16 · 1:1 · 16:9 · 3:4 · 4:3 · 21:9',
-        script:        'AI script + complete storyboard',
+        script:        'Script + storyboard (€300–500 at an agency)',
         music:         'Background music + sound effects',
         lipsync:       'Lip sync · voice-over or dialogue',
         subs:          'Subtitles included',
@@ -632,7 +637,7 @@ export const translations = {
         { label: 'Subscription',             sceniq: 'None',                        tools: 'Monthly required',              sceniqType: 'check', toolsType: 'cross' },
         { label: 'Credits to monitor',       sceniq: 'None',                        tools: 'Every generation',              sceniqType: 'check', toolsType: 'cross' },
       ],
-      note: 'These tools are excellent — we use them. The difference: you don\'t have to master them.',
+      note: 'These tools generate raw clips. ScenIQ delivers ads ready to broadcast.',
     },
 
     faq: {
@@ -645,6 +650,7 @@ export const translations = {
       ctaBtn2: '📞 +33 7 56 80 88 31',
       left: [
         { q: 'How does the process work, exactly?',                      a: 'You order online and describe what you have in mind — a mood, a scene, a message. We call you back within 4 business hours to align on the creative direction. The 5 AI agents generate the full pre-production in parallel. The final video is sent to you by email within 48 working hours.' },
+        { q: 'Can I approve the script and storyboard before the final video?', a: 'Yes. The pre-production — script, storyboard, sound direction — is shown to you before video generation starts. That\'s when we align on the creative direction and you approve every choice before execution. No surprises at delivery.' },
         { q: 'What exactly do I receive?',                               a: 'A 1080p MP4 file sent directly by email. No client portal, no account required. The 9:16, 1:1 and 16:9 formats are included depending on your chosen duration — ready for Meta Ads, TikTok, YouTube and Instagram.' },
         { q: 'How long until I receive my video?',                       a: '48 working hours after we align on the creative direction during the call. The clock starts from that call, not the payment. In practice, most deliveries happen in under 48 working hours.' },
         { q: 'Can I provide visual or music references?',                a: 'Yes — and we recommend it. During checkout you can upload images, videos or audio files. The more specific your references, the stronger the visual consistency of your video.' },
@@ -693,7 +699,7 @@ export const translations = {
         cgv:      'T&Cs',
       },
       bottom1: '© 2026 ScenIQ · All rights reserved',
-      bottom2: 'Self-service tool planned for 2027',
+      bottom2: 'Agency version available now',
     },
 
     modal: {

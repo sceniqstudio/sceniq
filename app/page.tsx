@@ -685,9 +685,9 @@ export default function HomePage() {
             <li><a href="#comparaison">{t.nav.comparison}</a></li>
           </ul>
           <div className="lv2-nav-right">
-            <a href="#faq" className="lv2-btn lv2-btn-ghost lv2-btn-sm">
+            <button type="button" onClick={() => { setQuestionOpen(true); setQuestionSent(false) }} className="lv2-btn lv2-btn-ghost lv2-btn-sm">
               {t.nav.question}
-            </a>
+            </button>
             <a href="/commande" className="lv2-btn lv2-btn-accent lv2-btn-sm" style={{ borderRadius: '100px', fontWeight: 700 }}>
               {t.nav.order}
             </a>
@@ -746,14 +746,14 @@ export default function HomePage() {
               <a href="/commande" className="lv2-btn lv2-btn-accent" onClick={() => setMobileMenuOpen(false)}>
                 {t.nav.orderMobile}
               </a>
-              <a
-                href="#faq"
+              <button
+                type="button"
                 className="lv2-btn lv2-btn-ghost"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={() => { setMobileMenuOpen(false); setQuestionOpen(true); setQuestionSent(false) }}
                 style={{ justifyContent: 'center' }}
               >
                 {t.nav.question}
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -851,6 +851,38 @@ export default function HomePage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── COMPARAISON (remontée avant Studio IA) ──────────────────────── */}
+      <section id="comparaison" className="lv2-s">
+        <div className="lv2-si">
+          <div className="cmp-label">{t.comparison.label}</div>
+          <h2 className="cmp-h2">
+            {t.comparison.h2a}<br /><span className="gx">{t.comparison.h2b}</span>
+          </h2>
+          <p className="cmp-sub">{t.comparison.sub}</p>
+          <div className="cmp-table">
+            <div className="cmp-header">
+              <div className="cmp-col-label"></div>
+              <div className="cmp-col sceniq"><span className="cmp-pill">ScenIQ</span></div>
+              <div className="cmp-col tools">{t.comparison.colTools}</div>
+            </div>
+            {t.comparison.rows.map((row, i) => (
+              <div key={row.label} className={`cmp-row${i === t.comparison.rows.length - 1 ? ' cmp-row--last' : ''}`}>
+                <div className="cmp-col-label">{row.label}</div>
+                <div className="cmp-col sceniq">
+                  {row.sceniqType === 'yes'   && <span className="cmp-yes">{row.sceniq}</span>}
+                  {row.sceniqType === 'check' && <><span className="cmp-check">✓</span> {row.sceniq}</>}
+                </div>
+                <div className="cmp-col tools">
+                  {row.toolsType === 'muted' && <span className="cmp-muted">{row.tools}</span>}
+                  {row.toolsType === 'cross' && <><span className="cmp-cross">✕</span> {row.tools}</>}
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="cmp-note">{t.comparison.note}</p>
         </div>
       </section>
 
@@ -1230,6 +1262,10 @@ export default function HomePage() {
                   </div>
                   <hr style={{ border: 'none', borderTop: '1px solid var(--bdr)', margin: '0 0 14px' }} />
                   <div className="lv2-price-num"><sup>€</sup>{total}</div>
+                  <div style={{ fontSize: 11.5, color: 'var(--g6)', lineHeight: 1.4, marginTop: 4 }}>{t.pricing.anchor}</div>
+                  {p.featured && (
+                    <div style={{ fontSize: 11.5, fontWeight: 600, color: '#c4b5fd', lineHeight: 1.4, marginTop: 4 }}>{t.pricing.featuredNote}</div>
+                  )}
                   {pricingModel && (
                     <div style={{ fontSize: 12.5, fontWeight: 600, color: '#c4b5fd', marginTop: 2, marginBottom: 6 }}>
                       ✓ {t.pricing.perks.modelIncluded}
@@ -1279,7 +1315,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── TESTIMONIALS ─────────────────────────────────────────────────── */}
+      {/* ── TESTIMONIALS — masqué temporairement (placeholders, à réactiver avec de vrais clients) ── */}
+      {false && (
       <section className="lv2-s">
         <div className="lv2-si">
           <div className="rv" style={{ textAlign: 'center' }}>
@@ -1312,38 +1349,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* ── COMPARAISON ──────────────────────────────────────────────────── */}
-      <section id="comparaison" className="lv2-s">
-        <div className="lv2-si">
-          <div className="cmp-label">{t.comparison.label}</div>
-          <h2 className="cmp-h2">
-            {t.comparison.h2a}<br /><span className="gx">{t.comparison.h2b}</span>
-          </h2>
-          <p className="cmp-sub">{t.comparison.sub}</p>
-          <div className="cmp-table">
-            <div className="cmp-header">
-              <div className="cmp-col-label"></div>
-              <div className="cmp-col sceniq"><span className="cmp-pill">ScenIQ</span></div>
-              <div className="cmp-col tools">{t.comparison.colTools}</div>
-            </div>
-            {t.comparison.rows.map((row, i) => (
-              <div key={row.label} className={`cmp-row${i === t.comparison.rows.length - 1 ? ' cmp-row--last' : ''}`}>
-                <div className="cmp-col-label">{row.label}</div>
-                <div className="cmp-col sceniq">
-                  {row.sceniqType === 'yes'   && <span className="cmp-yes">{row.sceniq}</span>}
-                  {row.sceniqType === 'check' && <><span className="cmp-check">✓</span> {row.sceniq}</>}
-                </div>
-                <div className="cmp-col tools">
-                  {row.toolsType === 'muted' && <span className="cmp-muted">{row.tools}</span>}
-                  {row.toolsType === 'cross' && <><span className="cmp-cross">✕</span> {row.tools}</>}
-                </div>
-              </div>
-            ))}
-          </div>
-          <p className="cmp-note">{t.comparison.note}</p>
-        </div>
-      </section>
+      )}
 
       {/* ── FAQ 2-COL ────────────────────────────────────────────────────── */}
       <section className="lv2-s alt" id="faq">
