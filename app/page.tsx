@@ -680,9 +680,9 @@ export default function HomePage() {
             <li><a href="#process">{t.nav.process}</a></li>
             <li><a href="#studio-ia">{t.nav.studioIA}</a></li>
             <li><a href="#modeles">{t.nav.models}</a></li>
+            <li><a href="#reels">{t.nav.portfolio}</a></li>
             <li><a href="#tarifs">{t.nav.pricing}</a></li>
             <li><a href="#comparaison">{t.nav.comparison}</a></li>
-            <li><a href="#reels">{t.nav.portfolio}</a></li>
           </ul>
           <div className="lv2-nav-right">
             <a href="#faq" className="lv2-btn lv2-btn-ghost lv2-btn-sm">
@@ -730,9 +730,9 @@ export default function HomePage() {
               <li><a href="#process"  onClick={() => setMobileMenuOpen(false)}>{t.nav.process}</a></li>
               <li><a href="#studio-ia" onClick={() => setMobileMenuOpen(false)}>{t.nav.studioIA}</a></li>
               <li><a href="#modeles"  onClick={() => setMobileMenuOpen(false)}>{t.nav.models}</a></li>
+              <li><a href="#reels"       onClick={() => setMobileMenuOpen(false)}>{t.nav.portfolio}</a></li>
               <li><a href="#tarifs"      onClick={() => setMobileMenuOpen(false)}>{t.nav.pricing}</a></li>
               <li><a href="#comparaison" onClick={() => setMobileMenuOpen(false)}>{t.nav.comparison}</a></li>
-              <li><a href="#reels"       onClick={() => setMobileMenuOpen(false)}>{t.nav.portfolio}</a></li>
             </ul>
             <div className="lv2-mob-cta">
               <button
@@ -1137,6 +1137,31 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── PORTFOLIO — bento réalisations ───────────────────────────────── */}
+      <section id="reels" style={{ background: '#0D0D1A', padding: '80px 0 72px', overflow: 'hidden' }}>
+        <div className="lv2-si">
+          <div className="rv" style={{ marginBottom: 40 }}>
+            <div className="lv2-label">{t.portfolio.label}</div>
+            <h2>{t.portfolio.h2a} <span style={{ color: 'var(--g4)', fontWeight: 400 }}>+</span> <span className="gx">{t.portfolio.h2b}</span></h2>
+            <p style={{ color: 'var(--g4)', fontSize: 17, marginTop: 10, maxWidth: 460 }}>
+              {t.portfolio.sub}
+            </p>
+          </div>
+        </div>
+
+        <div className="lv2-si">
+          <div className="lv2-bento">
+            {reels.map((v) => (
+              <BentoClip key={v.slug} slug={v.slug} ratio={v.ratio} onOpen={() => setOpenVideo(v.slug)} />
+            ))}
+          </div>
+        </div>
+
+        <p style={{ textAlign: 'center', marginTop: 20, fontSize: 11, color: 'var(--g6)', letterSpacing: '0.06em' }}>
+          {t.portfolio.footer}
+        </p>
+      </section>
+
       {/* ── PRICING ──────────────────────────────────────────────────────── */}
       <section className="lv2-s alt" id="tarifs">
         <div className="lv2-si">
@@ -1246,31 +1271,6 @@ export default function HomePage() {
             </button>
           </div>
         </div>
-      </section>
-
-      {/* ── PORTFOLIO — deux lignes défilantes ───────────────────────────── */}
-      <section id="reels" style={{ background: '#0D0D1A', padding: '80px 0 72px', overflow: 'hidden' }}>
-        <div className="lv2-si">
-          <div className="rv" style={{ marginBottom: 40 }}>
-            <div className="lv2-label">{t.portfolio.label}</div>
-            <h2>{t.portfolio.h2a} <span style={{ color: 'var(--g4)', fontWeight: 400 }}>+</span> <span className="gx">{t.portfolio.h2b}</span></h2>
-            <p style={{ color: 'var(--g4)', fontSize: 17, marginTop: 10, maxWidth: 460 }}>
-              {t.portfolio.sub}
-            </p>
-          </div>
-        </div>
-
-        <div className="lv2-si">
-          <div className="lv2-bento">
-            {reels.map((v) => (
-              <BentoClip key={v.slug} slug={v.slug} ratio={v.ratio} onOpen={() => setOpenVideo(v.slug)} />
-            ))}
-          </div>
-        </div>
-
-        <p style={{ textAlign: 'center', marginTop: 20, fontSize: 11, color: 'var(--g6)', letterSpacing: '0.06em' }}>
-          {t.portfolio.footer}
-        </p>
       </section>
 
       {/* ── TESTIMONIALS ─────────────────────────────────────────────────── */}
