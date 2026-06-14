@@ -801,7 +801,7 @@ export default function HomePage() {
             </div>
           </div>
           <h1 className="lv2-h1">
-            <span style={{ whiteSpace: 'nowrap' }}>{t.hero.h1a}</span><br />
+            <span className="lv2-h1-nw">{t.hero.h1a}</span><br />
             <em>{t.hero.h1b}</em>
           </h1>
           <p className="lv2-sub">{t.hero.sub}</p>

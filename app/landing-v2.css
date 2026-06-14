@@ -447,6 +447,9 @@ body:has(.lv2) {
   animation: lv2Shine 7s linear infinite reverse;
 }
 @keyframes lv2Shine { to { background-position: 220% center; } }
+/* h1a sur une ligne (desktop/tablette) — wrappe normalement sur mobile pour rester centré */
+.lv2-h1-nw { white-space: nowrap; }
+@media (max-width: 600px) { .lv2-h1-nw { white-space: normal; } }
 .lv2-sub {
   font-size: clamp(16px, 2vw, 19px); line-height: 1.7;
   color: rgba(255,255,255,0.88); max-width: 580px; margin-bottom: 38px;
