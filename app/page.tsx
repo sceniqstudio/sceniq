@@ -678,11 +678,11 @@ export default function HomePage() {
           </a>
           <ul className="lv2-nav-links">
             <li><a href="#process">{t.nav.process}</a></li>
+            <li><a href="#comparaison">{t.nav.comparison}</a></li>
             <li><a href="#studio-ia">{t.nav.studioIA}</a></li>
             <li><a href="#modeles">{t.nav.models}</a></li>
             <li><a href="#reels">{t.nav.portfolio}</a></li>
             <li><a href="#tarifs">{t.nav.pricing}</a></li>
-            <li><a href="#comparaison">{t.nav.comparison}</a></li>
           </ul>
           <div className="lv2-nav-right">
             <button type="button" onClick={() => { setQuestionOpen(true); setQuestionSent(false) }} className="lv2-btn lv2-btn-ghost lv2-btn-sm">
@@ -728,11 +728,11 @@ export default function HomePage() {
             </div>
             <ul className="lv2-mob-links">
               <li><a href="#process"  onClick={() => setMobileMenuOpen(false)}>{t.nav.process}</a></li>
+              <li><a href="#comparaison" onClick={() => setMobileMenuOpen(false)}>{t.nav.comparison}</a></li>
               <li><a href="#studio-ia" onClick={() => setMobileMenuOpen(false)}>{t.nav.studioIA}</a></li>
               <li><a href="#modeles"  onClick={() => setMobileMenuOpen(false)}>{t.nav.models}</a></li>
               <li><a href="#reels"       onClick={() => setMobileMenuOpen(false)}>{t.nav.portfolio}</a></li>
               <li><a href="#tarifs"      onClick={() => setMobileMenuOpen(false)}>{t.nav.pricing}</a></li>
-              <li><a href="#comparaison" onClick={() => setMobileMenuOpen(false)}>{t.nav.comparison}</a></li>
             </ul>
             <div className="lv2-mob-cta">
               <button
@@ -1485,9 +1485,11 @@ export default function HomePage() {
             <div className="lv2-footer-col-title">{t.footer.colService}</div>
             <ul className="lv2-footer-links">
               <li><a href="#process">{t.footer.links.process}</a></li>
+              <li><a href="#comparaison">{t.nav.comparison}</a></li>
+              <li><a href="#studio-ia">{t.nav.studioIA}</a></li>
               <li><a href="#modeles">{t.footer.links.models}</a></li>
-              <li><a href="#tarifs">{t.footer.links.pricing}</a></li>
               <li><a href="#reels">{t.footer.links.portfolio}</a></li>
+              <li><a href="#tarifs">{t.footer.links.pricing}</a></li>
               <li><a href="/commande">{t.footer.links.order}</a></li>
             </ul>
           </div>
@@ -1513,7 +1515,6 @@ export default function HomePage() {
         </div>
         <div className="lv2-footer-bottom">
           <span>{t.footer.bottom1}</span>
-          <span>{t.footer.bottom2}</span>
         </div>
       </footer>
 
