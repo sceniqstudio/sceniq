@@ -98,6 +98,21 @@ Conséquences concrètes :
 - Lip-sync FR retiré des claims (fausse promesse) — vrai pipeline OmniHuman 1.5 en V1.5
 - Ton "Je" partout (cohérent avec mascotte guépard)
 
+## 🎨 REFONTE LANDING "10K" — juin 2026 (EN PROD)
+
+Refonte premium de la landing, validée en démos HTML (`_preview/*.html`) puis portée et **mergée sur `main` (en prod sur sceniq.studio)**. `app/page.tsx` + `app/landing-v2.css` + `app/layout.tsx` + `app/_components/ShowcaseClip.tsx` + `lib/i18n.ts`.
+
+Décisions structurantes :
+- **Titres en Clash Display** (Fontshare via layout) + corps Inter ; **segment dégradé violet sur chaque titre** via `.gx` ou `<em>` — règle partout.
+- **Animations en CSS + JS vanilla** (PAS le paquet `motion`/framer-motion) — choix assumé pour ne pas réécrire la page.
+- **Réalisations = bento masonry** (`.lv2-bento`), **formats vidéo natifs respectés** (composant `BentoClip` + prop `onAspect` de `ShowcaseClip` qui lit le vrai ratio → corrige les ratios faux de `lib/showcase.ts`). `ShowcaseClip` (lazy-load + limiteur 4 chargements) est INDISPENSABLE sinon vidéos noires.
+- **Ordre inversé : Réalisations AVANT Tarifs** (page + menus). Nav : Réalisations → Tarifs → Comparaison.
+- **Tarifs : bloc "devis sur-mesure"** (`.lv2-quote`, i18n `pricing.quote*`) → ouvre le modal contact existant. **Checkout/calcul NON modifiés** (testé en live jusqu'à la page carte Stripe `cs_live_`, 109 €, OK ; formulaire contact/devis OK).
+
+Mécanique : hero `.lv2-wall` (mur vidéo 3D + parallaxe curseur + boutons magnétiques + scroll cue `.lv2-cue` cliquable `#reels` + logo carré qui pivote `.lv2-gem`) ; timeline `.lv2-tl` (ligne qui se trace). Tous les liens d'origine conservés.
+
+⚠️ **Cache vidéo** : `npm run push:videos -- exempleN.mp4` (upload R2) marche ; la purge instantanée via `wrangler deploy` du Worker ÉCHOUE (mismatch compte CF) → on laisse le cache `max-age 1h` rafraîchir (voir memory `wrangler-deploy-account-issue`). `CACHE_VERSION` = v7 dans le source, non déployé.
+
 ## Ce qui est déjà en place — ne pas recréer
 
 ### Infra & config
