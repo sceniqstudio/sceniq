@@ -801,7 +801,7 @@ export default function HomePage() {
             </div>
           </div>
           <h1 className="lv2-h1">
-            {t.hero.h1a}<br />
+            <span style={{ whiteSpace: 'nowrap' }}>{t.hero.h1a}</span><br />
             <em>{t.hero.h1b}</em>
           </h1>
           <p className="lv2-sub">{t.hero.sub}</p>
@@ -841,6 +841,12 @@ export default function HomePage() {
                 <div className="lv2-tl-c">
                   <h3 className="lv2-tl-title">{step.title}</h3>
                   <p className="lv2-tl-desc">{step.desc}</p>
+                  {step.n === '2' && (
+                    <p style={{ marginTop: 10, fontSize: 12.5, lineHeight: 1.55, fontWeight: 600, color: '#a99bff', display: 'flex', gap: 7, alignItems: 'flex-start' }}>
+                      <span aria-hidden="true" style={{ flexShrink: 0 }}>↺</span>
+                      <span>{t.process.refundNote}</span>
+                    </p>
+                  )}
                 </div>
               </div>
             ))}

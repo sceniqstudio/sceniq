@@ -46,6 +46,7 @@ export const translations = {
       h2a:   'Du brief au MP4.',
       h2b:   'Cinq étapes.',
       sub:   'Vous décrivez ce que vous imaginez. ScenIQ fait le reste — aucun outil à maîtriser, aucune interface à apprivoiser, aucune réunion.',
+      refundNote: 'Direction créative qui ne vous convient pas à l\'appel ? Remboursement intégral, sans condition.',
       steps: [
         { n: '1', title: 'Brief',    desc: 'Décrivez ce que vous avez en tête — une ambiance, une scène, une envie. Ajoutez des références visuelles ou audio pour aller plus loin.' },
         { n: '2', title: 'Commande', desc: 'Choisissez la durée. Paiement 100 % sécurisé par Stripe. Confirmation par email immédiate.' },
@@ -58,9 +59,9 @@ export const translations = {
     // ── Cas concret (Studio IA) ───────────────────────────────────────────────
     caseStudy: {
       sectionLabel: 'Studio IA',
-      sectionIntro: 'Le studio où ScenIQ produit tes vidéos, de l\'idée au livrable. Deux façons de le voir.',
-      tabCase:      'Le cas concret',
-      tabTeam:      'L\'équipe créa',
+      sectionIntro: 'Le studio où je produis vos vidéos, de l\'idée au livrable. Trois entrées : un cas concret, l\'équipe créa, le moteur de génération.',
+      tabCase:      'Ce que ça produit',
+      tabTeam:      'Qui travaille pour vous',
       tabSeedance:  'Seedance 2.0',
       label:   'Cas concret',
       h2a:     'Lancer un produit,',
@@ -107,10 +108,10 @@ export const translations = {
 
     // ── Stats ────────────────────────────────────────────────────────────────
     stats: [
-      { num: '48h',  label: 'Livraison garantie',      sub: 'Du brief au MP4 final' },
-      { num: '5',    label: 'Agents IA en parallèle',  sub: 'Concept · Script · Storyboard · Ambiance · Visuel' },
-      { num: '1080p',label: 'Qualité native',           sub: 'Seedance 2.0 Pro — sans compression' },
-      { num: 'MP4',  label: 'Format livré',             sub: 'Prêt pour Meta Ads · TikTok · YouTube' },
+      { num: '48h',  label: 'Sans réunion d\'avancement', sub: 'Du brief au MP4 final' },
+      { num: '5',    label: 'Sans presta à coordonner',   sub: 'Concept · Script · Storyboard · Ambiance · Visuel' },
+      { num: '1080p',label: 'Prêt à diffuser',             sub: 'Natif, sans retraitement' },
+      { num: 'MP4',  label: 'Livré par email',             sub: 'Pas d\'espace client, pas de compte' },
     ],
 
     // ── AI Models ────────────────────────────────────────────────────────────
@@ -123,6 +124,7 @@ export const translations = {
         { label: 'Pas de casting, pas de cachet',  desc: 'aucun contrat modèle, aucun droit à l\'image à négocier' },
         { label: 'Pas de tarif agence',             desc: '800–3 000 € de casting en agence — 49 € ici, dans votre forfait' },
         { label: 'Disponible à volonté',            desc: 'recadré, retravaillé ou remplacé à chaque itération' },
+        { label: 'Continuité de marque',            desc: 'même personnage, même univers à chaque campagne, sans reconvocation, sans cachet, sans renégociation de droits' },
         { label: 'Mention légale fournie',          desc: 'conforme EU AI Act + loi influenceurs FR — livrée par écrit avec le MP4' },
       ],
       disclaimer: 'Personnages entièrement fictifs — aucune ressemblance avec une personne réelle. La mention « Image générée par IA » est obligatoire sur vos publications (EU AI Act art. 50 · loi FR 9 juin 2023). ScenIQ vous la fournit dans chaque livraison.',
@@ -136,8 +138,8 @@ export const translations = {
       kaelysPartnerNote:'Mivael n\'est pas un personnage jetable — elle a une présence Instagram réelle. Elle peut représenter votre marque en continu : intégrée à vos clips, vos stories, vos campagnes. Tarif sur devis.',
       modelTypes:  ['Tech · Urbain', 'Business'],
       noteIcon:    '💡',
-      note:        'Ces visuels sont des exemples de rendu — votre comédien IA est généré sur mesure d\'après votre description (âge, style, ambiance, tenue).',
-      noteHighlight: 'exemples de rendu',
+      note:        'Marcus et Sofia sont des exemples de gabarit — votre comédien IA est généré sur mesure d\'après votre description (âge, style, ambiance, tenue).',
+      noteHighlight: 'exemples de gabarit',
     },
 
     // ── Pricing ──────────────────────────────────────────────────────────────
@@ -463,6 +465,7 @@ export const translations = {
       h2a:   'From brief to MP4.',
       h2b:   'Five steps.',
       sub:   'Describe what you imagine. ScenIQ handles the rest — no tools to master, no interface to figure out, no meetings.',
+      refundNote: 'Creative direction not right on the call? Full refund, no conditions.',
       steps: [
         { n: '1', title: 'Brief',    desc: 'Describe what you have in mind — a mood, a scene, an idea. Add visual or audio references to go further.' },
         { n: '2', title: 'Order',    desc: 'Choose your duration. 100% secure payment via Stripe. Instant email confirmation.' },
@@ -474,9 +477,9 @@ export const translations = {
 
     caseStudy: {
       sectionLabel: 'AI Studio',
-      sectionIntro: 'The studio where ScenIQ produces your videos, from idea to delivery. Two ways to look at it.',
-      tabCase:      'Real case',
-      tabTeam:      'The creative team',
+      sectionIntro: 'The studio where I produce your videos, from idea to delivery. Three ways in: a real case, the creative team, the generation engine.',
+      tabCase:      'What it produces',
+      tabTeam:      'Who works for you',
       tabSeedance:  'Seedance 2.0',
       label:   'Real case',
       h2a:     'Launch a product,',
@@ -520,10 +523,10 @@ export const translations = {
     },
 
     stats: [
-      { num: '48h',  label: 'Guaranteed delivery',    sub: 'From brief to final MP4' },
-      { num: '5',    label: 'AI agents in parallel',  sub: 'Concept · Script · Storyboard · Mood · Visual' },
-      { num: '1080p',label: 'Native quality',          sub: 'Seedance 2.0 Pro — no compression' },
-      { num: 'MP4',  label: 'Format delivered',        sub: 'Ready for Meta Ads · TikTok · YouTube' },
+      { num: '48h',  label: 'No status meetings',      sub: 'From brief to final MP4' },
+      { num: '5',    label: 'No vendors to coordinate', sub: 'Concept · Script · Storyboard · Sound · Visual' },
+      { num: '1080p',label: 'Ready to publish',         sub: 'Native, no reprocessing' },
+      { num: 'MP4',  label: 'Delivered by email',       sub: 'No client portal, no account' },
     ],
 
     models: {
@@ -535,6 +538,7 @@ export const translations = {
         { label: 'No casting, no fees',       desc: 'no model contract, no image rights to negotiate' },
         { label: 'No agency rates',           desc: '€800–3,000 in agency casting — €49 here, within your package' },
         { label: 'Available on demand',       desc: 'reframed, reworked or replaced at every revision' },
+        { label: 'Brand continuity',          desc: 'same character, same universe across every campaign, no re-booking, no fees, no rights to renegotiate' },
         { label: 'Legal disclosure included', desc: 'compliant with EU AI Act + French influencer law — delivered in writing with your MP4' },
       ],
       disclaimer:   'All characters are entirely fictional — no resemblance to any real person. The "AI-generated image" disclosure is mandatory on your publications (EU AI Act art. 50 · FR law June 9, 2023). ScenIQ provides this disclosure with every delivery.',
@@ -548,8 +552,8 @@ export const translations = {
       kaelysPartnerNote:'Mivael isn\'t a throwaway character — she has a real Instagram presence. She can represent your brand consistently: integrated into your clips, stories, and campaigns. Custom pricing on request.',
       modelTypes:   ['Tech · Urban', 'Business'],
       noteIcon:     '💡',
-      note:         'These visuals are sample renders — your AI performer is generated on demand based on your description (age, style, vibe, outfit).',
-      noteHighlight:'sample renders',
+      note:         'Marcus and Sofia are sample templates — your AI performer is generated on demand based on your description (age, style, vibe, outfit).',
+      noteHighlight:'sample templates',
     },
 
     pricing: {
