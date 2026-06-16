@@ -4,7 +4,7 @@ import Script from 'next/script'
 import './globals.css'
 import './landing-v2.css'
 
-const GA_ID = 'G-TXJ107WL85'
+const GA_ID = 'G-ECX2JBZGYX'
 
 // ── Constantes SEO ────────────────────────────────────────────────────────────
 const SITE_URL  = process.env.NEXT_PUBLIC_APP_URL ?? 'https://sceniq-ashen.vercel.app'
@@ -286,7 +286,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </head>
         <body>
           {children}
-          {/* Google Analytics 4 — ScenIQ (G-TXJ107WL85) */}
+          {/* Google Analytics 4 — ScenIQ (G-ECX2JBZGYX) */}
           <Script
             src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
             strategy="afterInteractive"
