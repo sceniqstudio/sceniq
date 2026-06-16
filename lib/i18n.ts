@@ -67,7 +67,7 @@ export const translations = {
       h2a:     'Lancer un produit,',
       h2b:     'sans monter une équipe.',
       body1:   'Une marque sort un nouveau produit physique. Il lui faut une vidéo courte pour le présenter et le montrer en situation : entre les mains de quelqu\'un, dans son décor, en usage réel. D\'habitude ça veut dire un brief, un tournage, une équipe à coordonner et des jours d\'allers-retours.',
-      body2:   'Avec ScenIQ, le produit entre dans le Studio IA et on orchestre tout de A à Z : concept, mise en scène, lumière, plans. Tu récupères une vidéo prête à diffuser, ton produit mis en avant et en situation, sans réunion ni équipe à gérer.',
+      body2:   'Avec ScenIQ, le produit entre dans le Studio IA et on orchestre tout de A à Z : concept, mise en scène, lumière, plans. Vous récupérez une vidéo prête à diffuser, votre produit mis en avant et en situation, sans réunion ni équipe à gérer.',
       promise: 'Brief en 2 lignes → vidéo en 48 h',
       cta:     'Lancer ma vidéo →',
       videoAria: 'Exemple de vidéo produit en situation',
