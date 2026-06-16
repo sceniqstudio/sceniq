@@ -10,7 +10,7 @@ const GA_ID = 'G-TXJ107WL85'
 const SITE_URL  = process.env.NEXT_PUBLIC_APP_URL ?? 'https://sceniq-ashen.vercel.app'
 const SITE_NAME = 'ScenIQ'
 const TITLE     = 'ScenIQ — Vidéos publicitaires IA en 48h'
-const DESC      = 'Donnez-moi votre brief en 2 lignes. Cinq agents IA spécialisés (Director, Scriptwriter, Storyboarder, Music, Visual) génèrent le concept, le script, le storyboard et les clips Seedance 2.0 — livrés en 48h. Forfaits 69–159 €.'
+const DESC      = 'Donnez-nous votre brief en 2 lignes. Cinq agents IA spécialisés (Director, Scriptwriter, Storyboarder, Music, Visual) génèrent le concept, le script, le storyboard et les clips Seedance 2.0 — livrés en 48h. Forfaits 69–159 €.'
 
 // ── Metadata Next.js ─────────────────────────────────────────────────────────
 export const metadata: Metadata = {
@@ -155,8 +155,17 @@ const jsonLd = {
         },
         {
           '@type':           'Offer',
-          name:              'Narration 12–15 secondes',
-          description:       'Vidéo narrative IA 12 à 15 secondes, Seedance 2.0, 1080p, livraison 48h',
+          name:              'Narration 12 secondes',
+          description:       'Vidéo narrative IA 12 secondes, Seedance 2.0, 1080p, livraison 48h',
+          price:             '129',
+          priceCurrency:     'EUR',
+          availability:      'https://schema.org/InStock',
+          url:               `${SITE_URL}/commande`,
+        },
+        {
+          '@type':           'Offer',
+          name:              'Histoire 15 secondes',
+          description:       'Vidéo narrative IA 15 secondes, Seedance 2.0, 1080p, livraison 48h',
           price:             '159',
           priceCurrency:     'EUR',
           availability:      'https://schema.org/InStock',
@@ -196,7 +205,7 @@ const jsonLd = {
         contactType:         'customer support',
         availableLanguage:   ['French', 'English'],
       },
-      sameAs: [],
+      sameAs: ['https://x.com/sceniqstudio'],
     },
 
     // FAQPage (GEO — aide les LLMs à extraire les réponses directes)

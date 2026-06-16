@@ -29,5 +29,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'yearly',
       priority:         0.2,
     },
+    {
+      url:              `${BASE}/cgv`,
+      lastModified:     new Date('2026-05-01'),
+      changeFrequency: 'yearly',
+      priority:         0.2,
+    },
   ]
 }
