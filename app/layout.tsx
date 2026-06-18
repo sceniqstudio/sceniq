@@ -205,7 +205,7 @@ const jsonLd = {
         contactType:         'customer support',
         availableLanguage:   ['French', 'English'],
       },
-      sameAs: ['https://x.com/sceniqstudio'],
+      sameAs: ['https://x.com/sceniqstudio', 'https://www.linkedin.com/company/sceniq-studio'],
     },
 
     // FAQPage (GEO — aide les LLMs à extraire les réponses directes)
