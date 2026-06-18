@@ -53,7 +53,8 @@ const PORTFOLIO_ITEMS: PortfolioItem[] = SHOWCASE_VIDEOS.map((v, i) => ({
   grad:   GRADS[i % 2],
 }))
 
-const SHOWCASE_SLUGS = HERO_SLUGS
+// Hero : plus récentes en premier → les derniers exemples ajoutés apparaissent dans le mur (le hero ne montre que ~21 vidéos)
+const SHOWCASE_SLUGS = [...HERO_SLUGS].reverse()
 
 // ── PortfolioRow — infinite scroll + drag souris/touch iOS fluide ───────────
 function PortfolioRow({

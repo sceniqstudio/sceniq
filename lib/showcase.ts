@@ -63,6 +63,7 @@ export const SHOWCASE_VIDEOS: ShowcaseVideo[] = [
   { slug: 'exemple27', ratio: 414/720  },  // ratio auto-corrigé au format réel dans le bento
   { slug: 'exemple28', ratio: 414/720  },  // ratio auto-corrigé au format réel dans le bento
   { slug: 'exemple29', ratio: 720/1280 },  // 9:16 portrait
+  { slug: 'exemple30', ratio: 720/1280 },  // 9:16 portrait
 ]
 
 // ── Slugs pour le hero (colonnes animées) ─────────────────────────────────
