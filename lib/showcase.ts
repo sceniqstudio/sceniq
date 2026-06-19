@@ -46,7 +46,7 @@ export const SHOWCASE_VIDEOS: ShowcaseVideo[] = [
   { slug: 'exemple10', ratio: 414/720  },
   { slug: 'exemple11', ratio: 414/720  },
   { slug: 'exemple12', ratio: 414/720  },
-  { slug: 'exemple13', ratio: 414/720  },
+  { slug: 'exemple13', ratio: 720/1280 },  // 9:16 portrait
   { slug: 'exemple14', ratio: 414/720  },
   { slug: 'exemple15', ratio: 414/720  },
   { slug: 'exemple16', ratio: 414/720  },
@@ -60,7 +60,7 @@ export const SHOWCASE_VIDEOS: ShowcaseVideo[] = [
   { slug: 'exemple24', ratio: 834/1112  }, // ← 3:4 portrait
   { slug: 'exemple25', ratio: 834/1112  }, // ← 3:4 portrait
   { slug: 'exemple26', ratio: 834/1112  }, // ← 3:4 portrait
-  { slug: 'exemple27', ratio: 414/720  },  // ratio auto-corrigé au format réel dans le bento
+  { slug: 'exemple27', ratio: 576/1024 },  // 9:16 portrait
   { slug: 'exemple28', ratio: 414/720  },  // ratio auto-corrigé au format réel dans le bento
   { slug: 'exemple29', ratio: 720/1280 },  // 9:16 portrait
   { slug: 'exemple30', ratio: 720/1280 },  // 9:16 portrait
