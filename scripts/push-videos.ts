@@ -58,7 +58,7 @@ const args        = process.argv.slice(2)
 const onlyNew     = args.includes('--new')
 const dryRun      = args.includes('--dry')
 const noCompress  = args.includes('--no-compress')
-const specific    = args.find(a => a.endsWith(EXT))
+const specifics   = args.filter(a => a.endsWith(EXT))
 
 // ─── Vérification ffmpeg ──────────────────────────────────────────────────────
 
@@ -174,13 +174,14 @@ if (!fs.existsSync(showcaseDir)) {
 
 let files: string[]
 
-if (specific) {
-  const full = path.join(showcaseDir, specific)
-  if (!fs.existsSync(full)) {
-    console.error(`❌  Fichier introuvable : ${specific}`)
-    process.exit(1)
+if (specifics.length > 0) {
+  for (const s of specifics) {
+    if (!fs.existsSync(path.join(showcaseDir, s))) {
+      console.error(`❌  Fichier introuvable : ${s}`)
+      process.exit(1)
+    }
   }
-  files = [specific]
+  files = specifics
 } else {
   files = fs.readdirSync(showcaseDir)
     .filter(f => f.endsWith(EXT))
