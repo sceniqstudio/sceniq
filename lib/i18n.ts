@@ -31,7 +31,7 @@ export const translations = {
       sub:      'Vous n\'écrivez pas le script. Vous ne choisissez pas les plans. Vous ne montez rien. Un brief en 2 lignes, un MP4 1080p en 48h ouvrées. Zéro outil à maîtriser.',
       cta1:     'Commander ma vidéo →',
       cta2:     'Voir les réalisations',
-      footnote: 'À partir de 69 € · 5 à 15 secondes · 10 itérations incluses',
+      footnote: 'À partir de 109 € · 10 à 60 secondes · 10 itérations incluses',
     },
 
     // ── Trust strip ──────────────────────────────────────────────────────────
@@ -278,7 +278,7 @@ export const translations = {
         pricing:  'Tarifs',
         portfolio:'Réalisations',
         order:    'Commander',
-        f5:       'Pub 5 secondes — 69 €',
+        f5:       'Pub 10 secondes — 109 €',
         f8:       'Reel 8 secondes — 89 €',
         f10:      'Clip 10 secondes — 109 €',
         f12:      'Narration 12–15s',
@@ -453,7 +453,7 @@ export const translations = {
       sub:      'You don\'t write the script. You don\'t pick the shots. You edit nothing. A 2-line brief, a 1080p MP4 in 48 working hours. No tool to master.',
       cta1:     'Order my video →',
       cta2:     'See the work',
-      footnote: 'Starting at €69 · 5 to 15 seconds · 10 revisions included',
+      footnote: 'Starting at €109 · 10 to 60 seconds · 10 revisions included',
     },
 
     trust: {

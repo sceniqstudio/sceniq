@@ -715,7 +715,8 @@ body:has(.lv2) {
 
 /* ── PRICING ─────────────────────────────────────────────────── */
 .lv2-prices {
-  display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 48px;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 300px)); gap: 16px; margin-top: 48px;
+  justify-content: center;
 }
 .lv2-price-card {
   background: var(--surface); border: 1px solid var(--bdr);
@@ -1115,7 +1116,7 @@ body:has(.lv2) {
   .lv2-nav-links { display: none; }
   .lv2-burger    { display: flex; }
 
-  .lv2-prices { grid-template-columns: repeat(3, 1fr); }
+  .lv2-prices { grid-template-columns: repeat(2, 1fr); justify-content: unset; }
   .lv2 .why-grid { grid-template-columns: repeat(2, 1fr); }
   .lv2-footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
   .lv2-price-perks-row { grid-template-columns: 1fr 1fr; }
