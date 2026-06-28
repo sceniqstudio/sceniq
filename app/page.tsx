@@ -1253,7 +1253,7 @@ export default function HomePage() {
 
           <div className="lv2-prices rv">
             {t.pricing.plans.map((p) => {
-              const total = p.price + (pricingModel ? 49 : 0)
+              const total = p.price + (pricingModel ? (p.modelPrice ?? 49) : 0)
               return (
                 <div key={p.dur} className={`lv2-price-card${p.featured ? ' featured' : ''}`}>
                   {p.featured && <div className="lv2-price-badge">{t.pricing.badge}</div>}

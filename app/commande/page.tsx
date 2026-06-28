@@ -10,7 +10,7 @@ import { translations, type Lang } from '@/lib/i18n'
 // ─── Types ─────────────────────────────────────────────────────────────────
 
 type Format   = '16:9' | '1:1' | '9:16' | '4:3' | '3:4' | '21:9'
-type Duration = 5 | 8 | 10 | 12 | 15
+type Duration = 5 | 8 | 10 | 12 | 15 | 30 | 60
 
 type CartItem = {
   id: string
@@ -21,9 +21,10 @@ type CartItem = {
   aiModelDesc: string
 }
 
-const PRICE: Record<Duration, number> = { 5: 69, 8: 89, 10: 109, 12: 129, 15: 159 }
-const AI_MODEL_ADDON = 49
-const DURATIONS: Duration[] = [5, 8, 10, 12, 15]
+const PRICE: Record<Duration, number> = { 5: 69, 8: 89, 10: 109, 12: 129, 15: 159, 30: 249, 60: 449 }
+const AI_MODEL_PRICE: Record<Duration, number> = { 5: 49, 8: 49, 10: 49, 12: 49, 15: 49, 30: 99, 60: 149 }
+const getModelAddon = (dur: Duration | null) => dur ? AI_MODEL_PRICE[dur] : 49
+const DURATIONS: Duration[] = [5, 10, 15, 30, 60]
 // Un seul format au choix parmi 6 — pas de multi-sélection en V1
 const DEFAULT_FORMAT: Format = '9:16'
 
@@ -207,7 +208,7 @@ export default function CommandePage() {
   const totalVideos = cartItems.reduce((s, i) => s + i.qty, 0)
   const totalPrice  = cartItems.reduce((sum, item) => {
     if (!item.duration) return sum
-    return sum + (PRICE[item.duration] + (item.wantAiModel ? AI_MODEL_ADDON : 0)) * item.qty
+    return sum + (PRICE[item.duration] + (item.wantAiModel ? getModelAddon(item.duration) : 0)) * item.qty
   }, 0)
 
   // ─── Helpers ───────────────────────────────────────────────────────────────
@@ -561,7 +562,7 @@ export default function CommandePage() {
                       background: item.wantAiModel ? 'rgba(165,180,252,.15)' : 'rgba(255,255,255,.07)',
                       color: item.wantAiModel ? s.accent : s.muted, whiteSpace:'nowrap',
                     }}>
-                      {tc.s0.aiModelPrice(AI_MODEL_ADDON)}
+                      {tc.s0.aiModelPrice(getModelAddon(item.duration))}
                     </span>
                   </button>
 
@@ -591,7 +592,7 @@ export default function CommandePage() {
                       <span style={{ fontSize:13, color:s.muted }}>
                         {tc.s0.subtotal}{' '}
                         <strong style={{ color:'#fff', fontSize:15 }}>
-                          {(PRICE[item.duration] + (item.wantAiModel ? AI_MODEL_ADDON : 0)) * item.qty} €
+                          {(PRICE[item.duration] + (item.wantAiModel ? getModelAddon(item.duration) : 0)) * item.qty} €
                         </strong>
                       </span>
                     </div>
@@ -838,7 +839,7 @@ export default function CommandePage() {
                       )}
                     </div>
                     <div style={{ fontSize:15, fontWeight:700, color:s.accent, whiteSpace:'nowrap', marginLeft:16 }}>
-                      {(PRICE[item.duration] + (item.wantAiModel ? AI_MODEL_ADDON : 0)) * item.qty} €
+                      {(PRICE[item.duration] + (item.wantAiModel ? getModelAddon(item.duration) : 0)) * item.qty} €
                     </div>
                   </div>
                 ))}
