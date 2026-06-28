@@ -193,7 +193,7 @@ export default function CommandePage() {
     const duree = params.get('duree')
     if (duree) {
       const n = parseInt(duree) as Duration
-      if (([5,8,10,12,15] as number[]).includes(n)) {
+      if ((DURATIONS as number[]).includes(n)) {
         setCartItems([{ ...newItem(), duration: n, formats: [DEFAULT_FORMAT] }])
       }
     }
