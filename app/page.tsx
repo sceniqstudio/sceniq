@@ -1263,7 +1263,9 @@ export default function HomePage() {
                   </div>
                   <hr style={{ border: 'none', borderTop: '1px solid var(--bdr)', margin: '0 0 14px' }} />
                   <div className="lv2-price-num"><sup>€</sup>{total}</div>
-                  <div style={{ fontSize: 11.5, color: 'var(--g6)', lineHeight: 1.4, marginTop: 4 }}>{t.pricing.anchor}</div>
+                  {'anchor' in p && p.anchor && (
+                    <div style={{ fontSize: 11.5, color: 'var(--g6)', lineHeight: 1.4, marginTop: 4 }}>{p.anchor as string}</div>
+                  )}
                   {p.featured && (
                     <div style={{ fontSize: 11.5, fontWeight: 600, color: '#c4b5fd', lineHeight: 1.4, marginTop: 4 }}>{t.pricing.featuredNote}</div>
                   )}
