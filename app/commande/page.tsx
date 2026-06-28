@@ -24,7 +24,7 @@ type CartItem = {
 const PRICE: Record<Duration, number> = { 5: 69, 8: 89, 10: 109, 12: 129, 15: 159, 30: 249, 60: 449 }
 const AI_MODEL_PRICE: Record<Duration, number> = { 5: 49, 8: 49, 10: 49, 12: 49, 15: 49, 30: 99, 60: 149 }
 const getModelAddon = (dur: Duration | null) => dur ? AI_MODEL_PRICE[dur] : 49
-const DURATIONS: Duration[] = [5, 10, 15, 30, 60]
+const DURATIONS: Duration[] = [10, 15, 30, 60]
 // Un seul format au choix parmi 6 — pas de multi-sélection en V1
 const DEFAULT_FORMAT: Format = '9:16'
 
